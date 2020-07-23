@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Hive on OSX  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Hive on OSX
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Pre-requistes:</p>
+<ul>
+<li>Hadoop needs to be installed</li>
+</ul>
+<p>Links:</p>
+<ul>
+<li>http://blog.zhengdong.me/2012/02/22/hive-external-table-with-partitions/</li>
+<li>https://cwiki.apache.org/Hive/hiveodbc.html</li>
+</ul>
+<h2>Introduction</h2>
+<p>Make sure that hadoop is up and runnig</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">Check</span> <span class="k">if</span> <span class="n">hadoop</span> <span class="k">is</span> <span class="n">running</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">ls</span> <span class="o">~/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span>
+
+<span class="o">#</span> <span class="k">If</span> <span class="k">not</span><span class="p">,</span> <span class="k">start</span> <span class="n">hadoop</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">hadoop</span><span class="o">/</span><span class="mi">1</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="k">start</span><span class="o">-</span><span class="k">all</span><span class="p">.</span><span class="n">sh</span>
+</code></pre></div>
+
+
+<h2>Install Hive</h2>
+<p>Just do this:</p>
+<div class="highlight"><pre><span></span><code><span class="n">brew</span> <span class="n">install</span> <span class="n">hive</span>
+
+<span class="o">#</span> <span class="k">check</span> <span class="k">where</span> <span class="n">hive</span> <span class="k">is</span> <span class="n">located</span>
+<span class="n">which</span> <span class="n">hive</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">hive</span>
+
+<span class="o">#</span> <span class="k">Simple</span> <span class="k">check</span> <span class="n">that</span> <span class="n">things</span> <span class="k">are</span> <span class="n">up</span>
+<span class="n">ps</span> <span class="n">ax</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">hadoop</span> <span class="o">|</span> <span class="n">wc</span> <span class="o">-</span><span class="n">l</span>
+<span class="o">#</span> <span class="n">expected</span> <span class="k">output</span> <span class="k">is</span> <span class="mi">7</span>
+</code></pre></div>
+
+
+<p>Start a hive Thrift server:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hive --service hiveserver</span>
+</code></pre></div>
+
+
+<h2>Simple Hive table</h2>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">Create</span> <span class="n">a</span> <span class="n">Hadoop</span> <span class="n">folder</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">mkdir</span> <span class="o">~/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">example</span>
+
+<span class="o">#</span> <span class="k">Create</span> <span class="n">a</span> <span class="k">data</span> <span class="n">file</span>
+<span class="n">echo</span> <span class="o">-</span><span class="n">e</span> <span class="ss">&quot;jim=89347\ndave=313925\nnoddy=21516\ndon=6771&quot;</span> <span class="o">&gt;</span> <span class="k">data</span><span class="p">.</span><span class="n">txt</span>
+
+<span class="o">#</span> <span class="k">Copy</span> <span class="n">the</span> <span class="k">input</span> <span class="n">file</span> <span class="k">to</span> <span class="n">Hadoop</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">copyFromLocal</span> <span class="k">data</span><span class="p">.</span><span class="n">txt</span> <span class="o">~/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">example</span>
+
+<span class="o">#</span> <span class="k">check</span> <span class="n">that</span> <span class="k">is</span> <span class="n">there</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">ls</span> <span class="o">~/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">example</span>
+
+<span class="o">#</span> <span class="k">show</span> <span class="n">the</span> <span class="n">contents</span> <span class="k">using</span> <span class="n">the</span> <span class="n">same</span> <span class="n">URI</span> <span class="k">as</span> <span class="n">Hive</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">cat</span> <span class="n">hdfs</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">jonas</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">example</span><span class="o">/</span><span class="k">data</span><span class="p">.</span><span class="n">txt</span>
+</code></pre></div>
+
+
+<p>Start a hive session. Test the thrift network connection using <code>hive -h localhost</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">hive</span>
+
+<span class="s">hive&gt;</span> <span class="s">show</span> <span class="s">tables</span><span class="p">;</span>
+<span class="n">OK</span>
+<span class="s">Time</span> <span class="s">taken:</span> <span class="s">4.734</span> <span class="s">seconds</span>
+<span class="n">hive</span><span class="o">&gt;</span> <span class="n">show</span> <span class="n">functions</span><span class="p">;</span>
+<span class="n">OK</span>
+<span class="s">!</span>
+<span class="sx">!=</span>
+<span class="c">%</span>
+<span class="c">...</span>
+</code></pre></div>
+
+
+<p>Create an external table:</p>
+<div class="highlight"><pre><span></span><code> <span class="nt">CREATE</span> <span class="nt">EXTERNAL</span> <span class="nt">TABLE</span> <span class="nt">mydata1</span> <span class="o">(</span><span class="nt">key</span> <span class="nt">STRING</span><span class="o">,</span> <span class="nt">value</span> <span class="nt">INT</span><span class="o">)</span>
+    <span class="nt">ROW</span> <span class="nt">FORMAT</span> <span class="nt">DELIMITED</span> <span class="nt">FIELDS</span> <span class="nt">TERMINATED</span> <span class="nt">BY</span> <span class="s1">&#39;=&#39;</span>
+    <span class="nt">LOCATION</span> <span class="s1">&#39;hdfs://localhost/Users/jonas/hadoop-store/mapred/hive-example/&#39;</span><span class="o">;</span>
+
+<span class="nt">hive</span><span class="o">&gt;</span> <span class="nt">select</span> <span class="o">*</span> <span class="nt">from</span> <span class="nt">mydata1</span><span class="o">;</span>
+<span class="nt">OK</span>
+<span class="nt">jim</span> <span class="nt">89347</span>
+<span class="nt">dave</span>    <span class="nt">313925</span>
+<span class="nt">noddy</span>   <span class="nt">21516</span>
+<span class="nt">don</span> <span class="nt">6771</span>
+<span class="nt">Time</span> <span class="nt">taken</span><span class="o">:</span> <span class="nt">0</span><span class="p">.</span><span class="nc">279</span> <span class="nt">seconds</span>
+</code></pre></div>
+
+
+<h2>Check ODBC setup</h2>
+<p>I have unixodbc installed (do <code>brew install unixodbc</code> if you don't):</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:node jonas$ brew info unixodbc</span>
+<span class="c">unixodbc: stable 2.3.1</span>
+<span class="c">http://www.unixodbc.org/</span>
+<span class="err">/usr/local/Cellar/unixodbc/2.3.1 (26 files, 920K) *</span>
+<span class="c">https://github.com/mxcl/homebrew/commits/master/Library/Formula/unixodbc.rb</span>
+</code></pre></div>
+
+
+<p>Check:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="err">:</span><span class="n">node</span><span class="w"> </span><span class="n">jonas</span><span class="err">$</span><span class="w"> </span><span class="n">odbcinst</span><span class="w"></span>
+
+<span class="o">**********************************************</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="n">unixODBC</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">odbcinst</span><span class="w">                        </span><span class="o">*</span><span class="w"></span>
+<span class="o">**********************************************</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="nl">Purpose</span><span class="p">:</span><span class="w">                                   </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">An</span><span class="w"> </span><span class="n">ODBC</span><span class="w"> </span><span class="n">Installer</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Uninstaller</span><span class="p">.</span><span class="w">    </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">Updates</span><span class="w"> </span><span class="k">system</span><span class="w"> </span><span class="n">files</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w">             </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">increases</span><span class="o">/</span><span class="n">decreases</span><span class="w"> </span><span class="k">usage</span><span class="w"> </span><span class="n">counts</span><span class="w"> </span><span class="n">but</span><span class="w">  </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">does</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">actually</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">remove</span><span class="w"> </span><span class="ow">any</span><span class="w">  </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">files</span><span class="p">.</span><span class="w">                                </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="nl">Syntax</span><span class="p">:</span><span class="w">                                    </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">odbcinst</span><span class="w"> </span><span class="k">Action</span><span class="w"> </span><span class="k">Object</span><span class="w"> </span><span class="n">Options</span><span class="w">        </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="k">Action</span><span class="err">:</span><span class="w">                                    </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">i</span><span class="w">         </span><span class="n">install</span><span class="w">                    </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">u</span><span class="w">         </span><span class="n">uninstall</span><span class="w">                  </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">q</span><span class="w">         </span><span class="n">query</span><span class="w">                      </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">j</span><span class="w">         </span><span class="k">print</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="n">info</span><span class="w">          </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">c</span><span class="w">         </span><span class="k">call</span><span class="w"> </span><span class="n">SQLCreateDataSource</span><span class="w">   </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">m</span><span class="w">         </span><span class="k">call</span><span class="w"> </span><span class="n">SQLManageDataSources</span><span class="w">  </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="c1">--version  version                    *</span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="k">Object</span><span class="err">:</span><span class="w">                                    </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">driver</span><span class="w">                             </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="n">source</span><span class="w">                        </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="nl">Options</span><span class="p">:</span><span class="w">                                   </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">template</span><span class="p">.</span><span class="n">ini</span><span class="w"> </span><span class="n">follows</span><span class="w">  </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">         </span><span class="n">this</span><span class="w"> </span><span class="p">(</span><span class="n">valid</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="p">)</span><span class="w">                </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">template</span><span class="p">.</span><span class="n">ini</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="ow">not</span><span class="w">   </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">         </span><span class="n">a</span><span class="w"> </span><span class="n">template</span><span class="w"> </span><span class="k">file</span><span class="w">                    </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="n">Driver</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">Data</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="n">follows</span><span class="w"> </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="n">turn</span><span class="w"> </span><span class="n">verbose</span><span class="w"> </span><span class="k">off</span><span class="w"> </span><span class="p">(</span><span class="k">no</span><span class="w"> </span><span class="n">info</span><span class="p">,</span><span class="w"> </span><span class="n">warning</span><span class="w"> </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">         </span><span class="ow">or</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="n">msgs</span><span class="p">)</span><span class="w">                     </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="k">system</span><span class="w"> </span><span class="n">dsn</span><span class="w">                         </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="o">-</span><span class="n">h</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">dsn</span><span class="w">                           </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="k">Returns</span><span class="err">:</span><span class="w">                                   </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="mi">0</span><span class="w">   </span><span class="n">Success</span><span class="w">                           </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">     </span><span class="err">!</span><span class="mi">0</span><span class="w">   </span><span class="n">Failed</span><span class="w">                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w"> </span><span class="n">Please</span><span class="w"> </span><span class="n">visit</span><span class="p">;</span><span class="w">                              </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">                                            </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="nl">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">unixodbc</span><span class="p">.</span><span class="n">org</span><span class="w">               </span><span class="o">*</span><span class="w"></span>
+<span class="o">*</span><span class="w">      </span><span class="n">pharvey</span><span class="nv">@codebydesign</span><span class="p">.</span><span class="n">com</span><span class="w">              </span><span class="o">*</span><span class="w"></span>
+<span class="o">**********************************************</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Check:</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:node jonas$ odbcinst -j</span>
+<span class="err">unixODBC 2.3.1</span>
+<span class="err">DRIVERS............: /usr/local/Cellar/unixodbc/2.3.1/etc/odbcinst.ini</span>
+<span class="err">SYSTEM DATA SOURCES: /usr/local/Cellar/unixodbc/2.3.1/etc/odbc.ini</span>
+<span class="err">FILE DATA SOURCES..: /usr/local/Cellar/unixodbc/2.3.1/etc/ODBCDataSources</span>
+<span class="err">USER DATA SOURCES..: /Users/jonas/.odbc.ini</span>
+<span class="err">SQLULEN Size.......: 8</span>
+<span class="err">SQLLEN Size........: 8</span>
+<span class="err">SQLSETPOSIROW Size.: 8</span>
+</code></pre></div>
+
+
+<p>NOTE: I can't find libodbchive.so anywhere. I think I have to build hive and ODBC myself...</p>
+<h2>Build hive</h2>
+<p>Check version of hadoop:</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:2.3.1 jonas$ brew info hadoop</span>
+<span class="c">hadoop: stable 1.1.1</span>
+<span class="c">http://hadoop.apache.org/</span>
+<span class="err">/usr/local/Cellar/hadoop/1.1.1 (416 files, 81M) *</span>
+<span class="c">https://github.com/mxcl/homebrew/commits/master/Library/Formula/hadoop.rb</span>
+<span class="err">==&gt; Caveats</span>
+<span class="err">In Hadoop&#39;s config file:</span>
+<span class="err">  /usr/local/Cellar/hadoop/1.1.1/libexec/conf/hadoop-env.sh</span>
+<span class="err">$JAVA_HOME has been set to be the output of:</span>
+<span class="err">  /usr/libexec/java_home</span>
+</code></pre></div>
+
+
+<p>From Hive 0.10 Release notes:</p>
+<ul>
+<li>This release is the latest release of Hive and it works with Hadoop 0.20.x, 0.23.x.y, 1.x.y, 2.x.y</li>
+</ul>
+<p>Tried to download binaries but could not find libodbchive.so:</p>
+<div class="highlight"><pre><span></span><code><span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">apache</span><span class="p">.</span><span class="n">mirrors</span><span class="p">.</span><span class="n">spacedump</span><span class="p">.</span><span class="n">net</span><span class="o">/</span><span class="n">hive</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+
+<span class="n">tar</span> <span class="o">-</span><span class="n">xzf</span> <span class="n">hive</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+
+<span class="n">export</span> <span class="n">HIVE_HOME</span><span class="o">=</span><span class="ss">`pwd`</span>
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="err">$</span><span class="n">HIVE_HOME</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="err">$</span><span class="n">PATH</span>
+</code></pre></div>
+
+
+<p>Let's try to build from source:</p>
+<div class="highlight"><pre><span></span><code><span class="err">svn co http://svn.apache.org/repos/asf/hive/trunk hive</span>
+<span class="err">cd hive</span>
+<span class="err">ant clean package</span>
+<span class="err">cd build/dist</span>
+<span class="err">ls</span>
+</code></pre></div>
+
+
+<p>Set HIVE_HOME and PATH to this new installation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">cd</span> <span class="p">..</span><span class="o">/</span><span class="p">..</span>
+<span class="n">export</span> <span class="n">HIVE_HOME</span><span class="o">=</span><span class="ss">`pwd`</span>
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="err">$</span><span class="n">HIVE_HOME</span><span class="o">/</span><span class="n">bin</span><span class="p">:</span><span class="err">$</span><span class="n">PATH</span>
+</code></pre></div>
+
+
+<p>Also tmp and the hive warehouse folders needs to be created:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hadoop fs -mkdir       /tmp</span>
+<span class="err">hadoop fs -mkdir       /user/hive/warehouse</span>
+<span class="err">hadoop fs -chmod g+w   /tmp</span>
+<span class="err">hadoop fs -chmod g+w   /user/hive/warehouse</span>
+</code></pre></div>
+
+
+<p>Thrift is needed in order to build the hive client.</p>
+<h2>Install thrift</h2>
+<p>The ODBC wrapper is built on top of the thrift client.</p>
+<p>I'm installing with brew. Information on building from source is found here:</p>
+<ul>
+<li>http://thrift.apache.org/</li>
+<li>http://wiki.apache.org/thrift/ThriftInstallation</li>
+</ul>
+<p>Check:</p>
+<div class="highlight"><pre><span></span><code><span class="err">brew info thrift</span>
+<span class="err">brew install thrift --with-java</span>
+</code></pre></div>
+
+
+<p>An alternative is to install from source (need to install boost and libevent first). I'll skip this...</p>
+<div class="highlight"><pre><span></span><code><span class="err">wget https://dist.apache.org/repos/dist/release/thrift/0.9.0/thrift-0.9.0.tar.gz</span>
+</code></pre></div>
+
+
+<h2>Build Hive client</h2>
+<p>Check thrift home:</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:thrift-0.9.0 jonas$ brew info thrift</span>
+<span class="c">thrift: stable 0.9.0, HEAD</span>
+<span class="c">http://thrift.apache.org</span>
+<span class="err">Depends on: boost</span>
+<span class="err">/usr/local/Cellar/thrift/0.9.0 (244 files, 9,2M) *</span>
+<span class="err">  Installed with: --with-java</span>
+</code></pre></div>
+
+
+<p>Do:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cd hive</span>
+<span class="err">ant compile-cpp -Dthrift.home=/usr/local/Cellar/thrift/0.9.0</span>
+</code></pre></div>
+
+
+<p>Build failed. I'm giving up for now...</p>
+<h2>Hortonworks ODBC driver</h2>
+<p>The Hortonworks Hadoop distribution contains a number of ODBC drivers (also OSX).</p>
+<p>An ODBC driver manager is needed, <a href="http://www.iodbc.org/">for instance</a>.
+Run the installation and the Hortonworks ODBC driver is installed here:<code>/usr/lib/hive/lib/native/hiveodbc</code></p>
+<p><a href="https://www.google.se/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;ved=0CC8QFjAA&amp;url=http%3A%2F%2Fhortonworks.com%2Fwp-content%2Fuploads%2F2012%2F10%2FHortonworks-Hive-ODBC-Driver-User-Guide.pdf&amp;ei=P7hJUbO_OcqJtAa1kYCYCA&amp;usg=AFQjCNFpZCPYkfkNPkcq1COXrs9yGTp4bQ&amp;bvm=bv.44011176,d.Yms">Documentation</a></p>
+<p>Put this in your .bash_profile etc:</p>
+<div class="highlight"><pre><span></span><code><span class="err"># check where your ODBC driver manager is installed and correct accordingly, I&#39;m using iODBC</span>
+<span class="err">export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/lib/hive/lib/native/universal:/usr/local/iODBC/lib</span>
+</code></pre></div>
+
+
+<p>Setup odbc.ini:</p>
+<div class="highlight"><pre><span></span><code><span class="n">cat</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">odbc</span><span class="p">.</span><span class="n">ini</span><span class="w"></span>
+<span class="n">cat</span><span class="w"> </span><span class="n">Setup</span><span class="o">/</span><span class="n">odbc</span><span class="p">.</span><span class="n">ini</span><span class="w"></span>
+<span class="n">nano</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">odbc</span><span class="p">.</span><span class="n">ini</span><span class="w"></span>
+
+<span class="o">[</span><span class="n">ODBC</span><span class="o">]</span><span class="w"></span>
+<span class="n">InstallDir</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">iODBC</span><span class="w"></span>
+
+<span class="o">[</span><span class="n">ODBC Data Sources</span><span class="o">]</span><span class="w"></span>
+<span class="n">Sample</span><span class="w"> </span><span class="n">Hortonworks</span><span class="w"> </span><span class="n">Hive</span><span class="w"> </span><span class="n">DSN</span><span class="o">=</span><span class="n">Hortonworks</span><span class="w"> </span><span class="n">Hive</span><span class="w"> </span><span class="n">ODBC</span><span class="w"> </span><span class="n">Driver</span><span class="w"> </span><span class="mi">32</span><span class="o">-</span><span class="nc">bit</span><span class="w"></span>
+
+<span class="o">[</span><span class="n">Sample Hortonworks Hive DSN</span><span class="o">]</span><span class="w"></span>
+<span class="n">Driver</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">hive</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">native</span><span class="o">/</span><span class="n">universal</span><span class="o">/</span><span class="n">llibhortonworkshiveodbc</span><span class="p">.</span><span class="n">dylib</span><span class="w"></span>
+<span class="k">HOST</span><span class="o">=</span><span class="n">localhost</span><span class="w"></span>
+<span class="n">PORT</span><span class="o">=</span><span class="mi">10000</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Setup hortonworks.hiveodbc.ini:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cat Setup/hortonworks.hiveodbc.ini</span>
+<span class="err">cp Setup/hortonworks.hiveodbc.ini ~/.hortonworks.hiveodbc.ini</span>
+<span class="err">nano ~/.hortonworks.hiveodbc.ini</span>
+</code></pre></div>
+
+
+<p>Setup .odbcinst.ini:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cp Setup/odbcinst.ini ~/.odbcinst.ini</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

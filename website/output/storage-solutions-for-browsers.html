@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Storage solutions for browsers  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Storage solutions for browsers
+	</div>
+	<div class="message-body has-text-dark">
+		<p>This is a short summary of the solutions for persistent storage that I've found.
+I've included simple examples of how they would be used. I prefer solutions
+that support IndexedDb and that have a straightforward mapping in data model.</p>
+<h1>pouchdb</h1>
+<p>A couched for browsers. Seams to be the most widespread storage solution for
+browsers. Storage in IndexedDb is not straight forward. Interacting directly
+with IndexedDb probably not a good idea.</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="n">db</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PouchDB</span><span class="p">(</span><span class="s1">&#39;kittens&#39;</span><span class="p">);</span>
+
+<span class="n">db</span><span class="p">.</span><span class="n">info</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="err">{</span>
+  <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">info</span><span class="p">);</span>
+<span class="err">}</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">doc</span> <span class="o">=</span> <span class="err">{</span>
+  <span class="ss">&quot;_id&quot;</span><span class="p">:</span> <span class="ss">&quot;mittens&quot;</span><span class="p">,</span>
+  <span class="ss">&quot;name&quot;</span><span class="p">:</span> <span class="ss">&quot;Mittens&quot;</span><span class="p">,</span>
+  <span class="ss">&quot;occupation&quot;</span><span class="p">:</span> <span class="ss">&quot;kitten&quot;</span><span class="p">,</span>
+  <span class="ss">&quot;age&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="ss">&quot;hobbies&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="ss">&quot;playing with balls of yarn&quot;</span><span class="p">,</span>
+    <span class="ss">&quot;chasing laser pointers&quot;</span><span class="p">,</span>
+    <span class="ss">&quot;lookin&#39; hella cute&quot;</span>
+  <span class="p">]</span>
+<span class="err">}</span><span class="p">;</span>
+<span class="n">db</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+
+<span class="n">db</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="s1">&#39;mittens&#39;</span><span class="p">).</span><span class="k">then</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="err">{</span>
+  <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+<span class="err">}</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">updates</span> <span class="n">require</span> <span class="n">the</span> <span class="k">full</span> <span class="n">document</span> <span class="n">incl</span><span class="p">.</span> <span class="n">_rev</span>
+<span class="n">db</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="s1">&#39;mittens&#39;</span><span class="p">).</span><span class="k">then</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="err">{</span>
+  <span class="o">//</span> <span class="k">update</span> <span class="n">their</span> <span class="n">age</span>
+  <span class="n">doc</span><span class="p">.</span><span class="n">age</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="o">//</span> <span class="n">put</span> <span class="n">them</span> <span class="n">back</span>
+  <span class="k">return</span> <span class="n">db</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+<span class="err">}</span><span class="p">).</span><span class="k">then</span><span class="p">(</span><span class="k">function</span> <span class="p">()</span> <span class="err">{</span>
+  <span class="o">//</span> <span class="k">fetch</span> <span class="n">mittens</span> <span class="n">again</span>
+  <span class="k">return</span> <span class="n">db</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="s1">&#39;mittens&#39;</span><span class="p">);</span>
+<span class="err">}</span><span class="p">).</span><span class="k">then</span><span class="p">(</span><span class="k">function</span> <span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="err">{</span>
+  <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
+<span class="err">}</span><span class="p">);</span>
+</code></pre></div>
+
+
+<h1>alasql</h1>
+<p>New and inmature solution. Found bugs when using IndexedDb as backend.
+Re-visit in a while and check for progress. Many open issues in github though.</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">array</span><span class="w"></span>
+<span class="nf">var</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">{a:1,b:10}, {a:2,b:20}, {a:1,b:30}</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="nf">var</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alasql</span><span class="p">(</span><span class="s1">&#39;SELECT a, SUM(b) AS b FROM ? GROUP BY a&#39;</span><span class="p">,</span><span class="o">[</span><span class="n">data</span><span class="o">]</span><span class="p">);</span><span class="w"></span>
+<span class="n">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="n">res</span><span class="p">);</span><span class="w"></span>
+
+<span class="o">//</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">indexeddb</span><span class="w"></span>
+<span class="nf">var</span><span class="w"> </span><span class="n">cityData</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">{city:&quot;Redmond&quot;, population:57530},</span>
+<span class="n">        {city:&quot;Atlanta&quot;,population:447841},</span>
+<span class="n">        {city:&quot;San Fracisco&quot;, population:837442}</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="n">alasql</span><span class="p">(</span><span class="s1">&#39;CREATE INDEXEDDB DATABASE IF NOT EXISTS geo&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">alasql</span><span class="p">(</span><span class="s1">&#39;CREATE INDEXEDDB DATABASE IF NOT EXISTS geo;\</span>
+<span class="s1">        ATTACH INDEXEDDB DATABASE geo; \</span>
+<span class="s1">        USE geo; \</span>
+<span class="s1">        DROP TABLE IF EXISTS cities; \</span>
+<span class="s1">        CREATE TABLE cities; \</span>
+<span class="s1">        SELECT * INTO cities FROM ?&#39;</span><span class="p">,</span><span class="w"> </span><span class="o">[</span><span class="n">cityData</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">alasql</span><span class="p">(</span><span class="s1">&#39;SELECT COLUMN * FROM cities WHERE population &gt; 100000 ORDER BY city DESC&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="w">           </span><span class="err">[]</span><span class="p">,</span><span class="k">function</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="err">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s1">&#39;Big cities: &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="k">join</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<h1>NeDB</h1>
+<p>Mongo type of Api for browsers. No support for IndexedDb.</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span> <span class="nt">Create</span> <span class="nt">an</span> <span class="nt">in-memory</span> <span class="nt">only</span> <span class="nt">datastore</span>
+<span class="nt">var</span> <span class="nt">db</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">Nedb</span><span class="o">();</span>
+<span class="nt">db</span><span class="p">.</span><span class="nc">insert</span><span class="o">(</span><span class="p">{</span> <span class="n">planet</span><span class="p">:</span> <span class="s1">&#39;Earth&#39;</span> <span class="p">}</span><span class="o">);</span>
+<span class="nt">db</span><span class="p">.</span><span class="nc">insert</span><span class="o">(</span><span class="p">{</span> <span class="n">planet</span><span class="p">:</span> <span class="s1">&#39;Mars&#39;</span> <span class="p">}</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">find</span><span class="o">(</span><span class="p">{}</span><span class="o">,</span> <span class="nt">function</span> <span class="o">(</span><span class="nt">err</span><span class="o">,</span> <span class="nt">docs</span><span class="o">)</span> <span class="p">{</span>
+    <span class="err">console.log(docs)</span><span class="p">;</span>
+<span class="p">}</span><span class="o">);</span>
+
+<span class="o">//</span> <span class="nt">Create</span> <span class="nt">a</span> <span class="nt">localStorage</span> <span class="nt">datastore</span>
+<span class="nt">var</span> <span class="nt">db</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">Nedb</span><span class="o">(</span><span class="p">{</span><span class="n">filename</span><span class="p">:</span> <span class="s1">&#39;filename&#39;</span><span class="p">}</span><span class="o">);</span>
+<span class="nt">db</span><span class="p">.</span><span class="nc">insert</span><span class="o">(</span><span class="p">{</span> <span class="n">planet</span><span class="p">:</span> <span class="s1">&#39;Earth&#39;</span> <span class="p">}</span><span class="o">);</span>
+<span class="nt">db</span><span class="p">.</span><span class="nc">insert</span><span class="o">(</span><span class="p">{</span> <span class="n">planet</span><span class="p">:</span> <span class="s1">&#39;Mars&#39;</span> <span class="p">}</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">find</span><span class="o">(</span><span class="p">{}</span><span class="o">,</span> <span class="nt">function</span> <span class="o">(</span><span class="nt">err</span><span class="o">,</span> <span class="nt">docs</span><span class="o">)</span> <span class="p">{</span>
+    <span class="err">console.log(docs)</span><span class="p">;</span>
+<span class="p">}</span><span class="o">);</span>
+</code></pre></div>
+
+
+<h1>dexie.org</h1>
+<p>Simple wrapper on IndexedDb. Not sure how widely used this is.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">db</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">Dexie</span><span class="o">(</span><span class="s2">&quot;FriendDatabase&quot;</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">version</span><span class="o">(</span><span class="nt">1</span><span class="o">)</span><span class="p">.</span><span class="nc">stores</span><span class="o">(</span><span class="p">{</span>
+    <span class="n">friends</span><span class="p">:</span> <span class="s2">&quot;++id,name,age&quot;</span>
+<span class="p">}</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">open</span><span class="o">();</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">friends</span><span class="p">.</span><span class="nc">add</span><span class="o">(</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="s2">&quot;Josephine&quot;</span><span class="p">,</span> <span class="n">age</span><span class="o">:</span> <span class="mi">21</span><span class="p">}</span><span class="o">)</span><span class="p">.</span><span class="nc">then</span><span class="o">(</span><span class="nt">function</span><span class="o">()</span><span class="p">{</span>
+
+<span class="p">}</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">friends</span><span class="p">.</span><span class="nc">where</span><span class="o">(</span><span class="s2">&quot;age&quot;</span><span class="o">)</span><span class="p">.</span><span class="nc">between</span><span class="o">(</span><span class="nt">20</span><span class="o">,</span> <span class="nt">30</span><span class="o">)</span><span class="p">.</span><span class="nc">each</span><span class="o">(</span><span class="nt">function</span><span class="o">(</span><span class="nt">friend</span><span class="o">)</span> <span class="p">{</span>
+        <span class="err">console.log(&quot;Found</span> <span class="err">young</span> <span class="n">friend</span><span class="p">:</span> <span class="err">&quot;</span> <span class="o">+</span> <span class="n">JSON</span><span class="o">.</span><span class="nf">stringify</span><span class="p">(</span><span class="n">friend</span><span class="p">));</span>
+    <span class="p">}</span><span class="o">);</span>
+</code></pre></div>
+
+
+<h1>YDN-DB</h1>
+<p>Not using indexedDb on Safari. Straightforward model for storage in indexeddb
+(testing with Firefox).</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">db</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">ydn</span><span class="p">.</span><span class="nc">db</span><span class="p">.</span><span class="nc">Storage</span><span class="o">(</span><span class="s1">&#39;yen-db&#39;</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">put</span><span class="o">(</span><span class="s1">&#39;store-name&#39;</span><span class="o">,</span> <span class="p">{</span><span class="n">message</span><span class="p">:</span> <span class="s1">&#39;Hello world!&#39;</span><span class="p">}</span><span class="o">,</span> <span class="s1">&#39;id1&#39;</span><span class="o">);</span>
+
+<span class="nt">db</span><span class="p">.</span><span class="nc">get</span><span class="o">(</span><span class="s1">&#39;store-name&#39;</span><span class="o">,</span> <span class="s1">&#39;id1&#39;</span><span class="o">)</span><span class="p">.</span><span class="nc">always</span><span class="o">(</span><span class="nt">function</span><span class="o">(</span><span class="nt">record</span><span class="o">)</span> <span class="p">{</span>
+  <span class="err">console.log(record)</span><span class="p">;</span>
+<span class="p">}</span><span class="o">);</span>
+</code></pre></div>
+
+
+<h1>localForage</h1>
+<p>Simple key value store that Mozilla is behind.</p>
+<div class="highlight"><pre><span></span><code><span class="err">var obj = { value: &quot;hello world&quot; };</span>
+<span class="err">localforage.setItem(&#39;key&#39;, obj, function(err, result) { console.log(result.value); });</span>
+<span class="err">localforage.getItem(&#39;key&#39;, function(err, value) { console.log(value) });</span>
+</code></pre></div>
+
+
+<h1>TaffyDB</h1>
+<p>In-memory JavaScript database with support for persistence in localStorage. Has
+functions for filtering, joining etc.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">friends</span> <span class="o">=</span> <span class="nt">TAFFY</span><span class="o">(</span><span class="cp">[</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span><span class="s2">&quot;M&quot;</span><span class="p">,</span><span class="s2">&quot;first&quot;</span><span class="p">:</span><span class="s2">&quot;John&quot;</span><span class="p">,</span><span class="s2">&quot;last&quot;</span><span class="p">:</span><span class="s2">&quot;Smith&quot;</span><span class="p">,</span><span class="s2">&quot;city&quot;</span><span class="p">:</span><span class="s2">&quot;Seattle, WA&quot;</span><span class="p">,</span><span class="s2">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;Active&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span><span class="s2">&quot;F&quot;</span><span class="p">,</span><span class="s2">&quot;first&quot;</span><span class="p">:</span><span class="s2">&quot;Kelly&quot;</span><span class="p">,</span><span class="s2">&quot;last&quot;</span><span class="p">:</span><span class="s2">&quot;Ruth&quot;</span><span class="p">,</span><span class="s2">&quot;city&quot;</span><span class="p">:</span><span class="s2">&quot;Dallas, TX&quot;</span><span class="p">,</span><span class="s2">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;Active&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span><span class="s2">&quot;M&quot;</span><span class="p">,</span><span class="s2">&quot;first&quot;</span><span class="p">:</span><span class="s2">&quot;Jeff&quot;</span><span class="p">,</span><span class="s2">&quot;last&quot;</span><span class="p">:</span><span class="s2">&quot;Stevenson&quot;</span><span class="p">,</span><span class="s2">&quot;city&quot;</span><span class="p">:</span><span class="s2">&quot;Washington, D.C.&quot;</span><span class="p">,</span><span class="s2">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;Active&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;gender&quot;</span><span class="p">:</span><span class="s2">&quot;F&quot;</span><span class="p">,</span><span class="s2">&quot;first&quot;</span><span class="p">:</span><span class="s2">&quot;Jennifer&quot;</span><span class="p">,</span><span class="s2">&quot;last&quot;</span><span class="p">:</span><span class="s2">&quot;Gill&quot;</span><span class="p">,</span><span class="s2">&quot;city&quot;</span><span class="p">:</span><span class="s2">&quot;Seattle, WA&quot;</span><span class="p">,</span><span class="s2">&quot;status&quot;</span><span class="p">:</span><span class="s2">&quot;Active&quot;</span><span class="p">}</span>
+<span class="cp">]</span><span class="o">);</span>
+
+<span class="nt">friends</span><span class="o">(</span><span class="p">{</span><span class="n">city</span><span class="p">:</span><span class="s2">&quot;Seattle, WA&quot;</span><span class="p">}</span><span class="o">)</span><span class="p">.</span><span class="nc">first</span><span class="o">();</span>
+
+<span class="nt">friends</span><span class="p">.</span><span class="nc">store</span><span class="o">(</span><span class="s2">&quot;taffy&quot;</span><span class="o">);</span>
+
+<span class="o">//</span> <span class="nt">reload</span> <span class="nt">page</span>
+<span class="nt">var</span> <span class="nt">friends</span> <span class="o">=</span> <span class="nt">TAFFY</span><span class="o">();</span>
+<span class="nt">friends</span><span class="p">.</span><span class="nc">store</span><span class="o">(</span><span class="s2">&quot;taffy&quot;</span><span class="o">);</span>
+<span class="nt">friends</span><span class="o">(</span><span class="p">{</span><span class="n">city</span><span class="p">:</span><span class="s2">&quot;Seattle, WA&quot;</span><span class="p">}</span><span class="o">)</span><span class="p">.</span><span class="nc">first</span><span class="o">();</span>
+</code></pre></div>
+
+
+<h1>Summary</h1>
+<p>The best candidates seams to be PochDb Ydn-db. The drawback with PouchDb is that
+it is a CouchDb in the browser and the storage model is driven from this. I
+prefer a simple mapping from documents/JSON to the database I do not need
+the versioning that Pouch has built in. Ydn-db do not use IndexedDb on Safari,
+but otherwise this seams like a good candidate. Dexie could also be a candidate
+even though I'm not sure how widely spread it is.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

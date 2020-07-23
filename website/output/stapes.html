@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Stapes  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Stapes
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Stapes - Minimal JavaScript MVC Framework </p>
+<p>Working with Phonegap, see <a href="/121220_More-Phonegap">More Phonegap</a>,
+I wanted a small simple JavaScript MVC Framework as an alternative to Backbonejs.</p>
+<p>Stapes can be found here http://hay.github.com/stapes/</p>
+<p>I've reverse engineered a design for the Todos example that is included in the with
+stapes.</p>
+<h2>DOM Objects</h2>
+<div class="highlight"><pre><span></span><code><span class="err">| Object         | Event          | Notes          |</span>
+<span class="err">| Window         | onhashchange   |                |</span>
+<span class="err">| todoadd        | destroy        |                |</span>
+<span class="err">|                | dbclick        |                |</span>
+<span class="err">|                | keyup          |                |</span>
+<span class="err">|                | focusout       |                |</span>
+<span class="err">|                | input.toggle   |                |</span>
+<span class="err">| newtodo        | keyup          |                |</span>
+<span class="err">| clearcompleted | click          |                |</span>
+<span class="err">| toggleall      |                |                |</span>
+</code></pre></div>
+
+
+<h2>stapes events</h2>
+<div class="highlight"><pre><span></span><code><span class="err">| Event          | Publishers     | Subscribers    |</span>
+<span class="err">| change         |                | Model.change   |</span>
+<span class="err">| ready          |                |                |</span>
+<span class="err">| clearcompleted |                |                |</span>
+<span class="err">| edittodo       |                |                |</span>
+<span class="err">| statechange    |                |                |</span>
+<span class="err">| todoaddvalue   | newtodo.keyup  |                |</span>
+<span class="err">| todocompleted  |                |                |</span>
+<span class="err">| tododelete     | todoadd.destroy|                |</span>
+<span class="err">| todoedit       |                |                |</span>
+<span class="err">| completedall   |                |                |</span>
+<span class="err">| uncompletedall |                |                |</span>
+</code></pre></div>
+
+
+<h2>View Objects</h2>
+<div class="highlight"><pre><span></span><code><span class="err">| Object         | Methods              | Notes          |</span>
+<span class="err">| View           | showClearCompleted   |                |</span>
+<span class="err">|                | clearCompleted       |                |</span>
+<span class="err">|                | makeEditable         |                |</span>
+<span class="err">|                | clearInput           |                |</span>
+<span class="err">|                | render               |                |</span>
+<span class="err">|                | showLeft             |                |</span>
+</code></pre></div>
+
+
+<h2>Controller Objects</h2>
+<div class="highlight"><pre><span></span><code><span class="err">| Object         | Methods              | Notes          |</span>
+<span class="err">| Controller     | bindEventHandlers    |                |</span>
+<span class="err">|                | init                 |                |</span>
+<span class="err">|                | renderAll            |                |</span>
+</code></pre></div>
+
+
+<h2>Model Objects</h2>
+<div class="highlight"><pre><span></span><code><span class="err">| Object         | Methods              | Notes          |</span>
+<span class="err">| Model          | clearCompleted       |                |</span>
+<span class="err">|                | addTodo              |                |</span>
+<span class="err">|                | remove               |                |</span>
+<span class="err">|                | update               |                |</span>
+</code></pre></div>
+
+
+<h2>Store Objects</h2>
+<div class="highlight"><pre><span></span><code><span class="err">| Object         | Methods              | Notes          |</span>
+<span class="err">| Store          | save                 |                |</span>
+<span class="err">|                |                      |                |</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

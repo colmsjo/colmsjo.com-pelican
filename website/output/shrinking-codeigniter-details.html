@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Shrinking CodeIgniter Details  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Shrinking CodeIgniter Details
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Time to understand what's going on in the PHP frameworks</p>
+<p>STATUS: This is still work in progress</p>
+<p>The code for this article can be found here: https://github.com/colmsjo/wip/tree/master/Shrinking_CodeIgniter</p>
+<p>I like to understand the detais in what's going on when developing new stuff. PHP is excellent in itself but some framework is handy in most cases. All frameworks have a learning curve though and I havent't found any good alternative where you just do a simple include (like in the old good C coding days). When for instance using Yii and CodeIgniter you are assumed to put your code in in some directory inheriting some class and you don't have control of how this code actualluy get's executed.</p>
+<p>Here I'll try to only pull the files actually used out of the CodeIgniter framework. The purpose is to make sure I have a good understanding of what's going on.</p>
+<p>This is the license of CodeIgniter: http://codeigniter.com/user_guide/license.html</p>
+<p>Steps for example 1 (See the result in the directory example1):
+* Create a directory for the new PHP application, I'll call it example1 here
+* Start with downloading the latest version of CodeIgniter - http://codeigniter.com/downloads/ (or clone from github https://github.com/EllisLab/CodeIgniter)
+* Copy index.php from the root CodeIgniter directory to exmaple1
+* Open the index.php file and have a look. Spend a little time and make sure you understand what's going on (it's fairly straightforward). At the end there's a include of CodeIgniter.php
+* Create the folder structure system/code and copy CodeIgniter.php into it
+* Open the file CodeIgniter.php and have a look. This one is more complicated. My plan is to clean it up and only use the parts I really need.
+* Line 51 (in version 2.1.2) of CodeIgniter.php has the following include, require(BASEPATH.'core/Common.php'). We'll take Common.php since has functions for error management and logging. 
+* Copy core/Common.php and also core/Exceptions.php
+* Open core/Common.php and have a look. On line 349 is the function log_message defined. CI_Log in libraries/Log.php is loaded using the function load_class. Let's take this file as well, it will probably come in hande sooner or later.
+* Create the directory libraries in system, e.g. example1/system/libraries. Copy Log.php into this new directory.
+* There is the file Unit_test.php in libraries. We need a good unit testing tool so let's take this file also.</p>
+<p>Try to run index.php from command line:</p>
+<div class="highlight"><pre><span></span><code><span class="err">php index.php</span>
+</code></pre></div>
+
+
+<p>You'll get an error complaining about the paths.</p>
+<p>Next steps. You can try to run index.php after each step to see what's going on:</p>
+<ul>
+<li>Change $application_folder to '.' in index.php </li>
+<li>create the folder config and copy the file application/config/constants.php into it</li>
+<li>copy the file application/config/config.php into the folder config</li>
+<li>Copy the folder application/errors with contents to ./errors</li>
+<li>Copy application/config/routes.php to config</li>
+</ul>
+<p>CodeIgniter loads a bunch of classes using the function load_class defined in system/core/Common.php</p>
+<div class="highlight"><pre><span></span><code>$ grep -nr load_class *
+system/core/CodeIgniter.php:115:    <span class="nv">$BM</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Benchmark&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:124:    <span class="nv">$EXT</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Hooks&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:138:    <span class="nv">$CFG</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Config&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:158:    <span class="nv">$UNI</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Utf8&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:165:    <span class="nv">$URI</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;URI&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:172:    <span class="nv">$RTR</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Router&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:186:    <span class="nv">$OUT</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Output&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:206:    <span class="nv">$SEC</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Security&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:213:    <span class="nv">$IN</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Input&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/CodeIgniter.php:220:    <span class="nv">$LANG</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Lang&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/Common.php:121:if <span class="o">(</span> ! function_exists<span class="o">(</span><span class="s1">&#39;load_class&#39;</span><span class="o">))</span>
+system/core/Common.php:123: <span class="k">function</span> <span class="p">&amp;</span>load_class<span class="o">(</span><span class="nv">$class</span>, <span class="nv">$directory</span> <span class="o">=</span> <span class="s1">&#39;libraries&#39;</span>, <span class="nv">$prefix</span> <span class="o">=</span> <span class="s1">&#39;CI_&#39;</span><span class="o">)</span>
+system/core/Common.php:183:* called by the load_class<span class="o">()</span> <span class="k">function</span> above
+system/core/Common.php:308:     <span class="nv">$_error</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Exceptions&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/Common.php:330:     <span class="nv">$_error</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Exceptions&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/Common.php:358:     <span class="nv">$_log</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Log&#39;</span><span class="o">)</span><span class="p">;</span>
+system/core/Common.php:481:     <span class="nv">$_error</span> <span class="o">=</span><span class="p">&amp;</span> load_class<span class="o">(</span><span class="s1">&#39;Exceptions&#39;</span>, <span class="s1">&#39;core&#39;</span><span class="o">)</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>Remove some classes:</p>
+<ul>
+<li>Let's keep Benchmark on row 115. Copy the file system/core/Benchmark.php into your system/core folder</li>
+<li>Comment out Hooks on row 124</li>
+<li>Comment out row 131</li>
+<li>Keep Config on row 138. Copy the file system/core/Config.php into your system/core folder</li>
+<li>Comment out Utf8 on row 158</li>
+<li>Keep URI on row 165. Copy the file system/core/Uri.php into your system/core folder</li>
+<li>Keep Router on row 182. Copy the file system/core/Router.php into your system/core folder</li>
+<li>Keep Output on row 186. Copy the file system/core/Output.oho into your system/core folder</li>
+<li>Comment out Security on row 206</li>
+<li>Comment out Input on row 213</li>
+<li>Comment out Lang on row 220</li>
+</ul>
+<p>Try to run index.php again. You should now get some valid HTML output with a error saying the default route haven't been configured.</p>
+<div class="highlight"><pre><span></span><code>php index.php
+        <span class="nt">&lt;p&gt;</span>Unable to determine what should be displayed. A default route has not been specified in the routing file.<span class="nt">&lt;/p&gt;</span>    <span class="nt">&lt;/div&gt;</span>
+...
+</code></pre></div>
+
+
+<p>Now we have a basic framework that can be used as the starting point for new applications. Additional components of CodeIgniter can be added when needed.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

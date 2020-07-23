@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Giving docpad a spin  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Giving docpad a spin
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Giving docpad a spin</p>
+<p>docpad as a new content management system based on static files. This removes the need for a databse and makes it possible to store the content in git (or any version control system tou prefer).</p>
+<p>Links:</p>
+<ul>
+<li>http://docpad.org/</li>
+</ul>
+<h2>Hello world in docpad</h2>
+<p>First install NodeJS and npm if you haven't already. </p>
+<p>Latest version when this is written is installed like this: <code>npm install -g docpad@6.45</code>.</p>
+<p>Copied from here: http://docpad.org/docs/start</p>
+<div class="highlight"><pre><span></span><code><span class="n">mkdir</span> <span class="n">docpad</span><span class="o">-</span><span class="n">site</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">docpad</span><span class="o">-</span><span class="n">site</span>
+
+<span class="n">docpad</span> <span class="n">init</span>
+
+<span class="n">npm</span> <span class="n">install</span> <span class="c1">--save docpad-plugin-eco docpad-plugin-marked</span>
+
+<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">src</span><span class="o">/</span><span class="n">documents</span><span class="o">/</span><span class="n">posts</span><span class="o">/</span>
+</code></pre></div>
+
+
+<p>src/layouts/default.html.eco:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@document</span><span class="o">.</span><span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+    <span class="cp">&lt;%-</span> <span class="vi">@getBlock</span><span class="p">(</span><span class="s2">&quot;meta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toHTML</span><span class="p">()</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%-</span> <span class="vi">@getBlock</span><span class="p">(</span><span class="s2">&quot;styles&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toHTML</span><span class="p">()</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+    <span class="cp">&lt;%-</span> <span class="vi">@content</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%-</span> <span class="vi">@getBlock</span><span class="p">(</span><span class="s2">&quot;scripts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toHTML</span><span class="p">()</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
+
+
+<p>src/layouts/post.html.eco:</p>
+<div class="highlight"><pre><span></span><code>layout: default
+<span class="nt">&lt;h1&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@document</span><span class="o">.</span><span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;div&gt;</span><span class="cp">&lt;%-</span> <span class="vi">@content</span> <span class="cp">%&gt;</span><span class="nt">&lt;/div&gt;</span>
+</code></pre></div>
+
+
+<p>src/documents/posts/hello.html.md:</p>
+<div class="highlight"><pre><span></span><code><span class="n">layout</span><span class="o">:</span> <span class="n">post</span>
+<span class="n">description</span><span class="o">:</span> <span class="n">Hello</span> <span class="n">World</span><span class="o">!</span>
+<span class="n">title</span><span class="o">:</span> <span class="n">Hello</span> <span class="n">World</span><span class="o">!</span>
+<span class="o">**</span><span class="n">Hello</span><span class="o">**</span> <span class="n">World</span><span class="o">!</span>
+</code></pre></div>
+
+
+<p>src/documents/index.html.eco:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;%</span> <span class="k">for</span> <span class="n">post</span> <span class="k">in</span> <span class="vi">@getFilesAtPath</span><span class="p">(</span><span class="s2">&quot;posts&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toJSON</span><span class="p">():</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">&lt;%=</span> <span class="n">post</span><span class="o">.</span><span class="n">url</span> <span class="cp">%&gt;</span><span class="s">&quot;</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">post</span><span class="o">.</span><span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/a&gt;&lt;br/&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+
+
+<p>Generate the site</p>
+<div class="highlight"><pre><span></span><code><span class="err">docpad run</span>
+</code></pre></div>
+
+
+<p>open http://localhost:9778/</p>
+<p>Add one more post:</p>
+<p>src/documents/posts/world.html.md:</p>
+<div class="highlight"><pre><span></span><code><span class="n">layout</span><span class="o">:</span> <span class="n">post</span>
+<span class="n">description</span><span class="o">:</span> <span class="n">Hello</span> <span class="n">World</span><span class="o">!</span>
+<span class="n">title</span><span class="o">:</span> <span class="n">Hello</span> <span class="n">World</span><span class="o">!</span>
+<span class="n">Hello</span> <span class="o">**</span><span class="n">World</span><span class="o">!**</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Hadoop on OSX  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Hadoop on OSX
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Hadoop on OSX</p>
+<p>Links:</p>
+<ul>
+<li>http://dennyglee.com/2012/05/08/installing-hadoop-on-osx-lion-10-7/</li>
+</ul>
+<h1>Installation</h1>
+<p>Summary:</p>
+<ul>
+<li>Java is needed</li>
+<li>XCode is needed</li>
+<li>brew is needed (and needs to be healty)  </li>
+<li>remote login needs to be enabled</li>
+</ul>
+<p>Check that java is installed:</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:cfengine jonas$ java -version</span>
+<span class="err">java version &quot;1.6.0_41&quot;</span>
+<span class="err">Java(TM) SE Runtime Environment (build 1.6.0_41-b02-445-11M4107)</span>
+<span class="err">Java HotSpot(TM) 64-Bit Server VM (build 20.14-b01-445, mixed mode)</span>
+</code></pre></div>
+
+
+<p>Make sure that brew is ok</p>
+<div class="highlight"><pre><span></span><code><span class="err">brew doctor</span>
+</code></pre></div>
+
+
+<p>I always seams to have a lot of errors that I have to clean up. I won't show this.</p>
+<p>Install Hadoop:</p>
+<div class="highlight"><pre><span></span><code><span class="err">brew install hadoop</span>
+<span class="err">==&gt; Downloading http://www.apache.org/dyn/closer.cgi?path=hadoop/core/hadoop-1.1.1/hadoop-1.1.1.tar.gz</span>
+<span class="err">==&gt; Best Mirror http://apache.mirrors.spacedump.net/hadoop/core/hadoop-1.1.1/hadoop-1.1.1.tar.gz</span>
+<span class="err">######################################################################## 100,0%</span>
+<span class="err">==&gt; Caveats</span>
+<span class="err">In Hadoop&#39;s config file:</span>
+<span class="err">  /usr/local/Cellar/hadoop/1.1.1/libexec/conf/hadoop-env.sh</span>
+<span class="err">$JAVA_HOME has been set to be the output of:</span>
+<span class="err">  /usr/libexec/java_home</span>
+<span class="err">==&gt; Summary</span>
+<span class="err">🍺  /usr/local/Cellar/hadoop/1.1.1: 270 files, 75M, built in 113 seconds</span>
+</code></pre></div>
+
+
+<p>/usr/local/Cellar/hadoop/1.1.1/libexec/conf/hadoop-env.sh:</p>
+<div class="highlight"><pre><span></span><code><span class="err">export HADOOP_OPTS=&quot;-Djava.security.krb5.realm=OX.AC.UK -Djava.security.krb5.kdc=kdc0.ox.ac.uk:kdc1.ox.ac.uk&quot;</span>
+</code></pre></div>
+
+
+<p>/usr/local/Cellar/hadoop/1.1.1/libexec/conf/core-site.xml:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;</span>
+
+<span class="c">&lt;!-- Put site-specific property overrides in this file. --&gt;</span>
+
+<span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>hadoop.tmp.dir<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>/Users/<span class="cp">${</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="cp">}</span>/hadoop-store<span class="nt">&lt;/value&gt;</span>
+        <span class="nt">&lt;description&gt;</span>A base for other temporary directories.<span class="nt">&lt;/description&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>fs.default.name<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>hdfs://localhost:8020<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+
+
+<p>/usr/local/Cellar/hadoop/1.1.1/libexec/conf/mapred-site.xml:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;</span>
+
+<span class="c">&lt;!-- Put site-specific property overrides in this file. --&gt;</span>
+
+<span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>mapred.job.tracker<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>localhost:9001<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>mapred.tasktracker.map.tasks.maximum<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+
+    <span class="nt">&lt;property&gt;</span>
+        <span class="nt">&lt;name&gt;</span>mapred.tasktracker.reduce.tasks.maximum<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+
+
+<p>/usr/local/Cellar/hadoop/1.1.1/libexec/conf/hdfs-site.xml:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="cp">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;</span>
+
+<span class="c">&lt;!-- Put site-specific property overrides in this file. --&gt;</span>
+
+<span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;property&gt;</span>
+      <span class="nt">&lt;name&gt;</span>dfs.replication<span class="nt">&lt;/name&gt;</span>
+      <span class="nt">&lt;value&gt;</span>1<span class="nt">&lt;/value&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</code></pre></div>
+
+
+<p>Start hadoop:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nt">Format</span> <span class="nt">and</span> <span class="nt">then</span> <span class="nt">exit</span>
+<span class="nt">hadoop</span> <span class="nt">namenode</span> <span class="nt">-format</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">31</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">NameNode</span><span class="o">:</span> <span class="nt">STARTUP_MSG</span><span class="o">:</span> 
+<span class="c">/************************************************************</span>
+<span class="c">STARTUP_MSG: Starting NameNode</span>
+<span class="c">STARTUP_MSG:   host = Gizur-Laptop-5.local/10.0.1.117</span>
+<span class="c">STARTUP_MSG:   args = </span><span class="cp">[</span><span class="na">-format</span><span class="cp">]</span><span class="c"></span>
+<span class="c">STARTUP_MSG:   version = 1.1.1</span>
+<span class="c">STARTUP_MSG:   build = https://svn.apache.org/repos/asf/hadoop/common/branches/branch-1.1 -r 1411108; compiled by &#39;hortonfo&#39; on Mon Nov 19 10:48:11 UTC 2012</span>
+<span class="c">************************************************************/</span>
+<span class="nt">Re-format</span> <span class="nt">filesystem</span> <span class="nt">in</span> <span class="o">/</span><span class="nt">Users</span><span class="o">/</span><span class="nt">jonas</span><span class="o">/</span><span class="nt">hadoop-store</span><span class="o">/</span><span class="nt">dfs</span><span class="o">/</span><span class="nt">name</span> <span class="o">?</span> <span class="o">(</span><span class="nt">Y</span> <span class="nt">or</span> <span class="nt">N</span><span class="o">)</span> <span class="nt">Y</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">util</span><span class="p">.</span><span class="nc">GSet</span><span class="o">:</span> <span class="nt">VM</span> <span class="nt">type</span>       <span class="o">=</span> <span class="nt">64-bit</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">util</span><span class="p">.</span><span class="nc">GSet</span><span class="o">:</span> <span class="nt">2</span><span class="o">%</span> <span class="nt">max</span> <span class="nt">memory</span> <span class="o">=</span> <span class="nt">19</span><span class="p">.</span><span class="nc">83375</span> <span class="nt">MB</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">util</span><span class="p">.</span><span class="nc">GSet</span><span class="o">:</span> <span class="nt">capacity</span>      <span class="o">=</span> <span class="nt">2</span><span class="o">^</span><span class="nt">21</span> <span class="o">=</span> <span class="nt">2097152</span> <span class="nt">entries</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">util</span><span class="p">.</span><span class="nc">GSet</span><span class="o">:</span> <span class="nt">recommended</span><span class="o">=</span><span class="nt">2097152</span><span class="o">,</span> <span class="nt">actual</span><span class="o">=</span><span class="nt">2097152</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSNamesystem</span><span class="o">:</span> <span class="nt">fsOwner</span><span class="o">=</span><span class="nt">jonas</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSNamesystem</span><span class="o">:</span> <span class="nt">supergroup</span><span class="o">=</span><span class="nt">supergroup</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSNamesystem</span><span class="o">:</span> <span class="nt">isPermissionEnabled</span><span class="o">=</span><span class="nt">true</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSNamesystem</span><span class="o">:</span> <span class="nt">dfs</span><span class="p">.</span><span class="nc">block</span><span class="p">.</span><span class="nc">invalidate</span><span class="p">.</span><span class="nc">limit</span><span class="o">=</span><span class="nt">100</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSNamesystem</span><span class="o">:</span> <span class="nt">isAccessTokenEnabled</span><span class="o">=</span><span class="nt">false</span> <span class="nt">accessKeyUpdateInterval</span><span class="o">=</span><span class="nt">0</span> <span class="nt">min</span><span class="o">(</span><span class="nt">s</span><span class="o">),</span> <span class="nt">accessTokenLifetime</span><span class="o">=</span><span class="nt">0</span> <span class="nt">min</span><span class="o">(</span><span class="nt">s</span><span class="o">)</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">NameNode</span><span class="o">:</span> <span class="nt">Caching</span> <span class="nt">file</span> <span class="nt">names</span> <span class="nt">occuring</span> <span class="nt">more</span> <span class="nt">than</span> <span class="nt">10</span> <span class="nt">times</span> 
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">common</span><span class="p">.</span><span class="nc">Storage</span><span class="o">:</span> <span class="nt">Image</span> <span class="nt">file</span> <span class="nt">of</span> <span class="nt">size</span> <span class="nt">111</span> <span class="nt">saved</span> <span class="nt">in</span> <span class="nt">0</span> <span class="nt">seconds</span><span class="o">.</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSEditLog</span><span class="o">:</span> <span class="nt">closing</span> <span class="nt">edit</span> <span class="nt">log</span><span class="o">:</span> <span class="nt">position</span><span class="o">=</span><span class="nt">4</span><span class="o">,</span> <span class="nt">editlog</span><span class="o">=/</span><span class="nt">Users</span><span class="o">/</span><span class="nt">jonas</span><span class="o">/</span><span class="nt">hadoop-store</span><span class="o">/</span><span class="nt">dfs</span><span class="o">/</span><span class="nt">name</span><span class="o">/</span><span class="nt">current</span><span class="o">/</span><span class="nt">edits</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">FSEditLog</span><span class="o">:</span> <span class="nt">close</span> <span class="nt">success</span><span class="o">:</span> <span class="nt">truncate</span> <span class="nt">to</span> <span class="nt">4</span><span class="o">,</span> <span class="nt">editlog</span><span class="o">=/</span><span class="nt">Users</span><span class="o">/</span><span class="nt">jonas</span><span class="o">/</span><span class="nt">hadoop-store</span><span class="o">/</span><span class="nt">dfs</span><span class="o">/</span><span class="nt">name</span><span class="o">/</span><span class="nt">current</span><span class="o">/</span><span class="nt">edits</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">common</span><span class="p">.</span><span class="nc">Storage</span><span class="o">:</span> <span class="nt">Storage</span> <span class="nt">directory</span> <span class="o">/</span><span class="nt">Users</span><span class="o">/</span><span class="nt">jonas</span><span class="o">/</span><span class="nt">hadoop-store</span><span class="o">/</span><span class="nt">dfs</span><span class="o">/</span><span class="nt">name</span> <span class="nt">has</span> <span class="nt">been</span> <span class="nt">successfully</span> <span class="nt">formatted</span><span class="o">.</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">31</span><span class="p">:</span><span class="nd">37</span> <span class="nt">INFO</span> <span class="nt">namenode</span><span class="p">.</span><span class="nc">NameNode</span><span class="o">:</span> <span class="nt">SHUTDOWN_MSG</span><span class="o">:</span> 
+<span class="c">/************************************************************</span>
+<span class="c">SHUTDOWN_MSG: Shutting down NameNode at Gizur-Laptop-5.local/10.0.1.117</span>
+<span class="c">************************************************************/</span>
+
+<span class="err">#</span> <span class="nt">Start</span> <span class="nt">some</span>
+<span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">bin</span><span class="o">/</span><span class="nt">start-all</span><span class="p">.</span><span class="nc">sh</span>
+<span class="nt">Gizur-Laptop-5</span><span class="p">:</span><span class="nd">dfs</span> <span class="nt">jonas</span><span class="o">$</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">bin</span><span class="o">/</span><span class="nt">start-all</span><span class="p">.</span><span class="nc">sh</span>
+<span class="nt">starting</span> <span class="nt">namenode</span><span class="o">,</span> <span class="nt">logging</span> <span class="nt">to</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">libexec</span><span class="o">/</span><span class="nt">bin</span><span class="o">/../</span><span class="nt">logs</span><span class="o">/</span><span class="nt">hadoop-jonas-namenode-Gizur-Laptop-5</span><span class="p">.</span><span class="nc">local</span><span class="p">.</span><span class="nc">out</span>
+<span class="nt">Password</span><span class="o">:</span>
+<span class="nt">localhost</span><span class="o">:</span> <span class="nt">starting</span> <span class="nt">datanode</span><span class="o">,</span> <span class="nt">logging</span> <span class="nt">to</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">libexec</span><span class="o">/</span><span class="nt">bin</span><span class="o">/../</span><span class="nt">logs</span><span class="o">/</span><span class="nt">hadoop-jonas-datanode-Gizur-Laptop-5</span><span class="p">.</span><span class="nc">local</span><span class="p">.</span><span class="nc">out</span>
+<span class="nt">Password</span><span class="o">:</span>
+<span class="nt">localhost</span><span class="o">:</span> <span class="nt">starting</span> <span class="nt">secondarynamenode</span><span class="o">,</span> <span class="nt">logging</span> <span class="nt">to</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">libexec</span><span class="o">/</span><span class="nt">bin</span><span class="o">/../</span><span class="nt">logs</span><span class="o">/</span><span class="nt">hadoop-jonas-secondarynamenode-Gizur-Laptop-5</span><span class="p">.</span><span class="nc">local</span><span class="p">.</span><span class="nc">out</span>
+<span class="nt">starting</span> <span class="nt">jobtracker</span><span class="o">,</span> <span class="nt">logging</span> <span class="nt">to</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">libexec</span><span class="o">/</span><span class="nt">bin</span><span class="o">/../</span><span class="nt">logs</span><span class="o">/</span><span class="nt">hadoop-jonas-jobtracker-Gizur-Laptop-5</span><span class="p">.</span><span class="nc">local</span><span class="p">.</span><span class="nc">out</span>
+<span class="nt">Password</span><span class="o">:</span>
+<span class="nt">localhost</span><span class="o">:</span> <span class="nt">starting</span> <span class="nt">tasktracker</span><span class="o">,</span> <span class="nt">logging</span> <span class="nt">to</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">libexec</span><span class="o">/</span><span class="nt">bin</span><span class="o">/../</span><span class="nt">logs</span><span class="o">/</span><span class="nt">hadoop-jonas-tasktracker-Gizur-Laptop-5</span><span class="p">.</span><span class="nc">local</span><span class="p">.</span><span class="nc">out</span>
+
+
+<span class="err">#</span> <span class="nt">Run</span> <span class="nt">example</span>
+<span class="nt">hadoop</span> <span class="nt">jar</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">local</span><span class="o">/</span><span class="nt">Cellar</span><span class="o">/</span><span class="nt">hadoop</span><span class="o">/</span><span class="nt">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="o">/</span><span class="nt">libexec</span><span class="o">/</span><span class="nt">hadoop-examples-1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">1</span><span class="p">.</span><span class="nc">jar</span> <span class="nt">pi</span> <span class="nt">10</span> <span class="nt">100</span>
+<span class="nt">Number</span> <span class="nt">of</span> <span class="nt">Maps</span>  <span class="o">=</span> <span class="nt">10</span>
+<span class="nt">Samples</span> <span class="nt">per</span> <span class="nt">Map</span> <span class="o">=</span> <span class="nt">100</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">0</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">1</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">2</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">3</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">4</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">5</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">6</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">7</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">8</span>
+<span class="nt">Wrote</span> <span class="nt">input</span> <span class="nt">for</span> <span class="nt">Map</span> <span class="p">#</span><span class="nn">9</span>
+<span class="nt">Starting</span> <span class="nt">Job</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">38</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">FileInputFormat</span><span class="o">:</span> <span class="nt">Total</span> <span class="nt">input</span> <span class="nt">paths</span> <span class="nt">to</span> <span class="nt">process</span> <span class="o">:</span> <span class="nt">10</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">39</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span> <span class="nt">Running</span> <span class="nt">job</span><span class="o">:</span> <span class="nt">job_201303011732_0001</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">40</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">0</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">0</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">45</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">10</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">0</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">46</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">20</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">0</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">49</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">40</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">0</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">52</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">60</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">0</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">54</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">60</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">10</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">55</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">80</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">10</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">34</span><span class="p">:</span><span class="nd">57</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">100</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">20</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">00</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">100</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">33</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">02</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>  <span class="nt">map</span> <span class="nt">100</span><span class="o">%</span> <span class="nt">reduce</span> <span class="nt">100</span><span class="o">%</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span> <span class="nt">Job</span> <span class="nt">complete</span><span class="o">:</span> <span class="nt">job_201303011732_0001</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span> <span class="nt">Counters</span><span class="o">:</span> <span class="nt">27</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>   <span class="nt">Job</span> <span class="nt">Counters</span> 
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Launched</span> <span class="nt">reduce</span> <span class="nt">tasks</span><span class="o">=</span><span class="nt">1</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">SLOTS_MILLIS_MAPS</span><span class="o">=</span><span class="nt">29317</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Total</span> <span class="nt">time</span> <span class="nt">spent</span> <span class="nt">by</span> <span class="nt">all</span> <span class="nt">reduces</span> <span class="nt">waiting</span> <span class="nt">after</span> <span class="nt">reserving</span> <span class="nt">slots</span> <span class="o">(</span><span class="nt">ms</span><span class="o">)=</span><span class="nt">0</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Total</span> <span class="nt">time</span> <span class="nt">spent</span> <span class="nt">by</span> <span class="nt">all</span> <span class="nt">maps</span> <span class="nt">waiting</span> <span class="nt">after</span> <span class="nt">reserving</span> <span class="nt">slots</span> <span class="o">(</span><span class="nt">ms</span><span class="o">)=</span><span class="nt">0</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Launched</span> <span class="nt">map</span> <span class="nt">tasks</span><span class="o">=</span><span class="nt">10</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Data-local</span> <span class="nt">map</span> <span class="nt">tasks</span><span class="o">=</span><span class="nt">10</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">SLOTS_MILLIS_REDUCES</span><span class="o">=</span><span class="nt">16443</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>   <span class="nt">File</span> <span class="nt">Input</span> <span class="nt">Format</span> <span class="nt">Counters</span> 
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Bytes</span> <span class="nt">Read</span><span class="o">=</span><span class="nt">1180</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>   <span class="nt">File</span> <span class="nt">Output</span> <span class="nt">Format</span> <span class="nt">Counters</span> 
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Bytes</span> <span class="nt">Written</span><span class="o">=</span><span class="nt">97</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>   <span class="nt">FileSystemCounters</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">FILE_BYTES_READ</span><span class="o">=</span><span class="nt">226</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">HDFS_BYTES_READ</span><span class="o">=</span><span class="nt">2400</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">FILE_BYTES_WRITTEN</span><span class="o">=</span><span class="nt">264981</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">HDFS_BYTES_WRITTEN</span><span class="o">=</span><span class="nt">215</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>   <span class="nt">Map-Reduce</span> <span class="nt">Framework</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Map</span> <span class="nt">output</span> <span class="nt">materialized</span> <span class="nt">bytes</span><span class="o">=</span><span class="nt">280</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Map</span> <span class="nt">input</span> <span class="nt">records</span><span class="o">=</span><span class="nt">10</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Reduce</span> <span class="nt">shuffle</span> <span class="nt">bytes</span><span class="o">=</span><span class="nt">280</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Spilled</span> <span class="nt">Records</span><span class="o">=</span><span class="nt">40</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Map</span> <span class="nt">output</span> <span class="nt">bytes</span><span class="o">=</span><span class="nt">180</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Total</span> <span class="nt">committed</span> <span class="nt">heap</span> <span class="nt">usage</span> <span class="o">(</span><span class="nt">bytes</span><span class="o">)=</span><span class="nt">1931190272</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Map</span> <span class="nt">input</span> <span class="nt">bytes</span><span class="o">=</span><span class="nt">240</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Combine</span> <span class="nt">input</span> <span class="nt">records</span><span class="o">=</span><span class="nt">0</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">SPLIT_RAW_BYTES</span><span class="o">=</span><span class="nt">1220</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Reduce</span> <span class="nt">input</span> <span class="nt">records</span><span class="o">=</span><span class="nt">20</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Reduce</span> <span class="nt">input</span> <span class="nt">groups</span><span class="o">=</span><span class="nt">20</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Combine</span> <span class="nt">output</span> <span class="nt">records</span><span class="o">=</span><span class="nt">0</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Reduce</span> <span class="nt">output</span> <span class="nt">records</span><span class="o">=</span><span class="nt">0</span>
+<span class="nt">13</span><span class="o">/</span><span class="nt">03</span><span class="o">/</span><span class="nt">01</span> <span class="nt">17</span><span class="p">:</span><span class="nd">35</span><span class="p">:</span><span class="nd">03</span> <span class="nt">INFO</span> <span class="nt">mapred</span><span class="p">.</span><span class="nc">JobClient</span><span class="o">:</span>     <span class="nt">Map</span> <span class="nt">output</span> <span class="nt">records</span><span class="o">=</span><span class="nt">20</span>
+<span class="nt">Job</span> <span class="nt">Finished</span> <span class="nt">in</span> <span class="nt">24</span><span class="p">.</span><span class="nc">631</span> <span class="nt">seconds</span>
+<span class="nt">Estimated</span> <span class="nt">value</span> <span class="nt">of</span> <span class="nt">Pi</span> <span class="nt">is</span> <span class="nt">3</span><span class="p">.</span><span class="nc">14800000000000000000</span>
+
+
+<span class="nt">ps</span> <span class="nt">ax</span> <span class="o">|</span> <span class="nt">grep</span> <span class="nt">hadoop</span> <span class="o">|</span> <span class="nt">wc</span> <span class="nt">-l</span>
+<span class="err">#</span> <span class="nt">expected</span> <span class="nt">output</span> <span class="nt">is</span> <span class="nt">6</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

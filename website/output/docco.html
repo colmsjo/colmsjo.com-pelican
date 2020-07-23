@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Docco  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Docco
+	</div>
+	<div class="message-body has-text-dark">
+		<p>JavaDoc, PHPDoc etc. to heavy for your project? Use a simple and lightweight alternative</p>
+<p>Links:</p>
+<ul>
+<li>http://jashkenas.github.com/docco/</li>
+<li>https://github.com/mojombo/jekyll/wiki/Install</li>
+</ul>
+<h2>For OSX</h2>
+<div class="highlight"><pre><span></span><code># Install pygments
+
+brew install python
+export PATH=&quot;/usr/local/share/python:<span class="cp">${</span><span class="n">PATH</span><span class="cp">}</span>&quot;
+easy_install pip
+pip install --upgrade distribute
+pip install pygments
+
+# Node needs to be installed
+sudo npm install docco -g
+</code></pre></div>
+
+
+<h2>Alternative</h2>
+<p>Having upgraded nodejs (and npm), I did this instead:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">Python</span> <span class="n">needs</span> <span class="k">to</span> <span class="n">be</span> <span class="n">installed</span>
+<span class="n">sudo</span> <span class="n">easy_install</span> <span class="n">Pygments</span>
+
+<span class="o">#</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">that</span> <span class="n">coffee</span> <span class="k">is</span> <span class="n">installed</span>
+<span class="n">npm</span> <span class="n">install</span> <span class="n">coffee</span><span class="o">-</span><span class="n">script</span>
+
+<span class="o">#</span> <span class="n">install</span> <span class="n">docco</span>
+<span class="n">npm</span> <span class="n">install</span> <span class="n">docco</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

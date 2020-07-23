@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>JavaScript Modules  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		JavaScript Modules
+	</div>
+	<div class="message-body has-text-dark">
+		<p>THere are several ways to modularize JavaScript</p>
+<p>JavaScript Modules</p>
+<h1>================</h1>
+<p>Some articles:
+ * http://caolanmcmahon.com/posts/writing_for_node_and_the_browser/
+ * http://www.2ality.com/2011/11/module-gap.html</p>
+<p>Example</p>
+<p>This exmaple has been taken from David Flannagans book, 'JavaScript: The Definite Guide'.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Module Example<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;lib/basic.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script&gt;</span>
+
+    //
+    // Define a module. This should be placed in the folder gizur/MyModule.js 
+    //
+
+    var gizur;
+    if(!gizur) gizur = {};
+
+    // A simple module
+    gizur.modules = (function () {
+
+        // A private constructor
+        function MyModule() {
+            this._myString = &quot;&quot;;            // a private variable
+        }
+
+        MyModule.prototype.getString = function() {
+            return this._myString;  
+        }
+
+        MyModule.prototype.setString = function(str) {
+            this._myString = str;   
+        }
+
+        return { MyModule: MyModule };                  // make the module public by returning the constructors
+    }());
+
+
+    window.onload = function(){
+        test(&quot;Testing the module MyModule.&quot;, function(){
+
+            var _myModule = new gizur.modules.MyModule();   // create a MyModule object (by cloning the gizur.modules.MyModule)
+
+            _myModule.setString(&quot;testing&quot;);
+            assert( _myModule.getString() == &quot;testing&quot;, &quot;Make sure that custom setter and getter works&quot; );
+        });
+
+    };
+    <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        #results li.pass { color: green; }
+        #results li.fail { color: red; }
+    <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;results&quot;</span><span class="nt">&gt;&lt;/ul&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
+
+
+<p>There are three main points in this:</p>
+<ol>
+<li>The module <code>gizur.modules</code> has been encapsulated in a anonymouns function expresssion in order not to clutter the global namespace. All variables and functions in JavaScript have global scope. They are assigned as properties to the window object which is the context that everthing runs within. This expression avoid the side effect of creating new global properties on the windows object.</li>
+<li>New objects are created with the <code>new</code> operator applied on constructurs which simply are functions. In this module is the MyModule constructor hidden within the anonymous function but a new object is returned by the function. The expression <code>new gizur.modules.MyModule()</code> will invoke the constructor and return a new object.</li>
+<li>New public methods and properties are assigned to the object through <code>prototype</code>, for instance <code>MyModule.prototype.getString</code>.</li>
+</ol>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

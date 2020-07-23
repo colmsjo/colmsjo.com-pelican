@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>OData notes  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		OData notes
+	</div>
+	<div class="message-body has-text-dark">
+		<h1>Introduction</h1>
+<p>OData is a HTTP based RESTful protoful that is useful for mobile and web apps. It has been developed by 
+Microsoft and is also used by SAP and others. OData i based around the Entity Data Model which is the
+basis for realtional databases. It is easy to developed OData services using the tools that SAP,
+Microsoft and others provide. All that is needed in most cases is a mapping between OData EDM and the
+database structure. This can be as simple as exposing the tables and columns as OData entries and
+properties.</p>
+<h1>Get started right away</h1>
+<p>I've put together a docker container with everyhting you need to get started to play around with odata services.
+It is based on a MySQL database. Have a look at <a href="https://github.com/colmsjo/mysqlodata">mysqlodata</a>.</p>
+<h1>Links</h1>
+<p>Specifications and articles:</p>
+<ul>
+<li><a href="http://www.odata.org/documentation/odata-version-2-0/">OData Specification</a> - Start with the URI and JSON parts</li>
+<li>The OData standardization work has been taken over by <a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=odata">OASIS</a></li>
+<li><a href="http://www.google.se/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=0CCEQFjAA&amp;url=http%3A%2F%2Fwiki.scn.sap.com%2Fwiki%2Fdownload%2Fattachments%2F233739132%2F02_OData_In_A_Nutshell.pdf&amp;ei=2FXfU_DEEMei4gTH4YC4AQ&amp;usg=AFQjCNF04HNcGVk2ApNLGagEWs5rfSj9Bw&amp;bvm=bv.72197243,d.bGE">OData in a nutshell</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/ee382825.aspx">Entity Data Model</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc982042.aspx">EDMX files</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/ff478141.aspx">Article about OData</a></li>
+<li><a href="http://social.msdn.microsoft.com/Search/en-US?query=Odata&amp;beta=0&amp;rn=Interoperability+%40+Microsoft&amp;rq=site:blogs.msdn.com/b/interoperability/&amp;ac=4">Search for OData on MDSN blog</a></li>
+<li><a href="http://www.codeplex.com/site/search?query=odata&amp;ac=4">Search for OData on MS Codeplex</a></li>
+</ul>
+<p>Libraries:</p>
+<ul>
+<li><a href="http://datajs.codeplex.com/">OData JS Library for browsers</a></li>
+<li><a href="https://github.com/MSOpenTech/odataphpprod">OData Producer library for PHP</a></li>
+<li><a href="http://odatamysqlphpconnect.codeplex.com/">OData Connector for MySQL</a></li>
+</ul>
+<h1>Migration to OData services</h1>
+<p>I'm currently running many solutions on PHP/MySQL. I've trying to figure out a good way to migrate to the
+odata protocol. JayData provides a OData server on MongoDB, see this <a href="http://jaydata.org/blog/install-your-own-odata-server-with-nodejs-and-mongodb">article</a> for instructions on hwoto setup. My first though was to create a 
+read replica in MongoDB of MySQL in order to provide OData read services. Here is a <a href="https://github.com/colmsjo/mysqlmongorepl">docker setup with
+MongoDB, MySQL and replication</a>. I've also put together a simple
+tool that <a href="https://github.com/colmsjo/mysqldump2">exports MySQL databases to CSV and JSON files</a>. This is
+needed when running MySQL in Amazon RDS since export to CSV files isn't supported.</p>
+<p>Then I found out that Microsoft has developed OData tools for PHP and MySQL. I'll check these out next.</p>
+<ul>
+<li><a href="http://blogs.msdn.com/b/interoperability/archive/2012/02/09/open-source-odata-tools-for-mysql-and-php-developers.aspx">OData for PHP/MySQL developers</a></li>
+<li><a href="http://blogs.msdn.com/b/interoperability/archive/2011/09/09/the-odata-producer-library-for-php-is-here.aspx">OData producer for PHP</a></li>
+<li><a href="http://blogs.msdn.com/b/interoperability/archive/2010/03/16/odata-interoperability-with-net-java-php-iphone-and-more.aspx">Consume OData services from PHP</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

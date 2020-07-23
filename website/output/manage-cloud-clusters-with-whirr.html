@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Manage cloud clusters with Whirr  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Manage cloud clusters with Whirr
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Manage cloud clusters with Whirr</p>
+<p>Links:</p>
+<ul>
+<li>http://whirr.apache.org/docs/0.8.1/whirr-in-5-minutes.html</li>
+</ul>
+<h1>Install from source</h1>
+<div class="highlight"><pre><span></span><code><span class="n">cd</span> <span class="o">~/</span><span class="k">local</span>
+<span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">apache</span><span class="p">.</span><span class="n">mirrors</span><span class="p">.</span><span class="n">spacedump</span><span class="p">.</span><span class="n">net</span><span class="o">/</span><span class="n">whirr</span><span class="o">/</span><span class="n">whirr</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">whirr</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">xzf</span> <span class="n">whirr</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">1</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">whirr</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">1</span>
+
+<span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">P</span> <span class="s1">&#39;&#39;</span> <span class="o">-</span><span class="n">f</span> <span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa_whirr</span> 
+
+<span class="n">mkdir</span> <span class="o">~/</span><span class="p">.</span><span class="n">whirr</span>
+<span class="n">cp</span> <span class="n">conf</span><span class="o">/</span><span class="n">credentials</span><span class="p">.</span><span class="n">sample</span> <span class="o">~/</span><span class="p">.</span><span class="n">whirr</span><span class="o">/</span><span class="n">credentials</span>
+
+<span class="n">nano</span> <span class="o">~/</span><span class="p">.</span><span class="n">whirr</span><span class="o">/</span><span class="n">credentials</span>
+
+
+<span class="o">#</span>
+<span class="o">#</span> <span class="n">Change</span> <span class="k">IDENTITY</span> <span class="k">and</span> <span class="n">CREDENTIAL</span> <span class="k">to</span> <span class="n">the</span> <span class="n">API</span> <span class="k">Key</span> <span class="k">and</span> <span class="n">Secret</span>
+<span class="o">#</span>
+
+<span class="n">PROVIDER</span><span class="o">=</span><span class="n">aws</span><span class="o">-</span><span class="n">ec2</span>
+<span class="k">IDENTITY</span><span class="o">=&lt;</span><span class="n">AWS_API_KEY</span><span class="o">&gt;</span>
+<span class="n">CREDENTIAL</span><span class="o">=&lt;</span><span class="n">AWS_API_SECRET</span><span class="o">&gt;</span>
+
+<span class="o">#</span> <span class="n">This</span> <span class="k">is</span> <span class="n">the</span> <span class="n">config</span> <span class="n">file</span>
+<span class="n">cat</span> <span class="n">recipes</span><span class="o">/</span><span class="n">zookeeper</span><span class="p">.</span><span class="n">properties</span>
+
+<span class="o">#</span> <span class="n">Now</span> <span class="k">start</span> <span class="n">a</span> <span class="k">cluster</span>
+<span class="n">bin</span><span class="o">/</span><span class="n">whirr</span> <span class="n">launch</span><span class="o">-</span><span class="k">cluster</span> <span class="c1">--config recipes/zookeeper.properties --private-key-file ~/.ssh/id_rsa_whirr</span>
+
+<span class="o">#</span> <span class="k">Show</span> <span class="n">what</span> <span class="k">is</span> <span class="n">running</span>
+<span class="n">bin</span><span class="o">/</span><span class="n">whirr</span> <span class="n">list</span><span class="o">-</span><span class="k">cluster</span> <span class="c1">--config recipes/zookeeper.properties</span>
+
+<span class="o">#</span> <span class="n">Shut</span> <span class="n">down</span> <span class="k">cluster</span>
+<span class="n">bin</span><span class="o">/</span><span class="n">whirr</span> <span class="k">destroy</span><span class="o">-</span><span class="k">cluster</span> <span class="c1">--config recipes/zookeeper.properties</span>
+</code></pre></div>
+
+
+<h1>Install using brew</h1>
+<div class="highlight"><pre><span></span><code><span class="n">brew</span> <span class="n">info</span> <span class="n">whirr</span>
+
+<span class="n">brew</span> <span class="n">install</span> <span class="n">whirr</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

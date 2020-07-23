@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Heroku for php  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Heroku for php
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Heroku do support PHP, even though they don't advertise this</p>
+<p>Some solutions similar to Heroku for PHP:</p>
+<ul>
+<li>http://phpfog.com</li>
+<li>http://heroku.com &lt;-- "hidden" support for PHP! see John Barton</li>
+<li>http://www.quora.com/John-Barton-2</li>
+<li>http://pagodabox.com</li>
+<li>http://cloudcontrol.com</li>
+<li>http://kodingen.com</li>
+<li>http://orchestra.io</li>
+<li>http://dotcloud.com</li>
+<li>http://aws.amazon.com/elasticbea... &lt;-- PHP added Mar 20, 2012</li>
+<li>http://stackblaze.com</li>
+<li>https://openshift.redhat.com/app/</li>
+<li>http://fortrabbit.com</li>
+<li>https://omnicloudapp.com/ (soon)</li>
+</ul>
+<p>Articles:</p>
+<ul>
+<li>http://www.quora.com/Is-there-anything-like-Heroku-I-can-use-for-a-PHP-site</li>
+</ul>
+<h1>Setup wordpress on Heroku</h1>
+<p>Articles:</p>
+<ul>
+<li>http://decielo.com/articles/350/wordpress-on-heroku-up-and-running</li>
+</ul>
+<h2>Guide</h2>
+<div class="highlight"><pre><span></span><code><span class="n">heroku</span> <span class="k">create</span> <span class="c1">--stack cedar --remote production</span>
+<span class="n">heroku</span> <span class="k">rename</span> <span class="n">REPO</span><span class="o">-</span><span class="n">NAME</span> <span class="o">#</span> <span class="k">Or</span> <span class="k">call</span> <span class="n">it</span> <span class="n">whatever</span> <span class="n">you</span> <span class="k">like</span> <span class="k">for</span> <span class="n">your</span> <span class="n">project</span>
+
+<span class="n">heroku</span> <span class="n">addons</span><span class="p">:</span><span class="k">add</span> <span class="n">stillalive</span><span class="p">:</span><span class="n">basic</span>
+<span class="n">Adding</span> <span class="n">stillalive</span><span class="p">:</span><span class="n">basic</span> <span class="k">on</span> <span class="n">mysterious</span><span class="o">-</span><span class="n">ravine</span><span class="o">-</span><span class="mi">7314</span><span class="p">...</span> <span class="n">done</span><span class="p">,</span> <span class="n">v3</span> <span class="p">(</span><span class="k">free</span><span class="p">)</span>
+<span class="n">Thank</span> <span class="n">you</span><span class="p">.</span> <span class="n">Please</span> <span class="n">log</span> <span class="k">in</span> <span class="k">to</span> <span class="n">StillAlive</span> <span class="n">via</span> <span class="n">Heroku</span> <span class="k">to</span> <span class="n">setup</span> <span class="n">your</span> <span class="n">monitoring</span><span class="p">.</span>
+<span class="n">Use</span> <span class="o">`</span><span class="n">heroku</span> <span class="n">addons</span><span class="p">:</span><span class="n">docs</span> <span class="n">stillalive</span><span class="p">:</span><span class="n">basic</span><span class="o">`</span> <span class="k">to</span> <span class="k">view</span> <span class="n">documentation</span><span class="p">.</span>
+
+<span class="n">heroku</span> <span class="n">addons</span><span class="p">:</span><span class="k">add</span> <span class="n">cleardb</span><span class="p">:</span><span class="n">ignite</span>     <span class="o">#</span> <span class="n">Adds</span> <span class="n">the</span> <span class="n">MySQL</span> <span class="k">option</span> <span class="k">to</span> <span class="n">the</span> <span class="n">Heroku</span> <span class="n">app</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">config</span>
+<span class="n">Adding</span> <span class="n">cleardb</span><span class="p">:</span><span class="n">ignite</span> <span class="k">on</span> <span class="n">mysterious</span><span class="o">-</span><span class="n">ravine</span><span class="o">-</span><span class="mi">7314</span><span class="p">...</span> <span class="n">done</span><span class="p">,</span> <span class="n">v4</span> <span class="p">(</span><span class="k">free</span><span class="p">)</span>
+<span class="n">Use</span> <span class="o">`</span><span class="n">heroku</span> <span class="n">addons</span><span class="p">:</span><span class="n">docs</span> <span class="n">cleardb</span><span class="p">:</span><span class="n">ignite</span><span class="o">`</span> <span class="k">to</span> <span class="k">view</span> <span class="n">documentation</span><span class="p">.</span>
+
+<span class="n">heroku</span> <span class="n">config</span>                        <span class="o">#</span> <span class="n">See</span> <span class="n">the</span> <span class="n">URLs</span> <span class="k">for</span> <span class="n">your</span> <span class="k">new</span> <span class="n">databases</span>
+<span class="n">heroku</span> <span class="n">config</span><span class="p">:</span><span class="k">add</span> <span class="n">DATABASE_URL</span><span class="o">=</span><span class="n">mysql</span><span class="p">:</span><span class="o">//</span><span class="p">...</span> <span class="o">#</span> <span class="k">Replace</span> <span class="n">the</span> <span class="ss">&quot;mysql://...&quot;</span> <span class="k">with</span> <span class="n">the</span> <span class="n">URL</span> <span class="k">from</span> <span class="n">CLEARDB_DATABASE_URL</span>
+</code></pre></div>
+
+
+<p>Update wp-config.php:</p>
+<div class="highlight"><pre><span></span><code><span class="err">if (isset($_SERVER[&quot;DATABASE_URL&quot;])) {</span>
+<span class="err"> $db = parse_url($_SERVER[&quot;DATABASE_URL&quot;]);</span>
+<span class="err"> define(&quot;DB_NAME&quot;, trim($db[&quot;path&quot;],&quot;/&quot;));</span>
+<span class="err"> define(&quot;DB_USER&quot;, $db[&quot;user&quot;]);</span>
+<span class="err"> define(&quot;DB_PASSWORD&quot;, $db[&quot;pass&quot;]);</span>
+<span class="err"> define(&quot;DB_HOST&quot;, $db[&quot;host&quot;]);</span>
+<span class="err">}</span>
+<span class="err">else {</span>
+<span class="err"> die(&quot;Your heroku DATABASE_URL does not appear to be correctly specified.&quot;);</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Update wp-config.php with:</p>
+<ul>
+<li>random strings from here: https://api.wordpress.org/secret-key/1.1/salt/</li>
+<li>site URL - define('WP_SITEURL', 'http://' . $_SERVER['SERVER_NAME'] );</li>
+</ul>
+<p>Then commit and push to heroku!</p>
+<h2>Manage MySQL on cleardb</h2>
+<p>Heroku/CLeardb don't support phpMyAdmin. Command line tools can be used instead.</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">Show</span><span class="w"> </span><span class="n">configuration</span><span class="w"></span>
+<span class="n">heroku</span><span class="w"> </span><span class="n">config</span><span class="w"></span>
+<span class="nl">CLEARDB_DATABASE_URL</span><span class="p">:</span><span class="w"> </span><span class="nl">mysql</span><span class="p">:</span><span class="o">//</span><span class="k">USER</span><span class="err">:</span><span class="n">PASWORD</span><span class="nv">@us</span><span class="o">-</span><span class="n">cdbr</span><span class="o">-</span><span class="n">east</span><span class="o">-</span><span class="mf">02.</span><span class="n">cleardb</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="k">DATABASE</span><span class="vm">?</span><span class="n">reconnect</span><span class="o">=</span><span class="k">true</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="k">Connect</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">mysql</span><span class="w"> </span><span class="n">etc</span><span class="p">.</span><span class="w"></span>
+<span class="n">mysql</span><span class="w"> </span><span class="o">-</span><span class="n">uUSER</span><span class="w"> </span><span class="o">-</span><span class="n">pPASSWORD</span><span class="w"> </span><span class="o">-</span><span class="n">hus</span><span class="o">-</span><span class="n">cdbr</span><span class="o">-</span><span class="n">east</span><span class="o">-</span><span class="mf">02.</span><span class="n">cleardb</span><span class="p">.</span><span class="n">com</span><span class="w"> </span><span class="o">-</span><span class="n">DDATABASE</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Export database:</p>
+<div class="highlight"><pre><span></span><code><span class="err">mysqldump -uUSER -pPASSWORD -hus-cdbr-east-02.cleardb.com DATABASE &gt; data.sql</span>
+</code></pre></div>
+
+
+<p>Import database dump:</p>
+<div class="highlight"><pre><span></span><code><span class="err">mysql -uUSER -pPASSWORD -hus-cdbr-east-02.cleardb.com DATABASE &lt; data.sql</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

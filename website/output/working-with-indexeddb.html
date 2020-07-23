@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Working with IndexedDb  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Working with IndexedDb
+	</div>
+	<div class="message-body has-text-dark">
+		<p>IndexedDb is a database architecture implemented by browsers that let you
+store and retrieve objects that are indexed with a key. IndexedDb is
+asynchronous and built on transactions. It is fairly complex to use to wrappers
+on top of it come in handy. I've chosen
+<a href="https://dev.yathit.com/ydn-db/index.html">YDN-DB</a> for now, see the previous
+post for the reasoning behind this choice.</p>
+<p>IndexedDb is a key-value store with many object stores.
+IndexedDb has functionality for sorting (using indexes) but there is no nothing
+similar to joins that are found in relational databases. I'll implement a
+join function for object stores here.</p>
+<h1>Preparations</h1>
+<p>Download ydn-db, install Bluebind and lodash with bower. Then create this
+file and open it in the browser.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+  Open the console.
+
+  <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;./ydn.db-is-core-e-qry-dev.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;./bower_components/bluebird/js/browser/bluebird.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;./bower_components/lodash/lodash.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
+
+
+<h1>Join two arrays</h1>
+<p>The code snippet below shows how two arrays can be joined:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">var</span><span class="w"> </span><span class="n">a1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">{id: &#39;1001&#39;, etag:11, etagLS:1},</span>
+<span class="n">{id: &#39;1002&#39;, etag:22, etagLS:2},</span>
+<span class="n">{id: &#39;1004&#39;, etag:4,  etagLS:null},</span>
+<span class="n">{id: &#39;1088&#39;, etag:88, etagLS: 88}</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="nf">var</span><span class="w"> </span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">{id: &#39;1001&#39;, etagBE:1},</span>
+<span class="n">{id: &#39;1002&#39;, etagBE:3},</span>
+<span class="n">{id: &#39;1003&#39;, etagBE:3},</span>
+<span class="n">{id: &#39;1088&#39;, etagBE:99}</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="k">join</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="err">[]</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="err">[]</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">o1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a1</span><span class="o">[</span><span class="n">i1</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">o2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a2</span><span class="o">[</span><span class="n">i2</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">_</span><span class="p">.</span><span class="k">merge</span><span class="p">(</span><span class="n">o1</span><span class="p">,</span><span class="w"> </span><span class="n">o2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">o1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">o2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ss">&quot;Implementation error! Please report this bug.&quot;</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="nf">concat</span><span class="p">(</span><span class="k">join</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">));</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+
+<span class="k">join</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span><span class="w"></span>
+<span class="k">join</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<h1>Joining two object stores - step 1</h1>
+<p>Now let's try to join two object stores into a new object store. I'm using a
+sort-merge algorithm. The challenge is that rows in the object stores are fetched
+in chunks, here called pages.</p>
+<p>This code simulates the async responses from IndexedDb (it is replaced with
+the real database below)</p>
+<div class="highlight"><pre><span></span><code><span class="nt">log</span> <span class="o">=</span> <span class="nt">console</span><span class="p">.</span><span class="nc">log</span><span class="p">.</span><span class="nc">bind</span><span class="o">(</span><span class="nt">console</span><span class="o">);</span>
+
+<span class="nt">var</span> <span class="nt">arr1</span> <span class="o">=</span> <span class="cp">[</span><span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1001&#39;</span><span class="p">,</span> <span class="nx">etag</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span> <span class="nx">etagLS</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1002&#39;</span><span class="p">,</span> <span class="nx">etag</span><span class="p">:</span><span class="mi">22</span><span class="p">,</span> <span class="nx">etagLS</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1004&#39;</span><span class="p">,</span> <span class="nx">etag</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>  <span class="nx">etagLS</span><span class="p">:</span><span class="kt">null</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1088&#39;</span><span class="p">,</span> <span class="nx">etag</span><span class="p">:</span><span class="mi">88</span><span class="p">,</span> <span class="nx">etagLS</span><span class="p">:</span> <span class="mi">88</span><span class="p">}</span><span class="cp">]</span><span class="o">;</span>
+
+<span class="nt">window</span><span class="p">.</span><span class="nc">idx1</span> <span class="o">=</span> <span class="nt">0</span><span class="o">;</span>
+<span class="nt">var</span> <span class="nt">nextA1Page</span> <span class="o">=</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{</span>
+  <span class="err">return</span> <span class="err">new</span> <span class="err">Promise(function(fulfill,</span> <span class="err">reject)</span> <span class="err">{</span>
+    <span class="err">setTimeout(function(){</span>
+      <span class="err">fulfill(arr1.slice(window.idx1,</span> <span class="err">window.idx1+2))</span><span class="p">;</span>
+      <span class="err">window.idx1</span> <span class="err">+=</span> <span class="err">2</span><span class="p">;</span>
+    <span class="p">}</span><span class="o">,</span> <span class="nt">500</span><span class="o">);</span>
+  <span class="err">}</span><span class="o">);</span>
+<span class="err">}</span><span class="o">;</span>
+
+<span class="nt">var</span> <span class="nt">arr2</span> <span class="o">=</span> <span class="cp">[</span><span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1001&#39;</span><span class="p">,</span> <span class="nx">etagBE</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1002&#39;</span><span class="p">,</span> <span class="nx">etagBE</span><span class="p">:</span><span class="mi">3</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1003&#39;</span><span class="p">,</span> <span class="nx">etagBE</span><span class="p">:</span><span class="mi">3</span><span class="p">},</span>
+  <span class="p">{</span><span class="nx">id</span><span class="p">:</span> <span class="s1">&#39;1088&#39;</span><span class="p">,</span> <span class="nx">etagBE</span><span class="p">:</span><span class="mi">99</span><span class="p">}</span><span class="cp">]</span><span class="o">;</span>
+
+<span class="nt">window</span><span class="p">.</span><span class="nc">idx2</span> <span class="o">=</span> <span class="nt">0</span><span class="o">;</span>
+<span class="nt">var</span> <span class="nt">nextA2Page</span> <span class="o">=</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{</span>
+  <span class="err">return</span> <span class="err">new</span> <span class="err">Promise(function(fulfill,</span> <span class="err">reject)</span> <span class="err">{</span>
+    <span class="err">setTimeout(function(){</span>
+      <span class="err">fulfill(arr2.slice(window.idx2,</span> <span class="err">window.idx2+2))</span><span class="p">;</span>
+      <span class="err">window.idx2</span> <span class="err">+=</span> <span class="err">2</span><span class="p">;</span>
+    <span class="p">}</span><span class="o">,</span> <span class="nt">500</span><span class="o">);</span>
+  <span class="err">}</span><span class="o">);</span>
+<span class="err">}</span><span class="o">;</span>
+</code></pre></div>
+
+
+<p>Test the code like this:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">nextA1Page</span><span class="p">()</span>
+<span class="na">.then</span><span class="p">(</span><span class="no">function</span><span class="p">(</span><span class="no">page</span><span class="p">)</span> <span class="err">{</span>
+  <span class="nf">log</span><span class="p">(</span><span class="no">page</span><span class="p">)</span><span class="c1">;</span>
+  <span class="nf">return</span> <span class="no">nextA1Page</span><span class="p">()</span><span class="c1">;</span>
+<span class="err">})</span>
+<span class="na">.then</span><span class="p">(</span><span class="no">function</span><span class="p">(</span><span class="no">page</span><span class="p">)</span> <span class="err">{</span>
+  <span class="nf">log</span><span class="p">(</span><span class="no">page</span><span class="p">)</span><span class="c1">;</span>
+  <span class="nf">return</span> <span class="no">nextA1Page</span><span class="p">()</span><span class="c1">;</span>
+<span class="err">})</span>
+<span class="na">.then</span><span class="p">(</span><span class="no">function</span><span class="p">(</span><span class="no">page</span><span class="p">)</span> <span class="err">{</span>
+  <span class="nf">log</span><span class="p">(</span><span class="no">page</span><span class="p">)</span><span class="c1">;</span>
+<span class="err">})</span><span class="c1">;</span>
+</code></pre></div>
+
+
+<p>Now reset the counters:</p>
+<div class="highlight"><pre><span></span><code><span class="err">window.idx1 = 0;</span>
+<span class="err">window.idx2 = 0;</span>
+</code></pre></div>
+
+
+<p>This is the join logic:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">var</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="p">;</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">a2</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">a1</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i1</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">nextA1Page</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">joinPages</span><span class="p">(</span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">nextA2Page</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">);</span><span class="w">    </span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">o1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a1</span><span class="o">[</span><span class="n">i1</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">o2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a2</span><span class="o">[</span><span class="n">i2</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">_</span><span class="p">.</span><span class="k">merge</span><span class="p">(</span><span class="n">o1</span><span class="p">,</span><span class="w"> </span><span class="n">o2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">o1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">o2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ss">&quot;Implementation error! Please report this bug.&quot;</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+
+<span class="n">nextA1Page</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">nextA2Page</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Now check what's in the <code>res</code> variable;</p>
+<h1>Joining two object stores - step 2</h1>
+<p>Now we'll do the join fetching data from IndexedDb and also storing the result
+to IndexedDb.</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="n">createPager</span><span class="w"> </span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">pageSize</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="err">!</span><span class="n">pageSize</span><span class="p">)</span><span class="w"> </span><span class="n">pageSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nl">idx</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">nextPage</span><span class="p">:</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="k">values</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="err">{}</span><span class="p">,</span><span class="w"> </span><span class="n">pageSize</span><span class="p">,</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">idx</span><span class="o">++</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pageSize</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"></span>
+<span class="w">                   </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"></span>
+<span class="w">                   </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="err">!</span><span class="n">pager1</span><span class="p">.</span><span class="n">nextPage</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="err">!</span><span class="n">pager2</span><span class="p">.</span><span class="n">nextPage</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ss">&quot;Internal Error! Pager functions must be supplied.&quot;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">addPageToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">addPageToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i1</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pager1</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">joinPages</span><span class="p">(</span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">pager2</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">o1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a1</span><span class="o">[</span><span class="n">i1</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">o2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a2</span><span class="o">[</span><span class="n">i2</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">addToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">.</span><span class="k">merge</span><span class="p">(</span><span class="n">o1</span><span class="p">,</span><span class="w"> </span><span class="n">o2</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">addToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">o1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">addToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">o2</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ss">&quot;Internal error! Error comparing o1 and o2&quot;</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="k">join</span><span class="p">(</span><span class="n">store1</span><span class="p">,</span><span class="w"> </span><span class="n">id1</span><span class="p">,</span><span class="w"> </span><span class="n">store2</span><span class="p">,</span><span class="w"> </span><span class="n">id2</span><span class="p">,</span><span class="w"> </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">pager1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createPager</span><span class="p">(</span><span class="n">store1</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">pager2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createPager</span><span class="p">(</span><span class="n">store2</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">pager1</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">pager2</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">id1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">id2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="nf">var</span><span class="w"> </span><span class="n">store1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;store1&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="nf">var</span><span class="w"> </span><span class="n">store2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;store2&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="nf">var</span><span class="w"> </span><span class="n">store3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;store3&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="nf">var</span><span class="w"> </span><span class="k">schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="nl">stores</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">  { name: store1, keyPath: &#39;id&#39;, autoIncrement: false },</span>
+<span class="n">  { name: store2, keyPath: &#39;id&#39;, autoIncrement: false },</span>
+<span class="n">  { name: store3, keyPath: &#39;id&#39;, autoIncrement: false },</span>
+<span class="o">]</span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="nf">var</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ydn</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">Storage</span><span class="p">(</span><span class="s1">&#39;JoinTest&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">schema</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">addToIdb</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="k">row</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nf">log</span><span class="p">(</span><span class="k">row</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">db</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="k">row</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">addPageToIdb</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nf">log</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">page</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="n">page</span><span class="p">.</span><span class="n">forEach</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="k">row</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">addToIdb</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="k">row</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">createTestData1</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">attrName</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="nf">var</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="nl">id</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="o">+</span><span class="p">(</span><span class="mi">1000</span><span class="o">+</span><span class="n">i</span><span class="p">)</span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">o</span><span class="o">[</span><span class="n">attrName</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1010</span><span class="o">+</span><span class="n">i</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">db</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="p">);</span><span class="w">        </span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="n">createTestData1</span><span class="p">(</span><span class="n">store1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;firstName&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="n">createTestData1</span><span class="p">(</span><span class="n">store2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;ssn&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">join</span><span class="p">(</span><span class="n">store1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">store2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">store3</span><span class="p">,</span><span class="w"> </span><span class="k">true</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Now check what's in the <code>store3</code> object store. This can be seen in the developer
+tools in most browsers.</p>
+<h1>Join logic implemented with Promises</h1>
+<p>The logic wrapped into a factory function and also using promises. Now it is
+possible to use the join function like this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">db.clear(&#39;store3&#39;);</span>
+<span class="err">var start = window.performance.now();</span>
+<span class="err">yh.join(&#39;store1&#39;, &#39;id&#39;, &#39;store2&#39;, &#39;id&#39;, &#39;store3&#39;, true).then(function(res){</span>
+<span class="err">  console.log(&#39;Execution time:&#39;, window.performance.now()-start);</span>
+<span class="err">  console.log(res);</span>
+<span class="err">  })</span>
+</code></pre></div>
+
+
+<p>This is the implementation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">H</span><span class="p">.</span><span class="n">createYdbHelper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nl">createPager</span><span class="p">:</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">pageSize</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="err">!</span><span class="n">pageSize</span><span class="p">)</span><span class="w"> </span><span class="n">pageSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="nl">idx</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nl">nextPage</span><span class="p">:</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="k">values</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="err">{}</span><span class="p">,</span><span class="w"> </span><span class="n">pageSize</span><span class="p">,</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">idx</span><span class="o">++</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pageSize</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">addToIdb</span><span class="p">:</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="k">row</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="k">row</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">addPageToIdb</span><span class="p">:</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="err">!</span><span class="n">page</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="err">!</span><span class="n">page</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Promise</span><span class="p">.</span><span class="n">resolve</span><span class="p">(</span><span class="k">true</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">Promise</span><span class="p">.</span><span class="ow">all</span><span class="p">(</span><span class="n">page</span><span class="p">.</span><span class="n">forEach</span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="k">row</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">addToIdb</span><span class="p">(</span><span class="n">storeName</span><span class="p">,</span><span class="w"> </span><span class="k">row</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nl">joinPages</span><span class="p">:</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="err">!</span><span class="n">pager1</span><span class="p">.</span><span class="n">nextPage</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="err">!</span><span class="n">pager2</span><span class="p">.</span><span class="n">nextPage</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="ss">&quot;Internal Error! Pager functions must be supplied.&quot;</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">addPageToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i2</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">addPageToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="n">i1</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pager1</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">joinPages</span><span class="p">(</span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">this</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">a2</span><span class="p">.</span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pager2</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">this</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="nf">var</span><span class="w"> </span><span class="n">o1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a1</span><span class="o">[</span><span class="n">i1</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="nf">var</span><span class="w"> </span><span class="n">o2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a2</span><span class="o">[</span><span class="n">i2</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">this</span><span class="p">.</span><span class="n">addToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">.</span><span class="k">merge</span><span class="p">(</span><span class="n">o1</span><span class="p">,</span><span class="w"> </span><span class="n">o2</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">addToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">o1</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">i1</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o1</span><span class="o">[</span><span class="n">k1</span><span class="o">]</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">o2</span><span class="o">[</span><span class="n">k2</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">addToIdb</span><span class="p">(</span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="n">o2</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">i2</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ss">&quot;Internal error! Error comparing o1 and o2&quot;</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">k1</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">k2</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">join</span><span class="err">:</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">store1</span><span class="p">,</span><span class="w"> </span><span class="n">id1</span><span class="p">,</span><span class="w"> </span><span class="n">store2</span><span class="p">,</span><span class="w"> </span><span class="n">id2</span><span class="p">,</span><span class="w"> </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="nf">var</span><span class="w"> </span><span class="n">pager1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">createPager</span><span class="p">(</span><span class="n">store1</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="nf">var</span><span class="w"> </span><span class="n">pager2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">createPager</span><span class="p">(</span><span class="n">store2</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">pager1</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">a1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pager2</span><span class="p">.</span><span class="n">nextPage</span><span class="p">().</span><span class="k">then</span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">a2</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">          </span><span class="k">return</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="n">joinPages</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">pager1</span><span class="p">,</span><span class="w"> </span><span class="n">id1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">pager2</span><span class="p">,</span><span class="w"> </span><span class="n">id2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                                </span><span class="n">resStore</span><span class="p">,</span><span class="w"> </span><span class="k">outer</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">this</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">this</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>It is probably possible to improve the performance significantly by implementing
+the put part without YDN-DB.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

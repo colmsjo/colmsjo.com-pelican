@@ -1,0 +1,18 @@
+title: Nest smoke and CO detector
+description: A smoke and CO detector that sends alerts to your mobile device
+date: 2014-03-19
+author: Jonas Colmsjö
+layout: post
+tags: [’post’, ’consumer technology’, ’english']
+ 
+Help me continue writing about new technology by using this link [Amazon](http://www.amazon.com?_encoding=UTF8&tag=worinpro06-20) when buying _anything_ regardless which country you live in.
+
+I’ve been working on pimping our house that we moved into this autumn with new technology. The house was built in the late seventies so there is no network, alarms etc. There are different types of technology, some, like the the [Heatmiser thermostat]({% post_url 2000-03-19-Heatmiser-thermostat %}). I’ve also ordered, have real benefits like saving money. Other things, like the [Phillips Hue]({% post_url 2000-03-19-Phillips-Hue %}) are simply for fun. The Nest smoke detector is somewhere in between.
+
+There are two versions of the smoke detector, one battery driven and one that is connected to the 220V grid. The 220V version has a spare battery for power outages. I’ve bought the 220V version in order avoid having to switch batteries every now and then. Installation was fairly easy with two exceptions. The 220V cable that connects into the Nest device has connector has an approx. size of bit of sugar. There is not enough room between the Nest mounting plate and the roof for this connector so I had to put distances on the screws to fit it in. I guess that this version is supposed to be mounted on an electrical box. After having mounted the device and I started the mobile app and it tells me to scan a QR-code on bottom the Nest. So I had to take it down again, not the mounting plate but still annoying. I then connected my phone to the Nest WiFi network and entered the WiFi key for my home network and that was it. Fairly simple.
+
+The alarm is a voice that tells you what’s wrong, e.g. a smoke or CO warning. You can test the device by pushing a button on it. I haven’t had any real alarms go off yet, no false alarms due to burnt bread etc. A speaker at a SAP conference mentioned that his Nest had sent a warning to him that the house was on fire. This turned out to be false when he called his wife so I guess that false alarms are part of the high tech future as well. I’ve placed the detector outside our bedrooms on the way to the toilet. One nice feature is that it lights up when you walk under it when it is dark. The devices is also supposed to talk to each other if you have several detectors. This way, all devices will warn if there is a fire somewhere in the house.
+
+In summary I must say that I like the little device. The trivial feature of showing the way to the toilett in the dark is actually nice. Besides that time will have to tell if people think it’s worth a fairly hefty price. I think it’s here to stay given that Nest comes up with more innovation and that the price comes down when volumes rise. Nest also have an interesting thermostat but they won’t ship it to Europe. I’ve decided to go for Heatmiser instead, check out this post.
+
+Help me continue writing about new technology by using this link [Amazon](http://www.amazon.com?_encoding=UTF8&tag=worinpro06-20) when buying _anything_ regardless which country you live in.

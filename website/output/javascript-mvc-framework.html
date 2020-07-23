@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>JavaScript MVC Framework  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		JavaScript MVC Framework
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Good old MVC for JavaScript</p>
+<p>JavaScript MVC frameworks</p>
+<h1>=======================</h1>
+<p>Separation of data, presentation and logic is often achieved through so called MVC frameworks. This is also true in JavaScript.</p>
+<p>There are some different frameworks out there. Just Google or check this article:</p>
+<ul>
+<li>http://codebrief.com/2012/01/the-top-10-javascript-mvc-frameworks-reviewed/</li>
+</ul>
+<p>We'll start with looking at underscore.js with mainly is a library for programming in a functional style. It also has e nice template function that we'll use for views.</p>
+<p>Underscore.js</p>
+<p>An extraxt of the code from ViewExample1.html is showed below:</p>
+<div class="highlight"><pre><span></span><code>...
+    window.onload = function(){
+
+        // Cache the template function 
+        var tmpl = _.template($(&#39;#item-template&#39;).html());
+
+        // Manage the event when add is clicked
+        $(&#39;#add&#39;).on(&#39;click&#39;, function() {
+
+            var _todo = $(&#39;#new-todo&#39;)[0];
+            log(&#39;logging add &#39;+_todo.value +&#39;...&#39;);
+description: _todo.value} );
+            $(&#39;#todos&#39;)[0].innerHTML = tmpl( {title: _todo.value} );
+
+        });
+
+        ...
+
+    <span class="c">&lt;!-- Templates --&gt;</span>
+
+    <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/template&quot;</span> <span class="na">id=</span><span class="s">&quot;item-template&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div&gt;</span>
+        <span class="nt">&lt;br/&gt;&lt;label&gt;</span><span class="cp">&lt;%=</span> <span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/label&gt;&lt;br/&gt;&lt;br/&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/script&gt;</span>
+</code></pre></div>
+
+
+<p>Templates are entered into the body of the HTML document inside a script tag. The tags <code>&lt;%</code> and <code>%&gt;</code> marks variables, for instance <code>&lt;%= title %&gt;</code>. These variables are bound to values when invoking the underscore function <code>_.template</code>. In in this example has the template been pre-compiled and the function cashed in order to improve performance when re-rendering the page.</p>
+<p>Backbone.js</p>
+<p>Backbone is a MVC framework that uses underscore.js views. The framework has a number of classes:</p>
+<ul>
+<li>Model and Collection (a set of Model objects)</li>
+<li>Events</li>
+<li>Router</li>
+<li>View</li>
+</ul>
+<p>I had problems understanding how it works when running applications built with it soo I took the Todo example and started the debugger. </p>
+<p>Here is the program flow in the Todos example application:</p>
+<ol>
+<li>A key is pressed in the input field</li>
+<li>The <code>createOnEnter</code> function is triggered (has been registered to the keypress event). It is checked if enter was pressed, return doing nothing otherwise</li>
+<li><code>create</code>is called on the <code>Collection</code> object which contains a set of <code>Model</code> objects</li>
+<li><code>create</code> function calls the <code>add</code> function in the <code>Collection</code>. </li>
+<li><code>addOne</code> in the <code>Backbone.View</code> object is invoked by the <code>trigger</code>function in <code>Backbone.Events</code></li>
+<li>A new <code>TodoView</code> object is created and appended to the todo-list. The <code>render</code>function in the new view is invoked in order to generate the HTML</li>
+<li>The <code>save</code> function in <code>Backbone.Model</code> is called. Ajax request, if registered, are executed.</li>
+</ol>
+<p>Note: <code>_onModelEven</code> in <code>Backbone.Collection</code> seams to run the <code>addOne</code> function…</p>
+<p>I turns out that <code>Events</code> are sent between <code>Model</code> and <code>View</code> objects. 
+This seams too complex for me when comparing to what is achieved. Let's try something else.</p>
+<p>Ember.js</p>
+<p>Ember.js is based on SproutCore, a web development framework that has been around for some time. After spending a couple of hours poking around in Ember I realize that this is an even more complex framework. Also, the documentation is almost non-existing. It used the templating library handlebars.js which seams good. This is a refinement of mustache.js. It is not all that different from underscore.js though.</p>
+<p>Conclusion</p>
+<p>I'll stick to templating libraries like _.template or perhaps handlebars.js. Mayby backbone.js is worth learning after all. It has events that are propagated between the View and the Model which does reduce the amount of coding required. The code of backbone.js is possible to understand if you put some effort into it. Ember seams much more comprehensive.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjö" />
+		<title>Playing around with Jekyll  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Playing around with Jekyll
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Jekyll uses a templating language called liquid, take a look at this <a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">crash course</a></p>
+<p>This code should generate a list of posts. You can also see the code for this post <a href="https://raw.github.com/colmsjo/colmsjo.github.io/master/_posts/2014-03-07-Playing-around-with-jekyll.md">here</a></p>
+<p>{% raw %} </p>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">post</span> <span class="k">in</span> <span class="n">site</span><span class="o">.</span><span class="n">posts</span> <span class="sx">%}</span>
+<span class="sx">    &lt;li&gt;</span>
+<span class="sx">      &lt;a href=&quot;{{ post.url }</span><span class="p">}</span><span class="s2">&quot;&gt;{{ post.title }}&lt;/a&gt;&lt;BR&gt;</span>
+<span class="s2">      post.excerpt: {{ post.excerpt }}&lt;br&gt;</span>
+<span class="s2">      post.tags: {{ post.tags }}&lt;br&gt;</span>
+<span class="s2">      post.author: {{ post.author }}&lt;br&gt;</span>
+<span class="s2">    &lt;/li&gt;</span>
+<span class="s2">  {% endfor %}</span>
+<span class="s2">&lt;/ul&gt;</span>
+</code></pre></div>
+
+
+<p>{% endraw %}</p>
+<p>And this is the list that was generated:</p>
+<ul>
+  {% for post in site.posts %}
+    <li>
+      <a href="{{ post.url }}">{{ post.title }}</a><br>
+      post.excerpt: {{ post.excerpt }}<br>
+      post.tags: {{ post.tags }}<br>
+      post.author: {{ post.author }}<br>
+    </li>
+  {% endfor %}
+</ul>
+
+<hr>
+<p>Print list of tags:</p>
+<p>{% raw %} </p>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">post</span> <span class="k">in</span> <span class="n">site</span><span class="o">.</span><span class="n">posts</span> <span class="sx">%}</span>
+<span class="sx">    &lt;li&gt;</span>
+<span class="sx">      title: {{ post.title }</span><span class="p">}</span><span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span><span class="ss">tags</span><span class="p">:</span> 
+      <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">tag</span> <span class="k">in</span> <span class="n">post</span><span class="o">.</span><span class="n">tags</span> <span class="sx">%}</span>
+<span class="sx">        {{ tag }</span><span class="p">},</span>
+      <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="sx">%}</span>
+<span class="sx">    &lt;/li&gt;</span>
+<span class="sx">  {% endfor %}</span>
+<span class="o">&lt;</span><span class="sr">/ul&gt;</span>
+<span class="sr">&lt;/u</span><span class="n">l</span><span class="o">&gt;</span>
+</code></pre></div>
+
+
+<p>{% endraw %}</p>
+<ul>
+  {% for post in site.posts %}
+    <li>
+      title: {{ post.title }}<br>tags: 
+      {% for tag in post.tags %}
+        {{ tag }},
+      {% endfor %}
+    </li>
+  {% endfor %}
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

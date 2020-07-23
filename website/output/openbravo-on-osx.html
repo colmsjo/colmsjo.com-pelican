@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>OpenBravo on OSX  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		OpenBravo on OSX
+	</div>
+	<div class="message-body has-text-dark">
+		<p>OpenBravo on OSX</p>
+<h1>Introduction</h1>
+<p>OpenBravo is an open source ERP. The first major ERP that was open sourced is Compiere from US. Adempiere is
+a european fork of Compiere. To my knowledge is OpenBravo and OpenERP currently the the open source ERPs
+in Europe that are getting most traction. Apache OfBiz (which also goes under the name OpenTAPS) is another 
+alternative and xTuple and ERP5 are yet to more alternatives.</p>
+<p>OpenBravo has Retail support so I'm going to try this out. </p>
+<h1>Installation</h1>
+<p>Links:</p>
+<ul>
+<li>http://wiki.openbravo.com/wiki/System_Administration_Guide</li>
+</ul>
+<p>Summary:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">Install</span> <span class="n">postgres</span><span class="p">,</span> <span class="n">see</span> <span class="n">below</span>
+<span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">log</span> <span class="k">start</span>
+
+<span class="o">#</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">it</span> <span class="n">started</span>
+<span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">log</span> <span class="n">status</span>
+
+<span class="k">createdb</span> <span class="n">openbravo</span>
+<span class="k">createuser</span> <span class="n">openbravo</span>
+<span class="o">#</span> <span class="k">Connect</span> <span class="k">to</span> <span class="n">db</span> <span class="n">jonas</span> <span class="k">as</span> <span class="k">user</span> <span class="n">jonas</span>
+<span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">openbravo</span>
+<span class="err">\</span><span class="n">password</span>
+
+<span class="o">#</span> <span class="n">Try</span> <span class="k">to</span> <span class="k">connect</span> <span class="k">to</span> <span class="n">localhost</span> <span class="k">on</span> <span class="n">port</span> <span class="mi">5432</span>
+<span class="n">psql</span> <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">p</span> <span class="mi">5432</span> <span class="o">-</span><span class="n">U</span> <span class="n">openbravo</span>
+
+<span class="o">#</span> <span class="k">Create</span> <span class="n">config</span><span class="o">/</span><span class="n">Openbravo</span><span class="p">.</span><span class="n">properties</span><span class="p">,</span> <span class="n">use</span> <span class="n">the</span> <span class="n">Openbravo</span><span class="p">.</span><span class="n">properties</span><span class="p">.</span><span class="k">template</span> <span class="k">or</span> <span class="n">the</span> <span class="n">content</span> <span class="n">below</span> <span class="p">(</span><span class="k">from</span> <span class="n">ubuntu</span><span class="p">)</span>
+<span class="n">ant</span> <span class="n">install</span><span class="p">.</span><span class="k">source</span>
+</code></pre></div>
+
+
+<p>Increase shared memory:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sysctl</span> <span class="n">kern</span><span class="p">.</span><span class="n">sysv</span><span class="p">.</span><span class="n">shmmax</span>
+<span class="n">kern</span><span class="p">.</span><span class="n">sysv</span><span class="p">.</span><span class="n">shmmax</span><span class="p">:</span> <span class="mi">4194304</span>
+
+<span class="n">sudo</span> <span class="n">sysctl</span> <span class="o">-</span><span class="n">w</span> <span class="n">kern</span><span class="p">.</span><span class="n">sysv</span><span class="p">.</span><span class="n">shmmax</span><span class="o">=</span><span class="mi">1073741824</span>
+</code></pre></div>
+
+
+<p>Increase Java Heap size:</p>
+<div class="highlight"><pre><span></span><code><span class="err">export JAVA_OPTS=&quot;-Xms128m -Xmx1024m&quot;</span>
+<span class="err">export ANT_OPTS=&quot;-Xms128m -Xmx1024m&quot;</span>
+</code></pre></div>
+
+
+<p>Install pgAdmin:</p>
+<ul>
+<li>http://www.pgadmin.org/download/macosx.php</li>
+</ul>
+<h3>Dump database</h3>
+<div class="highlight"><pre><span></span><code><span class="err">pg_dump -U openbravo -C -f openbravo.pg_dump openbravo</span>
+</code></pre></div>
+
+
+<h3>Install Tomcat</h3>
+<p>Links:</p>
+<ul>
+<li>http://www.malisphoto.com/tips/tomcatonosx.html</li>
+<li>http://tomcat.apache.org/tomcat-6.0-doc/introduction.html</li>
+</ul>
+<p>Installation using brew:</p>
+<div class="highlight"><pre><span></span><code><span class="n">brew</span> <span class="n">install</span> <span class="n">tomcat6</span>
+<span class="n">brew</span> <span class="n">link</span> <span class="n">tomcat6</span> <span class="c1">--force</span>
+
+<span class="n">ls</span> <span class="o">-</span><span class="n">al</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">startup</span><span class="p">.</span><span class="n">sh</span> 
+<span class="n">ls</span> <span class="o">-</span><span class="n">al</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">tomcat6</span><span class="o">/</span><span class="mi">6</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">36</span><span class="o">/</span>
+
+<span class="n">nano</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">tomcat6</span><span class="o">/</span><span class="mi">6</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">36</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">tomcat</span><span class="o">-</span><span class="n">users</span><span class="p">.</span><span class="n">xml</span>
+
+<span class="p">...</span>
+  <span class="o">&lt;</span><span class="k">role</span> <span class="n">rolename</span><span class="o">=</span><span class="ss">&quot;manager&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="k">role</span> <span class="n">rolename</span><span class="o">=</span><span class="ss">&quot;admin&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="k">user</span> <span class="n">username</span><span class="o">=</span><span class="ss">&quot;admin&quot;</span> <span class="n">password</span><span class="o">=</span><span class="ss">&quot;admin&quot;</span> <span class="n">roles</span><span class="o">=</span><span class="ss">&quot;admin,manager&quot;</span><span class="o">/&gt;</span>
+
+
+<span class="n">shutdown</span><span class="p">.</span><span class="n">sh</span>
+<span class="n">startup</span><span class="p">.</span><span class="n">sh</span>
+</code></pre></div>
+
+
+<h3>Configure Apache</h3>
+<p>Links:</p>
+<ul>
+<li>http://wiki.openbravo.com/wiki/Installation/Custom/Apache</li>
+<li>http://www.bartbusschots.ie/blog/?p=1347</li>
+<li>http://httpd.apache.org/docs/2.2/programs/apxs.html</li>
+</ul>
+<p>mod_jk needs to be installed, see http://wiki.apache.org/tomcat/FAQ/Connectors:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">Available</span> <span class="n">modules</span>
+<span class="n">ls</span> <span class="o">-</span><span class="n">al</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span>
+
+<span class="o">#</span> <span class="n">Download</span> <span class="n">mod_jk</span>
+<span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">apache</span><span class="p">.</span><span class="n">mirror3</span><span class="p">.</span><span class="n">ip</span><span class="o">-</span><span class="k">only</span><span class="p">.</span><span class="n">net</span><span class="o">//</span><span class="n">tomcat</span><span class="o">/</span><span class="n">tomcat</span><span class="o">-</span><span class="n">connectors</span><span class="o">/</span><span class="n">jk</span><span class="o">/</span><span class="n">tomcat</span><span class="o">-</span><span class="n">connectors</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">37</span><span class="o">-</span><span class="n">src</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">xzf</span> <span class="n">tomcat</span><span class="o">-</span><span class="n">connectors</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">37</span><span class="o">-</span><span class="n">src</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+
+<span class="n">cd</span> <span class="n">native</span>
+<span class="p">.</span><span class="o">/</span><span class="n">configure</span> <span class="n">CFLAGS</span><span class="o">=</span><span class="s1">&#39;-arch x86_64&#39;</span> <span class="n">APXSLDFLAGS</span><span class="o">=</span><span class="s1">&#39;-arch x86_64&#39;</span> <span class="c1">--with-apxs=/usr/sbin/apxs</span>
+<span class="n">make</span>
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</code></pre></div>
+
+
+<p>Use of mod_jk in Elastic Beanstalk:</p>
+<ul>
+<li>http://stackoverflow.com/questions/10933608/tomcat-mod-cluster-and-amazon-ec2</li>
+</ul>
+<h3>Install phpPgAdmin</h3>
+<div class="highlight"><pre><span></span><code><span class="err">wget http://downloads.sourceforge.net/project/phppgadmin/phpPgAdmin%20%5Bstable%5D/phpPgAdmin-5.1/phpPgAdmin-5.1.tar.bz2?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fphppgadmin%2F%3Fsource%3Ddlp&amp;ts=1367783807&amp;use_mirror=freefr</span>
+</code></pre></div>
+
+
+<h3>Install database</h3>
+<p>Postgres:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">config</span> <span class="n">jonas$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">postgresql9</span>
+<span class="o">==&gt;</span> <span class="n">Installing</span> <span class="n">postgresql9</span> <span class="n">dependency</span><span class="p">:</span> <span class="n">ossp</span><span class="o">-</span><span class="n">uuid</span>
+<span class="n">dyld</span><span class="p">:</span> <span class="n">DYLD_</span> <span class="n">environment</span> <span class="n">variables</span> <span class="n">being</span> <span class="n">ignored</span> <span class="n">because</span> <span class="n">main</span> <span class="n">executable</span> <span class="p">(</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sudo</span><span class="p">)</span> <span class="k">is</span> <span class="n">setuid</span> <span class="k">or</span> <span class="n">setgid</span>
+<span class="o">==&gt;</span> <span class="n">Downloading</span> <span class="n">ftp</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="p">.</span><span class="n">ossp</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pkg</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">uuid</span><span class="o">/</span><span class="n">uuid</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">6</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="o">########################################################################</span> <span class="mi">100</span><span class="p">,</span><span class="mi">0</span><span class="o">%</span>
+<span class="o">########################################################################</span> <span class="mi">100</span><span class="p">,</span><span class="mi">0</span><span class="o">%==&gt;</span> <span class="p">.</span><span class="o">/</span><span class="n">configure</span> <span class="c1">--prefix=/usr/local/Cellar/ossp-uuid/1.6.2 --without-perl --without-php --without-pgsql</span>
+<span class="o">==&gt;</span> <span class="n">make</span>
+<span class="o">==&gt;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">Caveats</span>
+<span class="n">This</span> <span class="n">formula</span> <span class="k">is</span> <span class="n">keg</span><span class="o">-</span><span class="k">only</span><span class="p">:</span> <span class="n">so</span> <span class="n">it</span> <span class="n">was</span> <span class="k">not</span> <span class="n">symlinked</span> <span class="k">into</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="p">.</span>
+
+<span class="n">OS</span> <span class="n">X</span> <span class="n">provides</span> <span class="n">a</span> <span class="n">uuid</span><span class="p">.</span><span class="n">h</span> <span class="n">which</span> <span class="n">conflicts</span> <span class="k">with</span> <span class="n">ossp</span><span class="o">-</span><span class="n">uuid</span><span class="s1">&#39;s header.</span>
+
+<span class="s1">Generally there are no consequences of this for you. If you build your</span>
+<span class="s1">own software and it requires this formula, you&#39;</span><span class="n">ll</span> <span class="n">need</span> <span class="k">to</span> <span class="k">add</span> <span class="k">to</span> <span class="n">your</span>
+<span class="n">build</span> <span class="n">variables</span><span class="p">:</span>
+
+    <span class="n">LDFLAGS</span><span class="p">:</span>  <span class="o">-</span><span class="n">L</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">ossp</span><span class="o">-</span><span class="n">uuid</span><span class="o">/</span><span class="n">lib</span>
+    <span class="n">CPPFLAGS</span><span class="p">:</span> <span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">ossp</span><span class="o">-</span><span class="n">uuid</span><span class="o">/</span><span class="n">include</span>
+
+<span class="o">==&gt;</span> <span class="n">Summary</span>
+<span class="err">🍺</span>  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">ossp</span><span class="o">-</span><span class="n">uuid</span><span class="o">/</span><span class="mi">1</span><span class="p">.</span><span class="mi">6</span><span class="p">.</span><span class="mi">2</span><span class="p">:</span> <span class="mi">15</span> <span class="n">files</span><span class="p">,</span> <span class="mi">232</span><span class="n">K</span><span class="p">,</span> <span class="n">built</span> <span class="k">in</span> <span class="mi">15</span> <span class="n">seconds</span>
+<span class="o">==&gt;</span> <span class="n">Installing</span> <span class="n">postgresql9</span>
+<span class="n">dyld</span><span class="p">:</span> <span class="n">DYLD_</span> <span class="n">environment</span> <span class="n">variables</span> <span class="n">being</span> <span class="n">ignored</span> <span class="n">because</span> <span class="n">main</span> <span class="n">executable</span> <span class="p">(</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sudo</span><span class="p">)</span> <span class="k">is</span> <span class="n">setuid</span> <span class="k">or</span> <span class="n">setgid</span>
+<span class="o">==&gt;</span> <span class="n">Downloading</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">pub</span><span class="o">/</span><span class="k">source</span><span class="o">/</span><span class="n">v9</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">13</span><span class="o">/</span><span class="n">postgresql</span><span class="o">-</span><span class="mi">9</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">13</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">bz2</span>
+<span class="o">########################################################################</span> <span class="mi">100</span><span class="p">,</span><span class="mi">0</span><span class="o">%</span>
+<span class="o">==&gt;</span> <span class="n">Patching</span>
+<span class="n">patching</span> <span class="n">file</span> <span class="n">contrib</span><span class="o">/</span><span class="n">uuid</span><span class="o">-</span><span class="n">ossp</span><span class="o">/</span><span class="n">uuid</span><span class="o">-</span><span class="n">ossp</span><span class="p">.</span><span class="k">c</span>
+<span class="o">==&gt;</span> <span class="p">.</span><span class="o">/</span><span class="n">configure</span> <span class="c1">--prefix=/usr/local/Cellar/postgresql9/9.0.13 --enable-thread-safety --with-bonjour --with-gssapi --with-krb5 --with-openssl --with-libxml --with-libxslt --with-ossp</span>
+<span class="o">==&gt;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">make</span> <span class="n">install</span><span class="o">-</span><span class="n">docs</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">adminpack</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">auto_explain</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">btree_gin</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">btree_gist</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">chkpass</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">citext</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="k">cube</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">dblink</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">dict_int</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">dict_xsyn</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">earthdistance</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">fuzzystrmatch</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">hstore</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">intagg</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">intarray</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">isn</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">lo</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">ltree</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">oid2name</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pageinspect</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">passwordcheck</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_archivecleanup</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_buffercache</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_freespacemap</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_standby</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_stat_statements</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_trgm</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_upgrade</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pg_upgrade_support</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pgbench</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pgcrypto</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pgrowlocks</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">pgstattuple</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">seg</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">spi</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">sslinfo</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">tablefunc</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">test_parser</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">tsearch2</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">unaccent</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">uuid</span><span class="o">-</span><span class="n">ossp</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">vacuumlo</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">cd</span> <span class="n">contrib</span><span class="o">/</span><span class="n">xml2</span><span class="p">;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="o">==&gt;</span> <span class="n">Caveats</span>
+<span class="k">If</span> <span class="n">builds</span> <span class="k">of</span> <span class="n">PostgreSQL</span> <span class="mi">9</span> <span class="k">are</span> <span class="n">failing</span> <span class="k">and</span> <span class="n">you</span> <span class="n">have</span> <span class="k">version</span> <span class="mi">8</span><span class="p">.</span><span class="n">x</span> <span class="n">installed</span><span class="p">,</span>
+<span class="n">you</span> <span class="n">may</span> <span class="n">need</span> <span class="k">to</span> <span class="n">remove</span> <span class="n">the</span> <span class="n">previous</span> <span class="k">version</span> <span class="k">first</span><span class="p">.</span> <span class="n">See</span><span class="p">:</span>
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">mxcl</span><span class="o">/</span><span class="n">homebrew</span><span class="o">/</span><span class="n">issues</span><span class="o">/</span><span class="n">issue</span><span class="o">/</span><span class="mi">2510</span>
+
+<span class="k">To</span> <span class="n">build</span> <span class="n">plpython</span> <span class="n">against</span> <span class="n">a</span> <span class="k">specific</span> <span class="n">Python</span><span class="p">,</span> <span class="k">set</span> <span class="n">PYTHON</span> <span class="k">prior</span> <span class="k">to</span> <span class="n">brewing</span><span class="p">:</span>
+  <span class="n">PYTHON</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">python</span>  <span class="n">brew</span> <span class="n">install</span> <span class="n">postgresql</span>
+<span class="n">See</span><span class="p">:</span>
+  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="mi">9</span><span class="p">.</span><span class="mi">0</span><span class="o">/</span><span class="k">static</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="k">procedure</span><span class="p">.</span><span class="n">html</span>
+
+
+<span class="k">If</span> <span class="n">this</span> <span class="k">is</span> <span class="n">your</span> <span class="k">first</span> <span class="n">install</span><span class="p">,</span> <span class="k">create</span> <span class="n">a</span> <span class="k">database</span> <span class="k">with</span><span class="p">:</span>
+  <span class="n">initdb</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span>
+
+<span class="k">If</span> <span class="n">this</span> <span class="k">is</span> <span class="n">your</span> <span class="k">first</span> <span class="n">install</span><span class="p">,</span> <span class="n">automatically</span> <span class="k">load</span> <span class="k">on</span> <span class="n">login</span> <span class="k">with</span><span class="p">:</span>
+  <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+  <span class="n">cp</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">postgresql9</span><span class="o">/</span><span class="mi">9</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">13</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">postgres</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span>
+  <span class="n">launchctl</span> <span class="k">load</span> <span class="o">-</span><span class="n">w</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">postgres</span><span class="p">.</span><span class="n">plist</span>
+
+<span class="k">If</span> <span class="n">this</span> <span class="k">is</span> <span class="n">an</span> <span class="n">upgrade</span> <span class="k">and</span> <span class="n">you</span> <span class="n">already</span> <span class="n">have</span> <span class="n">the</span> <span class="n">org</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">postgres</span><span class="p">.</span><span class="n">plist</span> <span class="n">loaded</span><span class="p">:</span>
+  <span class="n">launchctl</span> <span class="n">unload</span> <span class="o">-</span><span class="n">w</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">postgres</span><span class="p">.</span><span class="n">plist</span>
+  <span class="n">cp</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">postgresql9</span><span class="o">/</span><span class="mi">9</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">13</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">postgres</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span>
+  <span class="n">launchctl</span> <span class="k">load</span> <span class="o">-</span><span class="n">w</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">org</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">postgres</span><span class="p">.</span><span class="n">plist</span>
+
+<span class="k">Or</span> <span class="k">start</span> <span class="n">manually</span> <span class="k">with</span><span class="p">:</span>
+  <span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">log</span> <span class="k">start</span>
+
+<span class="k">And</span> <span class="n">stop</span> <span class="k">with</span><span class="p">:</span>
+  <span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="n">stop</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">m</span> <span class="n">fast</span>
+
+
+<span class="k">Some</span> <span class="n">machines</span> <span class="n">may</span> <span class="n">require</span> <span class="n">provisioning</span> <span class="k">of</span> <span class="n">shared</span> <span class="n">memory</span><span class="p">:</span>
+  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="k">current</span><span class="o">/</span><span class="k">static</span><span class="o">/</span><span class="n">kernel</span><span class="o">-</span><span class="n">resources</span><span class="p">.</span><span class="n">html</span><span class="o">#</span><span class="n">SYSVIPC</span>
+
+<span class="k">If</span> <span class="n">you</span> <span class="n">want</span> <span class="k">to</span> <span class="n">install</span> <span class="n">the</span> <span class="n">postgres</span> <span class="n">gem</span><span class="p">,</span> <span class="k">including</span> <span class="n">ARCHFLAGS</span> <span class="k">is</span> <span class="n">recommended</span><span class="p">:</span>
+    <span class="n">env</span> <span class="n">ARCHFLAGS</span><span class="o">=</span><span class="ss">&quot;-arch x86_64&quot;</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">pg</span>
+
+<span class="k">To</span> <span class="n">install</span> <span class="n">gems</span> <span class="k">without</span> <span class="n">sudo</span><span class="p">,</span> <span class="n">see</span> <span class="n">the</span> <span class="n">Homebrew</span> <span class="n">wiki</span><span class="p">.</span>
+
+<span class="k">To</span> <span class="n">have</span> <span class="n">launchd</span> <span class="k">start</span> <span class="n">postgresql9</span> <span class="k">at</span> <span class="n">login</span><span class="p">:</span>
+    <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">postgresql9</span><span class="cm">/*.plist ~/Library/LaunchAgents</span>
+<span class="cm">Then to load postgresql9 now:</span>
+<span class="cm">    launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql9.plist</span>
+<span class="cm">==&gt; Summary</span>
+<span class="cm">🍺  /usr/local/Cellar/postgresql9/9.0.13: 2615 files, 35M, built in 3.4 minutes</span>
+</code></pre></div>
+
+
+<p>INITDB</p>
+<div class="highlight"><pre><span></span><code><span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">config</span> <span class="n">jonas$</span> <span class="n">initdb</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span>
+<span class="n">The</span> <span class="n">files</span> <span class="n">belonging</span> <span class="k">to</span> <span class="n">this</span> <span class="k">database</span> <span class="k">system</span> <span class="n">will</span> <span class="n">be</span> <span class="n">owned</span> <span class="k">by</span> <span class="k">user</span> <span class="ss">&quot;jonas&quot;</span><span class="p">.</span>
+<span class="n">This</span> <span class="k">user</span> <span class="n">must</span> <span class="n">also</span> <span class="n">own</span> <span class="n">the</span> <span class="n">server</span> <span class="n">process</span><span class="p">.</span>
+
+<span class="n">The</span> <span class="k">database</span> <span class="k">cluster</span> <span class="n">will</span> <span class="n">be</span> <span class="n">initialized</span> <span class="k">with</span> <span class="n">locale</span> <span class="n">sv_SE</span><span class="p">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span><span class="p">.</span>
+<span class="n">The</span> <span class="k">default</span> <span class="k">database</span> <span class="k">encoding</span> <span class="n">has</span> <span class="n">accordingly</span> <span class="n">been</span> <span class="k">set</span> <span class="k">to</span> <span class="n">UTF8</span><span class="p">.</span>
+<span class="n">The</span> <span class="k">default</span> <span class="nb">text</span> <span class="k">search</span> <span class="n">configuration</span> <span class="n">will</span> <span class="n">be</span> <span class="k">set</span> <span class="k">to</span> <span class="ss">&quot;swedish&quot;</span><span class="p">.</span>
+
+<span class="n">creating</span> <span class="n">directory</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">creating</span> <span class="n">subdirectories</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">selecting</span> <span class="k">default</span> <span class="n">max_connections</span> <span class="p">...</span> <span class="mi">20</span>
+<span class="n">selecting</span> <span class="k">default</span> <span class="n">shared_buffers</span> <span class="p">...</span> <span class="mi">2400</span><span class="n">kB</span>
+<span class="n">creating</span> <span class="n">configuration</span> <span class="n">files</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">creating</span> <span class="n">template1</span> <span class="k">database</span> <span class="k">in</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span><span class="o">/</span><span class="n">base</span><span class="o">/</span><span class="mi">1</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">initializing</span> <span class="n">pg_authid</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">initializing</span> <span class="n">dependencies</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">creating</span> <span class="k">system</span> <span class="n">views</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">loading</span> <span class="k">system</span> <span class="n">objects</span><span class="err">&#39;</span> <span class="n">descriptions</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">creating</span> <span class="n">conversions</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">creating</span> <span class="n">dictionaries</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">setting</span> <span class="k">privileges</span> <span class="k">on</span> <span class="n">built</span><span class="o">-</span><span class="k">in</span> <span class="n">objects</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">creating</span> <span class="n">information</span> <span class="k">schema</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">loading</span> <span class="n">PL</span><span class="o">/</span><span class="n">pgSQL</span> <span class="n">server</span><span class="o">-</span><span class="n">side</span> <span class="k">language</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">vacuuming</span> <span class="k">database</span> <span class="n">template1</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">copying</span> <span class="n">template1</span> <span class="k">to</span> <span class="n">template0</span> <span class="p">...</span> <span class="n">ok</span>
+<span class="n">copying</span> <span class="n">template1</span> <span class="k">to</span> <span class="n">postgres</span> <span class="p">...</span> <span class="n">ok</span>
+
+<span class="n">WARNING</span><span class="p">:</span> <span class="n">enabling</span> <span class="ss">&quot;trust&quot;</span> <span class="n">authentication</span> <span class="k">for</span> <span class="k">local</span> <span class="n">connections</span>
+<span class="n">You</span> <span class="n">can</span> <span class="n">change</span> <span class="n">this</span> <span class="k">by</span> <span class="n">editing</span> <span class="n">pg_hba</span><span class="p">.</span><span class="n">conf</span> <span class="k">or</span> <span class="k">using</span> <span class="n">the</span> <span class="o">-</span><span class="n">A</span> <span class="k">option</span> <span class="n">the</span>
+<span class="k">next</span> <span class="k">time</span> <span class="n">you</span> <span class="n">run</span> <span class="n">initdb</span><span class="p">.</span>
+
+<span class="n">Success</span><span class="p">.</span> <span class="n">You</span> <span class="n">can</span> <span class="n">now</span> <span class="k">start</span> <span class="n">the</span> <span class="k">database</span> <span class="n">server</span> <span class="k">using</span><span class="p">:</span>
+
+    <span class="n">postgres</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span>
+<span class="k">or</span>
+    <span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="o">-</span><span class="n">l</span> <span class="n">logfile</span> <span class="k">start</span>
+</code></pre></div>
+
+
+<p>START DB</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:config jonas$ pg_ctl -D /usr/local/var/postgres9 -l /usr/local/var/postgres9/server.log start</span>
+<span class="err">server starting</span>
+</code></pre></div>
+
+
+<h2>Troubleshooting Postgres</h2>
+<div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">log</span> 
+<span class="p">...</span>
+<span class="n">FATAL</span><span class="p">:</span>  <span class="n">could</span> <span class="k">not</span> <span class="k">create</span> <span class="n">shared</span> <span class="n">memory</span> <span class="n">segment</span><span class="p">:</span> <span class="n">Cannot</span> <span class="k">allocate</span> <span class="n">memory</span>
+<span class="n">DETAIL</span><span class="p">:</span>  <span class="n">Failed</span> <span class="k">system</span> <span class="k">call</span> <span class="n">was</span> <span class="n">shmget</span><span class="p">(</span><span class="k">key</span><span class="o">=</span><span class="mi">5432001</span><span class="p">,</span> <span class="k">size</span><span class="o">=</span><span class="mi">4063232</span><span class="p">,</span> <span class="mi">03600</span><span class="p">).</span>
+<span class="n">HINT</span><span class="p">:</span>  <span class="n">This</span> <span class="n">error</span> <span class="n">usually</span> <span class="n">means</span> <span class="n">that</span> <span class="n">PostgreSQL</span><span class="s1">&#39;s request for a shared memory segment exceeded available memory or swap space, or exceeded your kernel&#39;</span><span class="n">s</span> <span class="n">SHMALL</span> <span class="k">parameter</span><span class="p">.</span>  <span class="n">You</span> <span class="n">can</span> <span class="n">either</span> <span class="n">reduce</span> <span class="n">the</span> <span class="n">request</span> <span class="k">size</span> <span class="k">or</span> <span class="n">reconfigure</span> <span class="n">the</span> <span class="n">kernel</span> <span class="k">with</span> <span class="n">larger</span> <span class="n">SHMALL</span><span class="p">.</span>  <span class="k">To</span> <span class="n">reduce</span> <span class="n">the</span> <span class="n">request</span> <span class="k">size</span> <span class="p">(</span><span class="n">currently</span> <span class="mi">4063232</span> <span class="n">bytes</span><span class="p">),</span> <span class="n">reduce</span> <span class="n">PostgreSQL</span><span class="s1">&#39;s shared_buffers parameter (currently 300) and/or its max_connections parameter (currently 24).</span>
+<span class="s1">  The PostgreSQL documentation contains more information about shared memory configuration.</span>
+<span class="s1">g</span>
+
+<span class="s1">cat /usr/local/var/postgres9/postgresql.conf</span>
+
+<span class="s1">nano /usr/local/var/postgres9/postgresql.conf</span>
+<span class="s1">...</span>
+<span class="s1">listen_addresses = &#39;</span><span class="n">localhost</span><span class="err">&#39;</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">5432</span>
+
+<span class="n">pg_ctl</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span> <span class="o">-</span><span class="n">l</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres9</span><span class="o">/</span><span class="n">server</span><span class="p">.</span><span class="n">log</span> <span class="k">restart</span>
+</code></pre></div>
+
+
+<h1>Install from source</h1>
+<ul>
+<li>http://code.openbravo.com/</li>
+</ul>
+<p>Create a local clone:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hg clone https://code.openbravo.com/erp/devel/pi</span>
+<span class="err">ant setup</span>
+<span class="err">ls config</span>
+</code></pre></div>
+
+
+<p>Run <code>setup-properties-osx.app</code> from the finder.
+I got the error <code>No origin file found that matched / Openbravo.properties.template</code>
+I've registered an issue about this: https://issues.openbravo.com/view.php?id=23703</p>
+<h1>Ubuntu</h1>
+<p>Testing the same thing on ubuntu</p>
+<p>Install Postgres:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="n">postgresql</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="n">psql</span> <span class="n">postgres</span>
+<span class="err">\</span><span class="n">password</span> <span class="n">postgres</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">postgres</span> <span class="k">createdb</span> <span class="n">openbravo</span>
+
+
+<span class="n">hg</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">code</span><span class="p">.</span><span class="n">openbravo</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">erp</span><span class="o">/</span><span class="n">devel</span><span class="o">/</span><span class="n">pi</span>
+<span class="n">cd</span> <span class="n">pi</span>
+<span class="n">ant</span> <span class="n">setup</span>
+<span class="n">sudo</span> <span class="p">.</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">properties</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x64</span><span class="p">.</span><span class="n">bin</span> 
+<span class="n">ant</span> <span class="n">install</span><span class="p">.</span><span class="k">source</span>
+</code></pre></div>
+
+
+<p>This Openbravo.properties file was created using setup-properties-linux-x64.bin:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="o">*************************************************************************</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">subject</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Openbravo</span><span class="w">  </span><span class="k">Public</span><span class="w">  </span><span class="n">License</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Version</span><span class="w">  </span><span class="mf">1.1</span><span class="w">  </span><span class="p">(</span><span class="n">the</span><span class="w">  </span><span class="ss">&quot;License&quot;</span><span class="p">),</span><span class="w">  </span><span class="n">being</span><span class="w">   </span><span class="n">the</span><span class="w">  </span><span class="n">Mozilla</span><span class="w">   </span><span class="k">Public</span><span class="w">  </span><span class="n">License</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Version</span><span class="w"> </span><span class="mf">1.1</span><span class="w">  </span><span class="k">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">permitted</span><span class="w"> </span><span class="n">attribution</span><span class="w"> </span><span class="n">clause</span><span class="p">;</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">may</span><span class="w"> </span><span class="ow">not</span><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="ow">except</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">compliance</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="p">.</span><span class="w"> </span><span class="n">You</span><span class="w">  </span><span class="n">may</span><span class="w">  </span><span class="n">obtain</span><span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="k">of</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="nl">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">openbravo</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">legal</span><span class="o">/</span><span class="n">license</span><span class="p">.</span><span class="n">html</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="k">distributed</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="w">  </span><span class="k">is</span><span class="w">  </span><span class="k">distributed</span><span class="w">  </span><span class="k">on</span><span class="w">  </span><span class="n">an</span><span class="w"> </span><span class="ss">&quot;AS IS&quot;</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">basis</span><span class="p">,</span><span class="w"> </span><span class="k">WITHOUT</span><span class="w"> </span><span class="n">WARRANTY</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="ow">ANY</span><span class="w"> </span><span class="n">KIND</span><span class="p">,</span><span class="w"> </span><span class="n">either</span><span class="w"> </span><span class="n">express</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">implied</span><span class="p">.</span><span class="w"> </span><span class="n">See</span><span class="w"> </span><span class="n">the</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">License</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">specific</span><span class="w">  </span><span class="k">language</span><span class="w">  </span><span class="n">governing</span><span class="w">  </span><span class="n">rights</span><span class="w">  </span><span class="ow">and</span><span class="w">  </span><span class="n">limitations</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">under</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">License</span><span class="p">.</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">Original</span><span class="w"> </span><span class="n">Code</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">Openbravo</span><span class="w"> </span><span class="n">ERP</span><span class="p">.</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">Initial</span><span class="w"> </span><span class="n">Developer</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Original</span><span class="w"> </span><span class="n">Code</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">Openbravo</span><span class="w"> </span><span class="n">SLU</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="ow">All</span><span class="w"> </span><span class="n">portions</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">Copyright</span><span class="w"> </span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="w"> </span><span class="mi">2007</span><span class="o">-</span><span class="mi">2012</span><span class="w"> </span><span class="n">Openbravo</span><span class="w"> </span><span class="n">SLU</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="ow">All</span><span class="w"> </span><span class="n">Rights</span><span class="w"> </span><span class="n">Reserved</span><span class="p">.</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Contributor</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="err">:</span><span class="w">  </span><span class="n">______________________________________</span><span class="p">.</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="o">************************************************************************</span><span class="w"></span>
+<span class="err">#</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">Documentation</span><span class="w"> </span><span class="k">at</span><span class="w"> </span><span class="nl">http</span><span class="p">:</span><span class="o">//</span><span class="n">wiki</span><span class="p">.</span><span class="n">openbravo</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">wiki</span><span class="o">/</span><span class="n">Openbravo</span><span class="p">.</span><span class="n">properties</span><span class="w"></span>
+
+<span class="err">####################</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nc">Date</span><span class="o">/</span><span class="nc">time</span><span class="w"> </span><span class="nf">format</span><span class="w"> </span><span class="err">#</span><span class="w"></span>
+<span class="err">####################</span><span class="w"></span>
+
+<span class="n">dateFormat</span><span class="p">.</span><span class="n">js</span><span class="o">=%</span><span class="n">Y</span><span class="o">-%</span><span class="n">m</span><span class="o">-%</span><span class="n">d</span><span class="w"></span>
+<span class="n">dateFormat</span><span class="p">.</span><span class="k">sql</span><span class="o">=</span><span class="n">YYYY</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">DD</span><span class="w"></span>
+<span class="n">dateFormat</span><span class="p">.</span><span class="n">java</span><span class="o">=</span><span class="n">yyyy</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">dd</span><span class="w"></span>
+<span class="n">dateTimeFormat</span><span class="p">.</span><span class="n">java</span><span class="o">=</span><span class="n">yyyy</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">dd</span><span class="w"> </span><span class="nl">HH</span><span class="p">:</span><span class="nl">mm</span><span class="p">:</span><span class="n">ss</span><span class="w"></span>
+<span class="n">dateTimeFormat</span><span class="p">.</span><span class="k">sql</span><span class="o">=</span><span class="n">DD</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">YYYY</span><span class="w"> </span><span class="nl">HH24</span><span class="p">:</span><span class="nl">MI</span><span class="p">:</span><span class="n">SS</span><span class="w"></span>
+
+<span class="err">###########</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="k">General</span><span class="w"> </span><span class="err">#</span><span class="w"></span>
+<span class="err">###########</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="k">Static</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="n">URL</span><span class="p">.</span><span class="w"> </span><span class="k">Use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">dynamic</span><span class="p">.</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">Don</span><span class="s1">&#39;t change this unless you know what you are doing</span>
+<span class="s1">web.url=@actual_url_context@/web</span>
+
+<span class="s1"># Full URL of the context, *only* used by the Web Services installation </span>
+<span class="s1"># and diagnostic task</span>
+<span class="s1">context.url=http://localhost:8080/openbravo</span>
+
+<span class="s1"># Absolute path to the attachments directory</span>
+<span class="s1">attach.path=/opt/openbravo/attachments</span>
+
+<span class="s1"># Context name, used in the final war file</span>
+<span class="s1">context.name=openbravo</span>
+
+<span class="s1"># Root sources directory, used by modularity</span>
+<span class="s1">source.path=/home/ubuntu/pi</span>
+
+<span class="s1">#Deploy mode: valid values [class, war, none]</span>
+<span class="s1">deploy.mode=class</span>
+
+<span class="s1">############</span>
+<span class="s1"># Database #</span>
+<span class="s1">############</span>
+
+<span class="s1"># Oracle example:</span>
+<span class="s1">#</span>
+<span class="s1"># bbdd.rdbms=ORACLE</span>
+<span class="s1"># bbdd.driver=oracle.jdbc.driver.OracleDriver</span>
+<span class="s1"># bbdd.url=jdbc:oracle:thin:@localhost:1521:xe</span>
+<span class="s1"># bbdd.sid=xe</span>
+<span class="s1"># bbdd.systemUser=SYSTEM</span>
+<span class="s1"># bbdd.systemPassword=SYSTEM</span>
+<span class="s1"># bbdd.user=TAD</span>
+<span class="s1"># bbdd.password=TAD</span>
+<span class="s1"># bbdd.sessionConfig=ALTER SESSION SET NLS_DATE_FORMAT=&#39;</span><span class="n">DD</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">YYYY</span><span class="s1">&#39; NLS_NUMERIC_CHARACTERS=&#39;</span><span class="p">.,</span><span class="s1">&#39;</span>
+
+<span class="s1"># Oracle instances in linux, can delay on getting DB connection (issue #12683). </span>
+<span class="s1"># In these cases this property can be set to solve the problem</span>
+<span class="s1"># java.security.egd=file:///dev/urandom</span>
+
+<span class="s1">bbdd.rdbms=POSTGRE</span>
+<span class="s1">bbdd.driver=org.postgresql.Driver</span>
+<span class="s1">bbdd.url=jdbc:postgresql://localhost:5432</span>
+<span class="s1">bbdd.sid=openbravo</span>
+<span class="s1">bbdd.systemUser=postgres</span>
+<span class="s1">bbdd.systemPassword=syspass</span>
+<span class="s1">bbdd.user=tad</span>
+<span class="s1">bbdd.password=tad</span>
+<span class="s1">bbdd.sessionConfig=select update_dateFormat(&#39;</span><span class="n">YYYY</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">DD</span><span class="s1">&#39;)</span>
+
+<span class="s1">##################</span>
+<span class="s1"># Tomcat manager #</span>
+<span class="s1">##################</span>
+
+<span class="s1"># From Tomcat 7 manager url is host/manager/text. In previous versions it is</span>
+<span class="s1"># host/manager</span>
+<span class="s1">tomcat.manager.url=http://localhost:8080/manager</span>
+
+<span class="s1"># From Tomcat 7 this user must have manager-script role access. In previous</span>
+<span class="s1"># versions. In previous versions it must have manager role access.</span>
+<span class="s1">tomcat.manager.username=admin</span>
+<span class="s1">tomcat.manager.password=admin</span>
+
+<span class="s1">##########################</span>
+<span class="s1"># Development parameters #</span>
+<span class="s1">##########################</span>
+
+<span class="s1">bbdd.outputscript=databasescript.sql</span>
+<span class="s1">bbdd.verbosity=INFO</span>
+
+<span class="s1"># use js/css minimization (in local-context and war-file)</span>
+<span class="s1">minimizeJSandCSS=yes</span>
+
+<span class="s1"># How sqlc should execute the queries embedded in xsql file at compilation time</span>
+<span class="s1"># traditional: only uses the base query ignoring all optional parameters</span>
+<span class="s1"># optimized: includes most optional parameter to achieve better performance</span>
+<span class="s1"># If optimized fails for some xsql files, downgrade level to traditional</span>
+<span class="s1">sqlc.queryExecutionStrategy=optimized</span>
+
+<span class="s1">##################</span>
+<span class="s1"># Authentication #</span>
+<span class="s1">##################</span>
+
+<span class="s1"># Leave this empty to use the default login handler.</span>
+<span class="s1"># Examples:</span>
+<span class="s1"># - org.openbravo.authentication.basic.AutologonAuthenticationManager (included)</span>
+<span class="s1"># - org.openbravo.authentication.lam.LamAuthenticationManager (in external &#39;</span><span class="n">LAM</span><span class="w"> </span><span class="n">Authentication</span><span class="w"> </span><span class="n">Manager</span><span class="s1">&#39; module)</span>
+<span class="s1">authentication.class=</span>
+
+<span class="s1">###########</span>
+<span class="s1"># Add-ons #</span>
+<span class="s1">###########</span>
+
+<span class="s1"># External Pentaho Services</span>
+<span class="s1">pentahoServer=</span>
+
+<span class="s1">##############</span>
+<span class="s1"># Validation #</span>
+<span class="s1">##############</span>
+
+<span class="s1">validate.model=true</span>
+<span class="s1">isMinorVersion=false</span>
+
+<span class="s1">##############</span>
+<span class="s1"># Safe mode  #</span>
+<span class="s1">##############</span>
+
+<span class="s1"># This property is used to activate/deactivate the safe mode of Openbravo ERP</span>
+<span class="s1"># When this property is activated, if the last build wasn&#39;</span><span class="n">t</span><span class="w"> </span><span class="n">succesful</span><span class="p">,</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">Tomcat</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">wasn</span><span class="s1">&#39;t restarted, users will only be able to login in the application </span>
+<span class="s1"># with role System Administrator</span>
+
+<span class="s1">safe.mode=true</span>
+
+<span class="s1">################################</span>
+<span class="s1"># Strict Template Application  #</span>
+<span class="s1">################################</span>
+
+<span class="s1"># This property is used to set the configuration script application mode.</span>
+<span class="s1"># If the template application mode is strict, then inconsistencies in the template</span>
+<span class="s1"># (such as the value to be changed being different from the value in a column</span>
+<span class="s1"># data change of a configuration script) will make the process fail.</span>
+<span class="s1"># If it&#39;</span><span class="n">s</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">strict</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">show</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">warning</span><span class="p">,</span><span class="w"> </span><span class="n">but</span><span class="w"> </span><span class="n">otherwise</span><span class="w"> </span><span class="k">continue</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">production</span><span class="w"> </span><span class="n">environments</span><span class="p">,</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="k">false</span><span class="p">.</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="k">For</span><span class="w"> </span><span class="n">development</span><span class="w"> </span><span class="n">environments</span><span class="p">,</span><span class="w"> </span><span class="n">specially</span><span class="w"> </span><span class="n">those</span><span class="w"> </span><span class="n">working</span><span class="w"> </span><span class="k">with</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">Industry</span><span class="w"> </span><span class="n">templates</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">scripts</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">advisable</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">true</span><span class="w"></span>
+
+<span class="n">strict</span><span class="p">.</span><span class="n">template</span><span class="p">.</span><span class="n">application</span><span class="o">=</span><span class="k">false</span><span class="w"></span>
+
+<span class="err">##############</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">Hibernate</span><span class="w"> </span><span class="err">#</span><span class="w"></span>
+<span class="err">##############</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">mapping</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">file</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">defined</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">property</span><span class="p">,</span><span class="w"> </span><span class="n">note</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span><span class="k">path</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="n">including</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">extension</span><span class="p">.</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">hibernate</span><span class="p">.</span><span class="n">hbm</span><span class="p">.</span><span class="k">file</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">hibernate</span><span class="p">.</span><span class="n">hbm</span><span class="p">.</span><span class="nc">xml</span><span class="w"></span>
+
+
+<span class="err">###################</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="nf">Log</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">security</span><span class="w"> </span><span class="err">#</span><span class="w"></span>
+<span class="err">###################</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="k">If</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">properties</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">set</span><span class="p">,</span><span class="w"> </span><span class="k">after</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">failed</span><span class="w"> </span><span class="n">login</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="nc">time</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">delayed</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="n">account</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">blocked</span><span class="p">.</span><span class="w"></span>
+<span class="n">login</span><span class="p">.</span><span class="n">trial</span><span class="p">.</span><span class="n">delay</span><span class="p">.</span><span class="n">increment</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
+<span class="n">login</span><span class="p">.</span><span class="n">trial</span><span class="p">.</span><span class="n">delay</span><span class="p">.</span><span class="nf">max</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
+<span class="n">login</span><span class="p">.</span><span class="n">trial</span><span class="p">.</span><span class="k">user</span><span class="p">.</span><span class="n">lock</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Prevents</span><span class="w"> </span><span class="n">concurrent</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">same</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="w"></span>
+<span class="n">login</span><span class="p">.</span><span class="k">limit</span><span class="p">.</span><span class="k">user</span><span class="p">.</span><span class="k">session</span><span class="o">=</span><span class="k">false</span><span class="w"></span>
+
+<span class="err">##########</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">Others</span><span class="w"> </span><span class="err">#</span><span class="w"></span>
+<span class="err">##########</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">You</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">allowed</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">ant</span><span class="w"> </span><span class="n">commands</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="k">Set</span><span class="w"> </span><span class="n">allow</span><span class="p">.</span><span class="n">root</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">override</span><span class="w"> </span><span class="n">this</span><span class="p">.</span><span class="w"></span>
+<span class="n">allow</span><span class="p">.</span><span class="n">root</span><span class="o">=</span><span class="k">false</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Specifies</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">current</span><span class="w"> </span><span class="n">instance</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">automated</span><span class="w"> </span><span class="n">tests</span><span class="p">.</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">Setting</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">enable</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span><span class="w"> </span><span class="n">functionality</span><span class="w"> </span><span class="n">used</span><span class="w"> </span>
+<span class="err">#</span><span class="w"> </span><span class="n">automated</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="n">scripts</span><span class="p">.</span><span class="w"></span>
+<span class="n">test</span><span class="p">.</span><span class="n">environment</span><span class="o">=</span><span class="k">false</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">allows</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">compile</span><span class="w"> </span><span class="n">classic</span><span class="w"> </span><span class="mf">2.50</span><span class="w"> </span><span class="n">windows</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">available</span><span class="w"> </span><span class="n">tab</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="k">By</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="n">those</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">generated</span><span class="w"> </span><span class="n">anymore</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">tabs</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">they</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">needed</span><span class="w"></span>
+<span class="n">#wad</span><span class="p">.</span><span class="n">generateAllClassic250Windows</span><span class="o">=</span><span class="k">true</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">background</span><span class="p">.</span><span class="n">policy</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">defines</span><span class="w"> </span><span class="n">whether</span><span class="w"> </span><span class="n">background</span><span class="w"> </span><span class="n">processes</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">be</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">executed</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">.</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="n">prevent</span><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">execution</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">must</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">no</span><span class="o">-</span><span class="k">execute</span><span class="w"></span>
+<span class="n">background</span><span class="p">.</span><span class="n">policy</span><span class="o">=</span><span class="k">default</span><span class="w"></span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

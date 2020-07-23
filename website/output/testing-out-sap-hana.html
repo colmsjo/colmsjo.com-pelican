@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Testing out SAP HANA  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Testing out SAP HANA
+	</div>
+	<div class="message-body has-text-dark">
+		<h1>Introduction</h1>
+<p>Some HANA links:</p>
+<ul>
+<li><a href="http://www.slideshare.net/SAPCommunityNetwork/architecture-and-technology-in-sap-hana">HANA intro</a></li>
+<li><a href="http://scn.sap.com/community/developer-center/cloud-platform/blog/2013/10/17/8-easy-steps-to-develop-an-xs-application-on-the-sap-hana-cloud-platform">Tutorial</a></li>
+<li><a href="https://help.hana.ondemand.com/help/frameset.htm?e9137493bb57101492c6858c8d6b0b62.html">Help</a></li>
+<li><a href="http://www.saphana.com/docs/DOC-2897">Academy</a></li>
+<li><a href="http://scn.sap.com/community/hana-in-memory/blog/2013/04/08/best-practices-for-sap-hana-data-loads">Data loads</a></li>
+<li><a href="http://scn.sap.com/community/developer-center/hana/blog/2012/11/29/sap-hana-extended-application-services">HANA XS</a></li>
+<li><a href="http://scn.sap.com/docs/DOC-51906">Web IDE vs. Studio</a></li>
+<li><a href="http://scn.sap.com/community/developer-center/hana/blog/2013/12/05/nodejs-dashboard-for-sap-hana">NodeJS and HANA</a></li>
+<li><a href="http://scn.sap.com/community/hana-in-memory/blog/2013/05/27/andy-silvey--sap-hana-command-line-tools-and-sql-reference-examples-for-netweaver-basis-administrators">HANA CLI tools</a></li>
+</ul>
+<p>Also check out River, it is a new development language. It is not publicly available at the time of writing but there is a early adoption program and possible to get a trail account for 7 days. See <a href="http://scn.sap.com/docs/DOC-47903">scn.sap.com</a> and <a href="http://sap-river.com/">sap-river.com</a></p>
+<p>Options for running HANA in the cloud</p>
+<p>A trail account can be created here: hanatrial.ondemand.com</p>
+<p>SAP provides HANA in the cloud themselves (starting at 4.500-6.000/month depending on version), see <a href="http://hcp.sap.com/">hcp.sap.com</a>.</p>
+<p>There is also a starter edition with community support ($539/month), <a href="http://marketplace.saphana.com/Lines-of-Business/Information-Technology/SAP-HANA-Cloud-Platform%2C-starter-edition/p/1805">here</a></p>
+<p><a href="http://aws.amazon.com/sap/saphana">HANA on Amazon</a>:</p>
+<ul>
+<li>HANA One costs $3/hour ($2.200/month)</li>
+<li>Developer account http://cal.sap.com</li>
+<li>m2.4xlarge costs $0.0642/Hour ($48/month)</li>
+<li>hs1.8xlarge costs $4.600/Hour</li>
+</ul>
+<p>The HANA developer account is by far the cheapest option. Let’s try that one out.</p>
+<p>HANA One and Developer Edition are technically the same. HANA One requires significantly more hardware though and is therefore more costöy to run. The main difference is otherwise the license, <a href="http://www.saphana.com/community/blogs/blog/2012/11/05/get-your-own-piece-of-sap-hana-one">see this post for more details</a></p>
+<p>You can also run on your own hardware if you are a SAP-customer (see SAP HANA Platform edition).</p>
+<p>SAP HANA Platform edition</p>
+<ul>
+<li><a href="https://service.sap.com/pam">Supported OS:es</a>. Look for HANA Platform EDIT (a SAP s-user is needed)</li>
+<li>
+<p>HANA is only supported for SuSE 11 (which is rather old by now)</p>
+</li>
+<li>
+<p><a href="http://help.sap.com/saphelp_hanaplatform/helpdata/en/d4/3377c2bb57101489ebe2e6a1813cfc/frameset.htm">Master Guide</a></p>
+</li>
+</ul>
+<p>Howto setup HANA One instance on AWS</p>
+<ol>
+<li>Launch in EC2 console (search for HANA One in the marketplace)</li>
+<li>Check the IP and access in a browser (accept security exception)</li>
+<li>http://www.saphana.com/docs/DOC-3109</li>
+<li>Set the password using your AWS access key and secret</li>
+</ol>
+<p>Howto setup HANA developer edition</p>
+<p><a href="http://cal.sap.com">Goto</a> and follow the instructions. A EC2 server will be  launched with everything you need.</p>
+<p>HANA Studio installation</p>
+<p><a href="https://help.hana.ondemand.com/help/frameset.htm?b0e351ada628458cb8906f55bcac4755.html">See for the details</a></p>
+<p>Hana Studio (Eclipse Kepler) - need to install Hana Studio once Eclipse is <a href="http://eclipse.org/downloads/packages/eclipse-standard-432/keplersr2">installed</a></p>
+<ul>
+<li>Then do Help &gt; Install new software &gt; https://tools.hana.ondemand.com/kepler</li>
+</ul>
+<p>A <a href="https://hanadeveditionsapicl.hana.ondemand.com/hanadevedition/">HANA Client</a> is also good to have (not available for Mac):</p>
+<p>Development on mac</p>
+<p>There is no HANA client for Mac. One alternative is to run the client on linux in a <a href="http://scn.sap.com/people/eric.du/blog/2013/05/16/solution-for-mac-users-who-want-to-run-hana-studio">VM</a></p>
+<p>Another workaround: <a href="http://dshell.saphana.com/">cloud service that makes it possible to use Github</a></p>
+<p>Tutorial</p>
+<p><a href="https://help.hana.ondemand.com/help/frameset.htm?3762b229a4074fc59ac6a9ee7404f8c9.html">I followed this tutorial</a></p>
+<p>My app ended up here: http://79.125.55.249:8000/hello/</p>
+<p>I had to reboot the HANA server once in cal.sap.com, Eclipse lost the connection and could not reconnect.</p>
+<p><a href="http://www.saphana.com/docs/DOC-3017">Another tutorial</a></p>
+<h1>More advanced stuff</h1>
+<p>Login to the HANA server</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">SSH</span> <span class="k">into</span> <span class="n">the</span> <span class="n">HANA</span> <span class="p">(</span><span class="n">Suse</span><span class="p">)</span> <span class="n">server</span>
+<span class="n">ssh</span> <span class="o">-</span><span class="n">i</span> <span class="o">~/</span><span class="n">path</span><span class="o">/</span><span class="k">to</span><span class="o">/</span><span class="n">keypair</span><span class="p">.</span><span class="n">pem</span> <span class="n">root</span><span class="o">@&lt;</span><span class="n">IP</span><span class="o">&gt;</span>
+
+<span class="o">#</span> <span class="n">assuming</span> <span class="n">the</span> <span class="n">the</span> <span class="k">system</span> <span class="k">is</span> <span class="n">named</span> <span class="n">HDB</span>
+<span class="n">su</span> <span class="o">-</span> <span class="n">hdbadm</span>
+
+<span class="o">#</span> <span class="n">List</span> <span class="k">all</span> <span class="n">hosts</span>
+<span class="p">.</span><span class="o">/</span><span class="n">exe</span><span class="o">/</span><span class="n">sapcontrol</span> <span class="o">-</span><span class="n">nr</span> <span class="mi">0</span> <span class="o">-</span><span class="k">function</span> <span class="n">GetSystemInstanceList</span>
+</code></pre></div>
+
+
+<p>Commands:</p>
+<ul>
+<li>hdbsql</li>
+<li>hdbupdrep - update repository</li>
+</ul>
+<p>See the 'SAP HANA LCM Tools Reference Guide’ for the details.</p>
+<p>Web development IDE</p>
+<p><a href="http://scn.sap.com/community/developer-center/hana/blog/2013/11/27/hana-xs-development-with-the-new-web-ide">Howto setup</a> (not installed by default):</p>
+<p>Run docker on the AWS HANA server</p>
+<p>docker provides a good way to compartmentalize different technologies. This provides a way to run other technologies on the HANA server. I’ll se if I can use this when migrating old applications to HANA. Running HANA servers is rather costly and this is a way to keep the total cost manageable.</p>
+<p><a href="https://docs.docker.com/installation/openSUSE/">Instructions for installation of docker on SuSE</a></p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">check</span> <span class="n">SuSE</span> <span class="k">version</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">SuSE</span><span class="o">-</span><span class="n">release</span>
+<span class="n">SUSE</span> <span class="n">Linux</span> <span class="n">Enterprise</span> <span class="n">Server</span> <span class="mi">11</span> <span class="p">(</span><span class="n">x86_64</span><span class="p">)</span>
+<span class="k">VERSION</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">PATCHLEVEL</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="o">#</span> <span class="k">Version</span> <span class="mi">11</span><span class="p">.</span><span class="mi">4</span> <span class="k">is</span> <span class="n">the</span> <span class="n">lowest</span> <span class="n">supported</span> <span class="k">level</span> <span class="n">I</span> <span class="n">could</span> <span class="n">find</span>
+<span class="n">sudo</span> <span class="n">zypper</span> <span class="n">ar</span> <span class="o">-</span><span class="n">f</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">download</span><span class="p">.</span><span class="n">opensuse</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">repositories</span><span class="o">/</span><span class="n">Virtualization</span><span class="o">/</span><span class="n">openSUSE_11</span><span class="p">.</span><span class="mi">4</span><span class="o">/</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Hosted vs  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Hosted vs
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Hosted vs. private Cassandra NoSQL DB </p>
+<p>Alternatives:</p>
+<ul>
+<li>http://cassandra.io/ - smallest setup <code>Mira 4</code> costs $1810 /month</li>
+</ul>
+<p>Links:</p>
+<ul>
+<li>http://www.slideshare.net/davegardnerisme/running-cassandra-on-amazon-ec2</li>
+<li>http://www.cloudcomputingetc.com/2012/10/cassandraio-hosted-cassandra-up-to-10tb.html</li>
+</ul>
+<h2>Setup on private server</h2>
+<ul>
+<li>http://wiki.apache.org/cassandra/GettingStarted</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">cd</span> <span class="o">~/</span><span class="n">local</span>
+<span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">apache</span><span class="p">.</span><span class="n">mirrors</span><span class="p">.</span><span class="n">spacedump</span><span class="p">.</span><span class="n">net</span><span class="o">/</span><span class="n">cassandra</span><span class="o">/</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="o">/</span><span class="n">apache</span><span class="o">-</span><span class="n">cassandra</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">gunzip</span> <span class="n">apache</span><span class="o">-</span><span class="n">cassandra</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span> 
+<span class="n">tar</span> <span class="o">-</span><span class="n">xf</span> <span class="n">apache</span><span class="o">-</span><span class="n">cassandra</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="o">-</span><span class="n">bin</span><span class="p">.</span><span class="n">tar</span>
+<span class="n">cd</span> <span class="n">apache</span><span class="o">-</span><span class="n">cassandra</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="o">/</span>
+
+
+<span class="n">cat</span> <span class="n">README</span><span class="p">.</span><span class="n">txt</span> 
+
+<span class="c1"># We should do these steps according to the README</span>
+<span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">cassandra</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="ss">`whoami`</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">cassandra</span>
+<span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cassandra</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="ss">`whoami`</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cassandra</span>
+
+
+<span class="c1"># Let&#39;s try to start</span>
+<span class="p">.</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cassandra</span> <span class="o">-</span><span class="n">f</span>
+</code></pre></div>
+
+
+<p>An example of usage coped from the README file:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span> <span class="nt">Open</span> <span class="nt">a</span> <span class="nt">new</span> <span class="nt">shell</span> <span class="nt">and</span> <span class="nt">run</span> <span class="nt">some</span> <span class="nt">queries</span>
+<span class="o">./</span><span class="nt">bin</span><span class="o">/</span><span class="nt">cqlsh</span>
+
+  <span class="nt">cqlsh</span><span class="o">&gt;</span> <span class="nt">CREATE</span> <span class="nt">SCHEMA</span> <span class="nt">schema1</span> 
+         <span class="nt">WITH</span> <span class="nt">replication</span> <span class="o">=</span> <span class="p">{</span> <span class="err">&#39;class&#39;</span> <span class="err">:</span> <span class="err">&#39;SimpleStrategy&#39;,</span> <span class="err">&#39;replication_factor&#39;</span> <span class="err">:</span> <span class="err">1</span> <span class="p">}</span><span class="o">;</span>
+  <span class="nt">cqlsh</span><span class="o">&gt;</span> <span class="nt">USE</span> <span class="nt">schema1</span><span class="o">;</span>
+  <span class="nt">cqlsh</span><span class="p">:</span><span class="nd">Schema1</span><span class="o">&gt;</span> <span class="nt">CREATE</span> <span class="nt">TABLE</span> <span class="nt">users</span> <span class="o">(</span>
+                   <span class="nt">user_id</span> <span class="nt">varchar</span> <span class="nt">PRIMARY</span> <span class="nt">KEY</span><span class="o">,</span>
+                   <span class="nt">first</span> <span class="nt">varchar</span><span class="o">,</span>
+                   <span class="nt">last</span> <span class="nt">varchar</span><span class="o">,</span>
+                   <span class="nt">age</span> <span class="nt">int</span>
+                 <span class="o">);</span>
+  <span class="nt">cqlsh</span><span class="p">:</span><span class="nd">Schema1</span><span class="o">&gt;</span> <span class="nt">INSERT</span> <span class="nt">INTO</span> <span class="nt">users</span> <span class="o">(</span><span class="nt">user_id</span><span class="o">,</span> <span class="nt">first</span><span class="o">,</span> <span class="nt">last</span><span class="o">,</span> <span class="nt">age</span><span class="o">)</span> 
+                 <span class="nt">VALUES</span> <span class="o">(</span><span class="s1">&#39;jsmith&#39;</span><span class="o">,</span> <span class="s1">&#39;John&#39;</span><span class="o">,</span> <span class="s1">&#39;Smith&#39;</span><span class="o">,</span> <span class="nt">42</span><span class="o">);</span>
+  <span class="nt">cqlsh</span><span class="p">:</span><span class="nd">Schema1</span><span class="o">&gt;</span> <span class="nt">SELECT</span> <span class="o">*</span> <span class="nt">FROM</span> <span class="nt">users</span><span class="o">;</span>
+   <span class="nt">user_id</span> <span class="o">|</span> <span class="nt">age</span> <span class="o">|</span> <span class="nt">first</span> <span class="o">|</span> <span class="nt">last</span>
+    <span class="nt">jsmith</span> <span class="o">|</span>  <span class="nt">42</span> <span class="o">|</span>  <span class="nt">john</span> <span class="o">|</span> <span class="nt">smith</span>
+
+  <span class="nt">cqlsh</span><span class="p">:</span><span class="nd">Schema1</span><span class="o">&gt;</span> 
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

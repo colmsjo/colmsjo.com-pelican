@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>More Phonegap Apps  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		More Phonegap Apps
+	</div>
+	<div class="message-body has-text-dark">
+		<p>More Phonegap Apps</p>
+<p>Having created a basic Phonegap app in <a href="/121212_Phonegap">Getting started with Phonegap</a>,
+I now what do develop a simple real application.</p>
+<p>It will probably do us good to use some JavaScript frameworks in order keep things structured.</p>
+<p>I'll start with these:</p>
+<ul>
+<li>stapes MVC framework - http://hay.github.com/stapes/</li>
+<li>jQuery Mobile CSS - http://jquerymobile.com/test/docs/pages/phonegap.html</li>
+</ul>
+<p>I saw an article regarding problems with Phonegap and Bootstrap, so we're going for jQuery Mobile instead:</p>
+<ul>
+<li>http://www.eschrade.com/page/phonegap-and-bootstrap-not-lovers/</li>
+</ul>
+<p>It would be good with some grid system like 960.gs. I found this: http://jeromeetienne.github.com/jquery-mobile-960/</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;!DOCTYPE html&gt;</span> 
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="p">&gt;</span> 
+
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Simple Phonegap App<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+
+    <span class="c">&lt;!-- Stylesheets --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css&quot;</span> <span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;http://jeromeetienne.github.com/jquery-mobile-960/css/jquery-mobile-960.min.css&quot;</span> <span class="p">/&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+        <span class="p">#</span><span class="nn">results</span> <span class="nt">li</span><span class="p">.</span><span class="nc">pass</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="kc">green</span><span class="p">;</span> <span class="p">}</span>
+        <span class="p">#</span><span class="nn">results</span> <span class="nt">li</span><span class="p">.</span><span class="nc">fail</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="kc">red</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span> 
+
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span> 
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-role</span><span class="o">=</span><span class="s">&quot;page&quot;</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-role</span><span class="o">=</span><span class="s">&quot;header&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Phonegap App<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!-- /header --&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-role</span><span class="o">=</span><span class="s">&quot;content&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Yet to be converted into Phonegap app<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Using 12 column grid. Should use a smaller grid for phones<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Open the Console Log to see what&#39;s going on...<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+            <span class="p">&lt;</span><span class="nt">form</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;frm1&quot;</span> <span class="na">onsubmit</span><span class="o">=</span><span class="s">&quot;send()&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="p">&gt;</span>
+
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;container_12&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_6&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>First name:<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_6&quot;</span><span class="p">&gt;&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span>     <span class="na">name</span><span class="o">=</span><span class="s">&quot;firstname&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_6&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>Last name:<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_6&quot;</span><span class="p">&gt;&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span>     <span class="na">name</span><span class="o">=</span><span class="s">&quot;lastname&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_6&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>Password:<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_6&quot;</span><span class="p">&gt;&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;password&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;pwd&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;grid_12&quot;</span><span class="p">&gt;&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span>  <span class="na">value</span><span class="o">=</span><span class="s">&quot;Submit Button&quot;</span> <span class="p">/&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+            <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+
+            <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;results&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!-- /content --&gt;</span>
+
+
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-role</span><span class="o">=</span><span class="s">&quot;footer&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">h4</span><span class="p">&gt;</span>Footer content<span class="p">&lt;/</span><span class="nt">h4</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!-- /footer --&gt;</span>
+
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="c">&lt;!-- /page --&gt;</span>
+
+    <span class="c">&lt;!-- Scripts at the end for better performance --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;http://code.jquery.com/jquery-1.8.2.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://raw.github.com/colmsjo/helpersjs/master/lib/js/stapes.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://raw.github.com/colmsjo/helpersjs/master/helpers.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+
+    <span class="kd">var</span> <span class="nx">h</span> <span class="o">=</span> <span class="nx">helpers</span><span class="p">.</span><span class="nx">create</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">Module</span> <span class="o">=</span> <span class="nx">Stapes</span><span class="p">.</span><span class="nx">create</span><span class="p">();</span>
+
+    <span class="kd">function</span> <span class="nx">send</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">Module</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span> <span class="c1">// &#39;woot! ready!&#39;</span>
+    <span class="p">}</span>
+
+    <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+
+        <span class="nx">h</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s2">&quot;Testing to use the stapes library.&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+
+            <span class="nx">Module</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+                <span class="s2">&quot;send&quot;</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="k">this</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+
+            <span class="nx">Module</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">h</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Welcome &quot;</span> <span class="o">+</span> <span class="nb">document</span><span class="p">.</span><span class="nx">forms</span><span class="p">[</span><span class="s2">&quot;frm1&quot;</span><span class="p">][</span><span class="s2">&quot;firstname&quot;</span><span class="p">].</span><span class="nx">value</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> 
+                    <span class="nb">document</span><span class="p">.</span><span class="nx">forms</span><span class="p">[</span><span class="s2">&quot;frm1&quot;</span><span class="p">][</span><span class="s2">&quot;lastname&quot;</span><span class="p">].</span><span class="nx">value</span> <span class="o">+</span> <span class="s2">&quot; with password &quot;</span> <span class="o">+</span> 
+                    <span class="nb">document</span><span class="p">.</span><span class="nx">forms</span><span class="p">[</span><span class="s2">&quot;frm1&quot;</span><span class="p">][</span><span class="s2">&quot;pwd&quot;</span><span class="p">].</span><span class="nx">value</span><span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">)</span>
+            <span class="p">});</span>
+        <span class="p">});</span>
+
+    <span class="p">};</span>
+
+
+    <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

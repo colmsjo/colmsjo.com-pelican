@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>NoSQL DB with REST API  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		NoSQL DB with REST API
+	</div>
+	<div class="message-body has-text-dark">
+		<p>NoSQL DB with REST API</p>
+<p>I played around with Cassandra which was really easy to install and to get started with.
+BUT it don't have a REST API and is likely difficult to access directly from JavaScript
+in a browser (something I'd like to do).</p>
+<p>This article has a nice summary of NoSQL DBs:</p>
+<ul>
+<li>http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis</li>
+</ul>
+<p>Riak, CouchDB, HBase and Neo4j have REST API:s. I'd also like to have Haddop support so I'll
+ test HBase.</p>
+<p>## Install HBase from source</p>
+<div class="highlight"><pre><span></span><code><span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">apache</span><span class="p">.</span><span class="n">mirror3</span><span class="p">.</span><span class="n">ip</span><span class="o">-</span><span class="k">only</span><span class="p">.</span><span class="n">net</span><span class="o">/</span><span class="n">hbase</span><span class="o">/</span><span class="k">stable</span><span class="o">/</span><span class="n">hbase</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">94</span><span class="p">.</span><span class="mi">5</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">tar</span> <span class="o">-</span><span class="n">xzf</span> <span class="n">hbase</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">94</span><span class="p">.</span><span class="mi">5</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span> 
+<span class="n">cd</span> <span class="n">hbase</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">94</span><span class="p">.</span><span class="mi">5</span>
+
+<span class="n">cat</span> <span class="n">README</span><span class="p">.</span><span class="n">txt</span> 
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code>nano conf/hbase-site.xml
+
+
+  <span class="nt">&lt;property&gt;</span>
+    <span class="nt">&lt;name&gt;</span>hbase.rootdir<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;value&gt;</span>file:///tmp/hbase<span class="nt">&lt;/value&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property&gt;</span>
+    <span class="nt">&lt;name&gt;</span>hbase.zookeeper.property.dataDir<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;value&gt;</span>/tmp/zookeeper<span class="nt">&lt;/value&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+</code></pre></div>
+
+
+<p>Let's try to start:</p>
+<div class="highlight"><pre><span></span><code><span class="err">./bin/start-hbase.sh</span>
+</code></pre></div>
+
+
+<p>Check the log file:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cat  /Users/jonas/local/hbase-0.94.5/bin/../logs/hbase-jonas-master-Gizur-Laptop-5.local.out</span>
+<span class="err">2013-03-12 13:59:26.806 java[5294:217] Unable to load realm info from SCDynamicStore</span>
+</code></pre></div>
+
+
+<h2>Install HBase using brew</h2>
+<ul>
+<li>http://jamil.fluidsoul.net/2011/06/28/getting-hbase-and-thrift-running-on-a-mac</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err">brew install hbase</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="err">ls /usr/local/Cellar/hbase/0.94.4</span>
+<span class="err">ls /usr/local/bin/hbase*</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code>nano /usr/local/Cellar/hbase/0.94.4/libexec/conf/hbase-site.xml 
+
+  <span class="nt">&lt;property&gt;</span>
+    <span class="nt">&lt;name&gt;</span>hbase.rootdir<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;value&gt;</span>file:///tmp/hbase<span class="nt">&lt;/value&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property&gt;</span>
+    <span class="nt">&lt;name&gt;</span>hbase.zookeeper.property.dataDir<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;value&gt;</span>/tmp/zookeeper<span class="nt">&lt;/value&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+</code></pre></div>
+
+
+<p>Now start hbase:</p>
+<div class="highlight"><pre><span></span><code><span class="n">export</span> <span class="n">HADOOP_OPTS</span><span class="o">=</span><span class="ss">&quot;-Djava.security.krb5.realm= -Djava.security.krb5.kdc=&quot;</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">hbase</span><span class="o">/</span><span class="mi">0</span><span class="p">.</span><span class="mi">94</span><span class="p">.</span><span class="mi">4</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="k">start</span><span class="o">-</span><span class="n">hbase</span><span class="p">.</span><span class="n">sh</span> 
+
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">hbase</span><span class="o">/</span><span class="mi">0</span><span class="p">.</span><span class="mi">94</span><span class="p">.</span><span class="mi">4</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">stop</span><span class="o">-</span><span class="n">hbase</span><span class="p">.</span><span class="n">sh</span> 
+</code></pre></div>
+
+
+<p>I'm getting the same error as above. This seams to be a Java/Kerberos related problem. 
+OSX has JRE 1.6 and this is fixed in JRE 1.7. </p>
+<p>This don't work either</p>
+<h2>HBase on Elastic Map Reduce (EMR)</h2>
+<p>AWS has a Hadoop and HBase service. This makes it easy to start a EC2-cluster with HBase.</p>
+<p>See separate post from 130227 regarding howto get started with EMR. All that is needed in
+addition is --hbase flag.</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">Start</span> <span class="k">new</span> <span class="n">job</span>
+<span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--create --hbase --instance-type m1.large --alive</span>
+
+<span class="o">#</span> <span class="n">Login</span> <span class="k">using</span> <span class="n">ssh</span>
+<span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--ssh --jobflow &lt;JOBFLOWID&gt;</span>
+
+<span class="o">#</span> <span class="k">Start</span> <span class="n">hbase</span> <span class="n">shell</span>
+<span class="p">.</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">hbase</span> <span class="n">shell</span>
+</code></pre></div>
+
+
+<h2>Example using hbase</h2>
+<p>Start the hbase shell and run:</p>
+<p>```
+create 'table', 'column'</p>
+<p>put 'table', 'key', 'column', 'value'</p>
+<p>scan 'table'</p>
+<p>get 'table', 'key'</p>
+<p>``</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

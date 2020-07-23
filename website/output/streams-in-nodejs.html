@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Streams in NodeJS  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Streams in NodeJS
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Links:</p>
+<ul>
+<li>https://github.com/substack/stream-handbook</li>
+<li>http://nodejs.org/api/stream.html</li>
+<li>http://nodejs.org/api/http.html</li>
+</ul>
+<p>First make sure you have an updated version of node: <code>node --version</code> should show at least v.0.10.13.
+Use nvm (node version manager) to upgrade node, see: https://github.com/creationix/nvm</p>
+<h2>Simple exmaple of stream</h2>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="n">Readable</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;stream&#39;</span><span class="p">).</span><span class="n">Readable</span><span class="p">;</span>
+<span class="n">var</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">Readable</span><span class="p">();</span>
+
+<span class="n">var</span> <span class="k">c</span> <span class="o">=</span> <span class="mi">97</span><span class="p">;</span>
+<span class="n">rs</span><span class="p">.</span><span class="n">_read</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span> <span class="err">{</span>
+    <span class="n">rs</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">String</span><span class="p">.</span><span class="n">fromCharCode</span><span class="p">(</span><span class="k">c</span><span class="o">++</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">c</span> <span class="o">&gt;</span> <span class="s1">&#39;z&#39;</span><span class="p">.</span><span class="n">charCodeAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span> <span class="n">rs</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="k">null</span><span class="p">);</span>
+<span class="err">}</span><span class="p">;</span>
+
+<span class="n">rs</span><span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">process</span><span class="p">.</span><span class="k">stdout</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>The stream is open and will pull new data with <code>_read</code> until is is closed. <code>rs.push(null)</code> closes the stream. The <code>rs._read</code> function that we've defined generates one character each time it is called. </p>
+<h2>Stream both HTTP request and response</h2>
+<p>Write (stream) status to HTTP response as the file is uploaded.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">express</span> <span class="o">=</span> <span class="nt">require</span><span class="o">(</span><span class="s1">&#39;express&#39;</span><span class="o">);</span>
+<span class="nt">var</span> <span class="nt">app</span> <span class="o">=</span> <span class="nt">express</span><span class="o">();</span>
+
+
+<span class="nt">app</span><span class="p">.</span><span class="nc">post</span><span class="o">(</span><span class="s1">&#39;/&#39;</span><span class="o">,</span> <span class="nt">function</span><span class="o">(</span><span class="nt">req</span><span class="o">,</span> <span class="nt">res</span><span class="o">)</span><span class="p">{</span>
+    <span class="err">var</span> <span class="err">size</span> <span class="err">=</span> <span class="err">0</span><span class="p">;</span>
+
+    <span class="err">req.on(&#39;data&#39;,</span> <span class="err">function</span> <span class="err">(data)</span> <span class="err">{</span>
+        <span class="err">size</span> <span class="err">+=</span> <span class="err">data.length</span><span class="p">;</span>
+        <span class="err">var</span> <span class="err">msg</span> <span class="err">=</span> <span class="err">&#39;Got</span> <span class="n">chunk</span><span class="p">:</span> <span class="s1">&#39; + data.length + &#39;</span> <span class="n">total</span><span class="o">:</span> <span class="s1">&#39; + size;</span>
+<span class="s1">        console.log(msg);</span>
+<span class="s1">        res.write(msg+&quot;\n&quot;);</span>
+<span class="s1">    });</span>
+
+<span class="s1">    req.on(&#39;</span><span class="kc">end</span><span class="s1">&#39;, function () {</span>
+<span class="s1">        var msg = &quot;total size = &quot; + size;</span>
+<span class="s1">        console.log(msg);</span>
+<span class="s1">        res.write(msg+&quot;\n&quot;);</span>
+<span class="s1">        res.end(&quot;Thanks\n&quot;);</span>
+<span class="s1">    });</span>
+
+<span class="s1">    req.on(&#39;</span><span class="n">error</span><span class="s1">&#39;, function(e) {</span>
+<span class="s1">        var msg = &quot;ERROR ERROR: &quot; + e.message;</span>
+<span class="s1">        console.log(msg);</span>
+<span class="s1">        res.write(msg+&quot;\n&quot;);</span>
+<span class="s1">    });</span>
+
+<span class="s1">});</span>
+
+<span class="s1">app.listen(3000);</span>
+<span class="s1">console.log(&#39;</span><span class="n">Listening</span> <span class="kc">on</span> <span class="n">port</span> <span class="mi">3000</span><span class="err">&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>On the client side:</p>
+<ol>
+<li>create a tar to send: <code>tar -cf js.tar *.js</code></li>
+<li>Test with curl: <code>curl -H "Content-type: application/tar" --data-binary @js.tar http://localhost:3000/</code></li>
+</ol>
+<h2>Now let's see if we can do the client in JavaScript.</h2>
+<p>The HTTP request library works with streams, https://github.com/mikeal/request:</p>
+<p>Install the request library in the current directory: <code>npm install request</code></p>
+<div class="highlight"><pre><span></span><code><span class="err">var fs = require(&#39;fs&#39;);</span>
+<span class="err">var request = require(&#39;request&#39;);</span>
+<span class="err">fs.createReadStream(&#39;js.tar&#39;).pipe(request.post(&#39;http://localhost:3000/&#39;));</span>
+</code></pre></div>
+
+
+<p>This don't show the status since we don't handle the reponse at all:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">http</span> <span class="o">=</span> <span class="nt">require</span><span class="o">(</span><span class="s1">&#39;http&#39;</span><span class="o">);</span>
+
+<span class="nt">var</span> <span class="nt">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">hostname</span><span class="p">:</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+  <span class="n">port</span><span class="o">:</span> <span class="mi">3000</span><span class="p">,</span>
+  <span class="n">path</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+  <span class="n">method</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span>
+<span class="p">}</span><span class="o">;</span>
+
+<span class="nt">var</span> <span class="nt">req</span> <span class="o">=</span> <span class="nt">http</span><span class="p">.</span><span class="nc">request</span><span class="o">(</span><span class="nt">options</span><span class="o">,</span> <span class="nt">function</span><span class="o">(</span><span class="nt">res</span><span class="o">)</span> <span class="p">{</span>
+  <span class="err">console.log(&#39;</span><span class="n">STATUS</span><span class="p">:</span> <span class="s1">&#39; + res.statusCode);</span>
+<span class="s1">  console.log(&#39;</span><span class="n">HEADERS</span><span class="o">:</span> <span class="s1">&#39; + JSON.stringify(res.headers));</span>
+
+<span class="s1">  res.setEncoding(&#39;</span><span class="n">utf8</span><span class="s1">&#39;);</span>
+<span class="s1">  res.on(&#39;</span><span class="n">data</span><span class="s1">&#39;, function (chunk) {</span>
+<span class="s1">    console.log(&#39;</span><span class="n">BODY</span><span class="o">:</span> <span class="s1">&#39; + chunk);</span>
+<span class="s1">  });</span>
+
+<span class="s1">});</span>
+
+<span class="s1">req.on(&#39;</span><span class="n">error</span><span class="s1">&#39;, function(e) {</span>
+<span class="s1">  console.log(&#39;</span><span class="n">problem</span> <span class="n">with</span> <span class="n">request</span><span class="o">:</span> <span class="s1">&#39; + e.message);</span>
+<span class="s1">});</span>
+
+<span class="s1">// write data to request body</span>
+<span class="s1">req.write(&#39;</span><span class="n">data</span><span class="err">\</span><span class="n">n</span><span class="s1">&#39;);</span>
+<span class="s1">req.write(&#39;</span><span class="n">data</span><span class="err">\</span><span class="n">n</span><span class="err">&#39;</span><span class="p">);</span>
+<span class="err">req.end()</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>Now we also the the status as the data is sent but we don't send a file:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">http</span> <span class="o">=</span> <span class="nt">require</span><span class="o">(</span><span class="s1">&#39;http&#39;</span><span class="o">);</span>
+
+<span class="nt">var</span> <span class="nt">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">hostname</span><span class="p">:</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+  <span class="n">port</span><span class="o">:</span> <span class="mi">3000</span><span class="p">,</span>
+  <span class="n">path</span><span class="o">:</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+  <span class="n">method</span><span class="o">:</span> <span class="s1">&#39;POST&#39;</span>
+<span class="p">}</span><span class="o">;</span>
+
+<span class="nt">var</span> <span class="nt">req</span> <span class="o">=</span> <span class="nt">http</span><span class="p">.</span><span class="nc">request</span><span class="o">(</span><span class="nt">options</span><span class="o">,</span> <span class="nt">function</span><span class="o">(</span><span class="nt">res</span><span class="o">)</span> <span class="p">{</span>
+  <span class="err">console.log(&#39;</span><span class="n">STATUS</span><span class="p">:</span> <span class="s1">&#39; + res.statusCode);</span>
+<span class="s1">  console.log(&#39;</span><span class="n">HEADERS</span><span class="o">:</span> <span class="s1">&#39; + JSON.stringify(res.headers));</span>
+
+<span class="s1">  res.setEncoding(&#39;</span><span class="n">utf8</span><span class="s1">&#39;);</span>
+<span class="s1">  res.on(&#39;</span><span class="n">data</span><span class="s1">&#39;, function (chunk) {</span>
+<span class="s1">    console.log(&#39;</span><span class="n">BODY</span><span class="o">:</span> <span class="s1">&#39; + chunk);</span>
+<span class="s1">  });</span>
+
+<span class="s1">});</span>
+
+<span class="s1">req.on(&#39;</span><span class="n">error</span><span class="s1">&#39;, function(e) {</span>
+<span class="s1">  console.log(&#39;</span><span class="n">problem</span> <span class="n">with</span> <span class="n">request</span><span class="o">:</span> <span class="s1">&#39; + e.message);</span>
+<span class="s1">});</span>
+
+<span class="s1">// write data to the http.ClientRequest (which is a stream) returned by http.request() </span>
+<span class="s1">var fs = require(&#39;</span><span class="n">fs</span><span class="s1">&#39;);</span>
+<span class="s1">fs.createReadStream(&#39;</span><span class="n">js</span><span class="o">.</span><span class="n">tar</span><span class="err">&#39;</span><span class="p">)</span><span class="o">.</span><span class="nf">pipe</span><span class="p">(</span><span class="n">req</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>NOTE: Make sure not to call <code>req.end()</code> when using pipes since this will close the stream pre-maturely.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

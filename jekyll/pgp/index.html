@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <link rel='stylesheet' type='test/css' href='./bower_components/normalize.css/normalize.css'>
+</head>
+<body>
+
+  <h3>Simple encryption/decryption App</h3>
+
+  <p><a href='https://keybase.io'>Keybase</a> PGP JavaScript library is used for
+  encrypting and decrypting mesdsages.</p>
+
+  <textarea rows='10' cols='80' id='publickey'>PGP Public Key</textarea><br/>
+  <textarea rows='10' cols='80' id='privatekey'>PGP Private Key</textarea><br/>
+  <textarea rows='1' cols='80' id='passphrase'>passphrase</textarea><br/>
+  <textarea rows='10' cols='80' id='cleartext'>Cleartext message</textarea><br/>
+  <textarea rows='10' cols='80' id='encrypted'>Encrypted message</textarea><br/>
+
+  <input type='button' value='loadKeys' id='loadKeys'/>
+  <input type='button' value='encrypt' id='encrypt'/>
+  <input type='button' value='decrypt' id='decrypt'/>
+
+  <hr/>
+  <div id='log'></div>
+
+  <script src='./bower_components/kbpgp/rel/kbpgp-2.0.3-min.js'></script>
+  <script>
+    var self = window;
+
+    var log = function(msg) {
+      document.getElementById('log').innerHTML += msg + '<br>';
+    };
+
+    var logDebug = logError = log;
+
+    var init = function() {
+      log('STARTED APP');
+    };
+
+    var addToKeyRing = function (kms) {
+      self.keyRing = new kbpgp.keyring.KeyRing();
+      for (var i in kms) {
+        self.keyRing.add_key_manager(kms[i]);
+      }
+
+    };
+
+    var loadKeys = function() {
+      log('LOAD KEYS');
+
+      var publicKey = document.getElementById('publickey').value
+      var privateKey = document.getElementById('privatekey').value;
+      var passphrase = document.getElementById('passphrase').value;
+
+      kbpgp.KeyManager.import_from_armored_pgp({
+        armored: publicKey
+       }, function(err, key) {
+         if (!err) {
+           self.publicKeyManager = key;
+           log("Public key is loaded");
+        } else {
+          logError('Could not log public key: ' + err);
+        }
+
+      });
+
+      kbpgp.KeyManager.import_from_armored_pgp({
+        armored: privateKey
+      }, function(err, keyManager) {
+        if (!err) {
+          if (keyManager.is_pgp_locked()) {
+            keyManager.unlock_pgp({
+              passphrase: passphrase
+            }, function(err) {
+              if (!err) {
+                self.privateKeyManager = keyManager;
+
+                log("Loaded private key with passphrase");
+              }
+            });
+          } else {
+            self.privateKeyManager = keyManager;
+            log("Loaded private key w/o passphrase");
+          }
+        } else {
+          logError('Could not log private key: ' + err);
+        }
+
+        addToKeyRing([keyManager]);
+      });
+
+    };
+
+    var decrypt = function () {
+      log('DECRYPT');
+
+      var encrypted = document.getElementById('encrypted').value;
+
+      kbpgp.unbox({
+        keyfetch: self.keyRing,
+        armored: encrypted
+      }, function(err, literals) {
+        if (err != null) {
+          return log("Problem: " + err);
+        } else {
+          log("decrypted message");
+          document.getElementById('cleartext').value  = literals[0].toString();
+
+          var ds = km = null;
+          ds = literals[0].get_data_signer();
+          if (ds) { km = ds.get_key_manager(); }
+          if (km) {
+            log("Signed by PGP fingerprint");
+            log(km.get_pgp_fingerprint().toString('hex'));
+          }
+        }
+      });
+
+    };
+
+    var encrypt = function() {
+      log('ENCRYPT');
+
+      var clearText = document.getElementById('cleartext').value;
+
+      var params = {
+        encrypt_for: self.publicKeyManager,
+        sign_with:   self.privateKeyManager,
+        msg:         clearText
+      };
+
+      kbpgp.box(params, function(err, result_string, result_buffer) {
+        if (err) {
+          log('Error encryprting: ' + err);
+        }
+
+        document.getElementById('encrypted').value = result_string;
+      });
+
+    };
+
+    document.getElementById('encrypt').addEventListener("click", encrypt);
+    document.getElementById('decrypt').addEventListener("click", decrypt);
+    document.getElementById('loadKeys').addEventListener("click", loadKeys);
+
+    document.addEventListener("DOMContentLoaded", init );
+
+  </script>
+
+</body>
+</html>

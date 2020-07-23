@@ -1,0 +1,28 @@
+{
+  "name": "simple-pgp",
+  "version": "0.0.1",
+  "homepage": "https://github.com/colmsjo/devel2",
+  "authors": [
+    "Jonas Colmsjö <jonas.colmsjo@gizur.com>"
+  ],
+  "description": "Simple PGP encrypt/decrypt app",
+  "main": "index.html",
+  "keywords": [
+    "PGP",
+    "security",
+    "encryption"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "kbpgp": "~2.0.6",
+    "normalize.css": "~3.0.2"
+  }
+}

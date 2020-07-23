@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>JavaScript constructs  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		JavaScript constructs
+	</div>
+	<div class="message-body has-text-dark">
+		<h1>Introduction</h1>
+<p>JavaScript is a language that supportes many programming paradigms, for instance
+object-oriented, functional and imperative. It's syntax has some similarities with
+Java which comes from the C programming language. It actually behaves more like a
+functional programming language like Schema or Lisp. The Script part in the name is just
+confusing since it is a very capable language. It is dynamically typed which
+means that variables don't have to be assigned static types. Also, it is interpreted
+and not compiled like for instance Java and C.</p>
+<p>There has been a lot of confusion around how usefull JavaScript is. It is very capable
+and now it has become the most widespread platform since all browsers are build around JavaScript,
+or ECMAScript as is actually is named. It is also becoming strong on the server
+side and Microsoft and SAP are for instance working with JavaScript on the server
+side. There is also NodeJS which is a port of Google's V8 engine for server side
+development. NodeJS asynchronous model makes it very suitable for performance
+intensive applications.</p>
+<p>If you haven't done it before, open the JavaScript console in your browser.
+The menu paths differ between browsers but it is always theere, just google
+if you can't find it.</p>
+<h1>Prototypes</h1>
+<p>JavaScript uses prototype based inheritance. This means that each object has a
+prototype. Whenever a property can't be find in an object is the prototype
+searched, and then it's prototype, and so on. Object.create is one way
+of setting up the prototype chain.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="err">p.c = 3.1415;</span>
+<span class="err">console.log(o.a); // 1</span>
+<span class="err">console.log(p.a); // 1</span>
+<span class="err">o.hasOwnProperty(&#39;a&#39;); // true</span>
+<span class="err">p.hasOwnProperty(&#39;a&#39;); // false</span>
+</code></pre></div>
+
+
+<p>The other way of creating object is with functions which also are constructors:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">q</span><span class="p">.</span><span class="nc">prototype</span> <span class="o">=</span> <span class="p">{</span> <span class="n">print</span><span class="p">:</span> <span class="nf">function</span><span class="p">()</span> <span class="err">{</span> <span class="n">console</span><span class="o">.</span><span class="nf">log</span><span class="p">(</span><span class="n">JSON</span><span class="err">.</span><span class="nf">stringify</span><span class="p">(</span><span class="n">this</span><span class="p">));</span> <span class="p">}</span> <span class="err">}</span><span class="o">;</span>
+<span class="nt">var</span> <span class="nt">i</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">q</span><span class="o">();</span>
+<span class="nt">i</span><span class="p">.</span><span class="nc">print</span><span class="o">();</span>
+
+<span class="o">//</span> <span class="nt">This</span> <span class="nt">won</span><span class="err">&#39;</span><span class="nt">t</span> <span class="nt">work</span> <span class="nt">since</span> <span class="nt">o</span> <span class="nt">has</span> <span class="nt">no</span> <span class="nt">constructor</span>
+<span class="nt">o</span><span class="p">.</span><span class="nc">prototype</span> <span class="o">=</span> <span class="p">{</span> <span class="n">print</span><span class="p">:</span> <span class="nf">function</span><span class="p">()</span> <span class="err">{</span> <span class="n">console</span><span class="o">.</span><span class="nf">log</span><span class="p">(</span><span class="n">JSON</span><span class="err">.</span><span class="nf">stringify</span><span class="p">(</span><span class="n">this</span><span class="p">));</span> <span class="p">}</span> <span class="err">}</span><span class="o">;</span>
+<span class="nt">var</span> <span class="nt">j</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">o</span><span class="o">();</span>
+<span class="nt">j</span><span class="p">.</span><span class="nc">print</span><span class="o">();</span>
+</code></pre></div>
+
+
+<p>Prototypes are used to share functions between objects:</p>
+<div class="highlight"><pre><span></span><code><span class="err">q_.prototype = q.prototype;</span>
+<span class="err">var i_ = new q_();</span>
+<span class="err">i_.print();</span>
+</code></pre></div>
+
+
+<p>The proper way of inheriting q in q_ is like this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">q_.prototype = Object.create(q.prototype);</span>
+<span class="err">var i_ = new q_();</span>
+<span class="err">i_.print();</span>
+</code></pre></div>
+
+
+<p>Node's inherits function</p>
+<p>Node has a convenience function for inheritance.</p>
+<div class="highlight"><pre><span></span><code><span class="err">var inherits = function (ctor, superCtor) {</span>
+<span class="err">    ctor.super_ = superCtor;</span>
+<span class="err">    ctor.prototype = Object.create(superCtor.prototype, {</span>
+<span class="err">        constructor: {</span>
+<span class="err">            value: ctor,</span>
+<span class="err">            enumerable: false</span>
+<span class="err">        }</span>
+<span class="err">    });</span>
+<span class="err">};</span>
+</code></pre></div>
+
+
+<h1>Objects and properties</h1>
+<p>The common way working with properties is like this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">o.prop = &#39;one&#39;;</span>
+<span class="err">console.log(o.prop);</span>
+</code></pre></div>
+
+
+<p>But JavaScript allows a lot of control of properties:</p>
+<div class="highlight"><pre><span></span><code><span class="err">var p = Object.defineProperties(o, {</span>
+<span class="err">  &quot;property1&quot;: {</span>
+<span class="err">    configurable: false,</span>
+<span class="err">    enumerable: true,</span>
+<span class="err">    value: true,</span>
+<span class="err">    writable: true,</span>
+<span class="err">  },</span>
+<span class="err">  &quot;property2&quot;: {</span>
+<span class="err">    value: &quot;Hello&quot;,</span>
+<span class="err">    writable: false</span>
+<span class="err">  },</span>
+<span class="err">  &quot;property3&quot;: {</span>
+<span class="err">    set: function(v) { this.v = v;},</span>
+<span class="err">    get: function() { return this.v;}</span>
+<span class="err">  }</span>
+<span class="err">});</span>
+</code></pre></div>
+
+
+<h1>Private and privileges functions</h1>
+<p>Private functions are not accessable to the outside world. Privileged functions
+are accessable to public functions and the outside world.</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span> <span class="k">class</span> <span class="k">with</span> <span class="n">private</span> <span class="k">and</span> <span class="n">privileged</span> <span class="n">functions</span>
+<span class="n">var</span> <span class="n">f2</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="nb">text</span><span class="p">)</span> <span class="err">{</span>
+
+    <span class="n">var</span> <span class="n">_message</span> <span class="o">=</span> <span class="nb">text</span><span class="p">;</span>    <span class="o">//</span> <span class="n">private</span> <span class="k">variable</span>
+    <span class="n">this</span><span class="p">.</span><span class="n">_message</span> <span class="o">=</span> <span class="nb">text</span><span class="p">;</span>   <span class="o">//</span> <span class="n">privileged</span> <span class="k">variable</span>
+
+    <span class="o">//</span> <span class="n">this</span> <span class="k">function</span> <span class="k">is</span> <span class="k">not</span> <span class="n">accessable</span> <span class="k">to</span> <span class="k">public</span> <span class="k">function</span>
+    <span class="n">var</span> <span class="n">privateFunc</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span> <span class="err">{</span> <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">_message</span><span class="p">);</span> <span class="err">}</span><span class="p">;</span>
+
+    <span class="o">//</span> <span class="n">This</span> <span class="k">function</span> <span class="k">is</span> <span class="n">accessable</span>
+    <span class="n">this</span><span class="p">.</span><span class="n">privilegedFunc</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span> <span class="err">{</span> <span class="n">privateFunc</span><span class="p">();</span> <span class="err">}</span><span class="p">;</span>
+<span class="err">}</span><span class="p">;</span>
+
+<span class="n">f2</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">publicFunc1</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span> <span class="err">{</span>
+  <span class="n">privateFunc</span><span class="p">();</span>
+<span class="err">}</span><span class="p">;</span>
+
+<span class="n">f2</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">publicFunc2</span> <span class="o">=</span> <span class="k">function</span> <span class="p">()</span> <span class="err">{</span>
+  <span class="n">this</span><span class="p">.</span><span class="n">privilegedFunc</span><span class="p">();</span>
+<span class="err">}</span><span class="p">;</span>
+
+<span class="n">var</span> <span class="n">i1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">f2</span><span class="p">(</span><span class="s1">&#39;Message to print&#39;</span><span class="p">);</span>
+<span class="n">i1</span><span class="p">.</span><span class="n">publicFunc1</span><span class="p">();</span> <span class="o">//</span> <span class="n">This</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="k">work</span>
+<span class="n">i1</span><span class="p">.</span><span class="n">publicFunc2</span><span class="p">();</span> <span class="o">//</span> <span class="n">This</span> <span class="n">works</span>
+</code></pre></div>
+
+
+<h1>Strange <code>this</code> behaviour in inner functions</h1>
+<p><code>this</code> don't refer to the object you'd expect when used in functions.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">f</span> <span class="o">=</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{}</span><span class="o">;</span>
+<span class="nt">f</span><span class="p">.</span><span class="nc">prototype</span><span class="p">.</span><span class="nc">g</span> <span class="o">=</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{</span>
+  <span class="err">var</span> <span class="err">_that</span> <span class="err">=</span> <span class="err">this</span><span class="p">;</span>
+  <span class="err">_that.a</span>     <span class="err">=</span> <span class="err">&#39;A&#39;</span><span class="p">;</span>
+  <span class="err">this.b</span>      <span class="err">=</span> <span class="err">&#39;B&#39;</span><span class="p">;</span>
+
+  <span class="err">var</span> <span class="err">printThis</span> <span class="err">=</span> <span class="err">function()</span> <span class="err">{</span> <span class="err">console.log(this.b)</span><span class="p">;</span> <span class="p">}</span><span class="o">;</span>
+  <span class="nt">var</span> <span class="nt">printThat</span> <span class="o">=</span> <span class="nt">function</span><span class="o">()</span> <span class="p">{</span> <span class="err">console.log(_that.a)</span><span class="p">;</span> <span class="p">}</span><span class="o">;</span>
+
+  <span class="nt">console</span><span class="p">.</span><span class="nc">log</span><span class="o">(</span><span class="s1">&#39;THIS:&#39;</span><span class="o">);</span>
+  <span class="nt">printThis</span><span class="o">();</span>
+  <span class="nt">console</span><span class="p">.</span><span class="nc">log</span><span class="o">(</span><span class="s1">&#39;THAT:&#39;</span><span class="o">);</span>
+  <span class="nt">printThat</span><span class="o">();</span>
+<span class="err">}</span><span class="o">;</span>
+
+<span class="nt">var</span> <span class="nt">i</span> <span class="o">=</span> <span class="nt">new</span> <span class="nt">f</span><span class="o">();</span>
+<span class="nt">i</span><span class="p">.</span><span class="nc">g</span><span class="o">();</span>
+</code></pre></div>
+
+
+<h1><code>this</code> gotchas</h1>
+<p>The value of <code>this</code> differs depending on how the function is called. Also
+<code>this</code> refers to the global object in a baseless function like <code>f1</code> below.</p>
+<div class="highlight"><pre><span></span><code><span class="err">function f1() {</span>
+<span class="err">  console.log(this);</span>
+<span class="err">}</span>
+<span class="err">f1();</span>
+<span class="err">var obj1 = { id: &quot;Foo&quot;};</span>
+<span class="err">f1.call(obj1);</span>
+</code></pre></div>
+
+
+<h1><code>bind()</code></h1>
+<p><code>bind</code>changes the value of <code>this</code>:</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">this</span><span class="p">.</span><span class="nc">x</span> <span class="o">=</span> <span class="nt">9</span><span class="o">;</span>
+<span class="nt">var</span> <span class="nt">module</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">x</span><span class="p">:</span> <span class="mi">81</span><span class="p">,</span>
+  <span class="n">getX</span><span class="o">:</span> <span class="nf">function</span><span class="p">()</span> <span class="err">{</span> <span class="n">return</span> <span class="n">this</span><span class="o">.</span><span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+<span class="err">}</span><span class="o">;</span>
+
+<span class="nt">module</span><span class="p">.</span><span class="nc">getX</span><span class="o">();</span> <span class="o">//</span> <span class="nt">81</span>
+
+<span class="nt">var</span> <span class="nt">getX</span> <span class="o">=</span> <span class="nt">module</span><span class="p">.</span><span class="nc">getX</span><span class="o">;</span>
+<span class="nt">getX</span><span class="o">();</span> <span class="o">//</span> <span class="nt">9</span><span class="o">,</span> <span class="nt">because</span> <span class="nt">in</span> <span class="nt">this</span> <span class="nt">case</span><span class="o">,</span> <span class="s2">&quot;this&quot;</span> <span class="nt">refers</span> <span class="nt">to</span> <span class="nt">the</span> <span class="nt">global</span> <span class="nt">object</span>
+
+<span class="o">//</span> <span class="nt">Create</span> <span class="nt">a</span> <span class="nt">new</span> <span class="nt">function</span> <span class="nt">with</span> <span class="s1">&#39;this&#39;</span> <span class="nt">bound</span> <span class="nt">to</span> <span class="nt">module</span>
+<span class="nt">var</span> <span class="nt">boundGetX</span> <span class="o">=</span> <span class="nt">getX</span><span class="p">.</span><span class="nc">bind</span><span class="o">(</span><span class="nt">module</span><span class="o">);</span>
+<span class="nt">boundGetX</span><span class="o">();</span> <span class="o">//</span> <span class="nt">81</span>
+</code></pre></div>
+
+
+<h1>Closures</h1>
+<p>A closure is a special kind of object that combines two things: a function,
+and the environment in which that function was created.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span> <span class="n">makeFunc</span><span class="p">()</span> <span class="err">{</span>
+  <span class="n">var</span> <span class="n">name</span> <span class="o">=</span> <span class="ss">&quot;Mozilla&quot;</span><span class="p">;</span>
+  <span class="k">function</span> <span class="n">displayName</span><span class="p">()</span> <span class="err">{</span>
+    <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+  <span class="err">}</span>
+  <span class="k">return</span> <span class="n">displayName</span><span class="p">;</span>
+<span class="err">}</span>
+
+<span class="n">var</span> <span class="n">myFunc</span> <span class="o">=</span> <span class="n">makeFunc</span><span class="p">();</span>
+<span class="n">myFunc</span><span class="p">();</span>
+</code></pre></div>
+
+
+<h1>Streams</h1>
+<p>This an example of a custom stream:</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span> <span class="n">Define</span> <span class="n">custom</span> <span class="n">stream</span> <span class="k">class</span>
+
+<span class="n">var</span> <span class="n">Writable</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;stream&#39;</span><span class="p">).</span><span class="n">Writable</span><span class="p">;</span>
+<span class="n">var</span> <span class="n">util</span>     <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;util&#39;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">myWritableStream</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span> <span class="err">{</span>
+  <span class="o">//</span> <span class="k">call</span> <span class="n">stream</span><span class="p">.</span><span class="n">Writeable</span> <span class="k">constructor</span>
+  <span class="n">Writable</span><span class="p">.</span><span class="k">call</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
+<span class="err">}</span><span class="p">;</span>
+
+
+<span class="o">//</span> <span class="n">inherit</span> <span class="n">stream</span><span class="p">.</span><span class="n">Writeable</span>
+<span class="n">myWritableStream</span><span class="p">.</span><span class="n">prototype</span> <span class="o">=</span> <span class="k">Object</span><span class="p">.</span><span class="k">create</span><span class="p">(</span><span class="n">Writable</span><span class="p">.</span><span class="n">prototype</span><span class="p">);</span>
+
+<span class="o">//</span> <span class="n">override</span> <span class="n">the</span> <span class="k">write</span> <span class="k">function</span>
+<span class="n">myWritableStream</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">_write</span> <span class="o">=</span> <span class="k">function</span> <span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="k">encoding</span><span class="p">,</span> <span class="n">done</span><span class="p">)</span> <span class="err">{</span>
+  <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">chunk</span><span class="p">.</span><span class="n">toString</span><span class="p">());</span>
+  <span class="n">done</span><span class="p">();</span>
+<span class="err">}</span><span class="p">;</span>
+
+
+<span class="o">//</span> <span class="n">Main</span>
+
+<span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;piping stdin to stdout using my own writale stream...&#39;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">myStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">myWritableStream</span><span class="p">();</span>
+<span class="n">process</span><span class="p">.</span><span class="k">stdin</span><span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">myStream</span><span class="p">);</span>
+</code></pre></div>
+
+
+<h1>Links</h1>
+<p>Some good reading:</p>
+<ul>
+<li>http://book.mixu.net/node/ch6.html</li>
+<li>http://dmitrysoshnikov.com/ecmascript/chapter-7-1-oop-general-theory/</li>
+<li>http://perfectionkills.com/understanding-delete/</li>
+<li>http://www.2ality.com/2013/07/defending-constructors.html</li>
+<li>https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties</li>
+<li>http://book.mixu.net/node/ch4.html</li>
+<li>https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures</li>
+<li>https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind</li>
+<li>http://javascript.crockford.com/private.html</li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

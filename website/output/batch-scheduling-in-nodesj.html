@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Batch scheduling in NodeSJ  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Batch scheduling in NodeSJ
+	</div>
+	<div class="message-body has-text-dark">
+		<p>AWS don't have batch scheduling, let's do something in Node on Heroku</p>
+<p>Requirements:</p>
+<ol>
+<li>Make periodic calls to REST Services - typically php jobs hosted in AWS Elastic Beanstalk (or engineyard, phpfog etc.)</li>
+<li>Possible to view log files in one way or another</li>
+<li>GUI is not vital, can make changes in config/code that is pushed using git etc. </li>
+</ol>
+<h1>Online servies</h1>
+<p>There are probably some, found this in a quick search:</p>
+<ul>
+<li>http://www.onlinecronservices.com/</li>
+<li>http://www.webbasedcron.com/</li>
+<li>http://www.mywebcron.com/</li>
+<li>https://www.setcronjob.com/</li>
+</ul>
+<p>Feels old school...</p>
+<h1>NodeJS</h1>
+<p>Greater flexibility will be achieved with NodeJS.</p>
+<p>Search for cron with npm:</p>
+<div class="highlight"><pre><span></span><code>$ npm search cron
+info trying registry request attempt <span class="m">1</span> at <span class="m">13</span>:53:23
+http GET https://registry.npmjs.org/-/all/since?stale<span class="o">=</span>update_after<span class="p">&amp;</span><span class="nv">startkey</span><span class="o">=</span><span class="m">1349506031000</span>
+http <span class="m">200</span> https://registry.npmjs.org/-/all/since?stale<span class="o">=</span>update_after<span class="p">&amp;</span><span class="nv">startkey</span><span class="o">=</span><span class="m">1349506031000</span>
+NAME               DESCRIPTION                                                   AUTHOR                DATE              KEYWORDS
+abiogenesis        Asyncronous, nested <span class="s1">&#39;task&#39;</span> runner framework with dependency resolution. <span class="o">=</span>jakeluer   <span class="m">2012</span>-10-12 <span class="m">01</span>:04
+ajs                Experimental asyncronous templating in <span class="nv">Node</span>                   <span class="o">=</span>kainosnoema          <span class="m">2011</span>-06-08 <span class="m">04</span>:35  ajs ejs
+asynct             simple asyncronous <span class="nb">test</span> <span class="nv">runner</span>                                <span class="o">=</span>dominictarr          <span class="m">2012</span>-05-07 <span class="m">12</span>:07
+chronos            Log cronjob results to <span class="nv">graylog2</span>                               <span class="o">=</span>jkrems               <span class="m">2012</span>-04-15 <span class="m">21</span>:36  loggin g
+<span class="nv">Cron</span>                                                                             <span class="o">=</span>ushus                <span class="m">2012</span>-05-08 <span class="m">06</span>:18
+cron               CronJob<span class="s1">&#39;s for your node                                       =ncb000gt             2012-09-13 23:17</span>
+<span class="s1">cron-as-a-service  Remote cron service                                           =fzaninotto           2012-06-04 21:41  cron ser</span>
+<span class="s1">cron-jayubba       CronJob&#39;</span>s <span class="k">for</span> your <span class="nv">node</span>                                       <span class="o">=</span>jayubba              <span class="m">2012</span>-03-06 <span class="m">21</span>:13
+cron2              CronJob<span class="s1">&#39;s for your node                                       =architectd           2011-09-12 05:21</span>
+<span class="s1">crontab            A module for reading, manipulating, and writing user crontabs with node.js =blago   2012-03-07 16:32  cron cro</span>
+<span class="s1">cronworker         cron tabs + node jobs                                         =architectd           2012-08-21 13:15</span>
+<span class="s1">custodian          A different sort of cron                                      =jvinet               2012-05-17 18:11</span>
+<span class="s1">dateselect         Dateselect is a time-based job scheduler (like cron). The syntax is built on CSS-like selectors, so it&#39;</span>s easy
+hook.io-cron       emit arbitrary Hook.io events with arbitrary data on specified <span class="nb">time</span> <span class="nv">intervals</span> <span class="o">=</span><span class="nv">marak</span> <span class="o">=</span><span class="nv">indexzero</span> <span class="o">=</span>jameson <span class="m">2011</span>-
+hook.io-ws         hook <span class="k">for</span> websocket <span class="nv">connection</span>                                 <span class="o">=</span><span class="nv">cronopio</span> <span class="o">=</span>marak      <span class="m">2011</span>-09-16 <span class="m">00</span>:43
+http-proxy         A full-featured http reverse proxy <span class="k">for</span> node.js                <span class="o">=</span><span class="nv">indexzero</span> <span class="o">=</span><span class="nv">cronopio</span> <span class="o">=</span><span class="nv">bradleymeck</span> <span class="o">=</span><span class="nv">avianflu</span> <span class="o">=</span>mma
+http-timeout       Distributed timeout <span class="k">for</span> <span class="nv">HTTP</span>                                  <span class="o">=</span>tjanczuk             <span class="m">2012</span>-03-09 <span class="m">00</span>:44  http app
+jscron             Cron Format Parser And Schedule Dates <span class="nv">Generator</span>               <span class="o">=</span>romansky             <span class="m">2012</span>-10-16 <span class="m">18</span>:14  cron sch
+later              Determine later occurrences of recurring <span class="nv">schedules</span>            <span class="o">=</span>bunkat               <span class="m">2012</span>-07-11 <span class="m">17</span>:28  schedule
+log-cleaner        NODE module <span class="k">for</span> cleaning log files uing node-cron             <span class="o">=</span>tolgaakyuz           <span class="m">2012</span>-07-09 <span class="m">12</span>:44  log cron
+momo               Cronjob with web hooks.                                       <span class="o">=</span>totendev             <span class="m">2012</span>-09-24 <span class="m">18</span>:10  cron cro
+node-schedule      A cron-like and not-cron-like job scheduler <span class="k">for</span> Node.         <span class="o">=</span>mattpat              <span class="m">2012</span>-02-16 <span class="m">19</span>:24  schedule
+northwatcher       NorthWatcher is cron <span class="k">for</span> filesystem changes.                  <span class="o">=</span>sjs                  <span class="m">2012</span>-02-25 <span class="m">04</span>:10
+omicron            A library <span class="k">for</span> object manipulation and differential operations, prototypal inheritance, and more. <span class="o">=</span>nickfargo <span class="m">20</span>
+p                  pattern matching in javascript <span class="k">for</span> asyncronous <span class="nv">iteration</span>      <span class="o">=</span>dscape               <span class="m">2012</span>-02-19 <span class="m">18</span>:19  pattern
+poolq              NodeJS Background Process Management w/ <span class="nv">Queue</span>                 <span class="o">=</span>edwardhotchkiss      <span class="m">2011</span>-12-08 <span class="m">17</span>:01  queue cr
+qejs               Asyncronous Embedded JavaScript Templates with <span class="nv">Q</span>              <span class="o">=</span>forbeslindesay       <span class="m">2012</span>-08-27 <span class="m">13</span>:47  templati
+recaptcha-async    Handles calling reCAPTCHA asyncronously.                      <span class="o">=</span>aldipower            <span class="m">2011</span>-06-19 <span class="m">17</span>:44  recaptch
+redshed            A scheduler system backed by <span class="nv">redis</span>                            <span class="o">=</span>koopa                <span class="m">2012</span>-10-16 <span class="m">17</span>:32  schedule
+repeat             Repeat.js is a javascript library that makes working with repeated actions pure joy by removing the need <span class="k">for</span> s
+rush               The ultimate solution of writing asyncronous code in a beautiful way. <span class="o">=</span>scaryzet     <span class="m">2012</span>-05-17 <span class="m">09</span>:50  async
+scheduler          Cron scheduler <span class="k">for</span> node.js                                    <span class="o">=</span>podviaznikov         <span class="m">2011</span>-07-06 <span class="m">16</span>:00  schedule
+scriptjs           Asyncronous JavaScript loader and dependency <span class="nv">manager</span>          <span class="o">=</span><span class="nv">ded</span> <span class="o">=</span>fat             <span class="m">2012</span>-04-24 <span class="m">19</span>:40  ender sc
+synct              simple <span class="nb">test</span> framework <span class="k">for</span> syncronous <span class="nv">tests</span>                    <span class="o">=</span>dominictarr          <span class="m">2011</span>-08-09 <span class="m">09</span>:02
+tits               TITS is a recursive acronym <span class="k">for</span> <span class="s2">&quot;TITS is Templating System&quot;</span>   <span class="o">=</span>eprev                <span class="m">2012</span>-10-12 <span class="m">11</span>:00  template
+tock               Distributed cron-style job system that has many features missing from <span class="nv">cron</span> <span class="o">=</span>rfink   <span class="m">2012</span>-04-20 <span class="m">15</span>:03
+</code></pre></div>
+
+
+<p>Some notes:
+ * node-cron seams to be fairly established (https://github.com/ncb000gt/node-cron)</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

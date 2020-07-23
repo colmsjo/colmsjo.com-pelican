@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Cfengine server basic setup  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Cfengine server basic setup
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Setup the cfengine server</p>
+<h1>A first basic configuration</h1>
+<h2>Initial setup</h2>
+<p>Copy the files in https://github.com/colmsjo/wip/tree/master/cfengine to /etc/cfengine3 to get started (for Ubuntu 12.04).</p>
+<h2>Hello world</h2>
+<p>Cfengine allows any user to execute promises for validation purposes. A bit of setup needs to be performed for each user though, see below.</p>
+<p>Put his in /home/ubuntu/promises.cf</p>
+<div class="highlight"><pre><span></span><code><span class="n">body</span> <span class="n">common</span> <span class="n">control</span> <span class="err">{</span>
+
+    <span class="n">bundlesequence</span> <span class="o">=&gt;</span> <span class="err">{</span>
+        <span class="ss">&quot;recipe&quot;</span><span class="p">,</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">inputs</span> <span class="o">=&gt;</span> <span class="err">{</span>
+        <span class="ss">&quot;cfengine_stdlib.cf&quot;</span><span class="p">,</span>
+    <span class="err">}</span><span class="p">;</span>
+<span class="err">}</span>
+
+<span class="n">bundle</span> <span class="n">agent</span> <span class="n">recipe</span> <span class="err">{</span>
+
+<span class="o">#</span> <span class="n">Recipe</span> <span class="n">promise</span> <span class="n">here</span>
+<span class="n">reports</span><span class="p">:</span>
+  <span class="n">cfengine_3</span><span class="p">::</span>
+      <span class="ss">&quot;Hello world!&quot;</span><span class="p">;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Make intial setup for the ubuntu user and execute:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">Need</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">keypair</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">needs</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">done</span><span class="w"> </span><span class="n">once</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="k">user</span><span class="w"></span>
+<span class="n">cf</span><span class="o">-</span><span class="k">key</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Need</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="n">binaries</span><span class="w"></span>
+<span class="n">cp</span><span class="w"> </span><span class="o">/</span><span class="nf">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cf</span><span class="o">-*</span><span class="w"> </span><span class="o">~/</span><span class="p">.</span><span class="n">cfagent</span><span class="o">/</span><span class="n">bin</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Fix</span><span class="w"> </span><span class="nf">permissions</span><span class="w"></span>
+<span class="n">chmod</span><span class="w"> </span><span class="k">go</span><span class="o">-</span><span class="n">rwx</span><span class="w"> </span><span class="n">promisis</span><span class="p">.</span><span class="n">cf</span><span class="w"> </span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Make</span><span class="w"> </span><span class="k">include</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="n">readble</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">everyone</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="s1">&#39;chmod a+r /etc/cfengine3/cfengine_stdlib.cf&#39;</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Copy</span><span class="w"> </span><span class="k">include</span><span class="w"> </span><span class="k">file</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">mine</span><span class="w"></span>
+<span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="s1">&#39;cp /etc/cfengine3/cfengine_stdlib.cf .&#39;</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="s1">&#39;chown ubuntu cfengine_stdlib.cf&#39;</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Validate</span><span class="w"> </span><span class="k">file</span><span class="w"></span>
+<span class="n">cf</span><span class="o">-</span><span class="n">promises</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">~/</span><span class="n">promisis</span><span class="p">.</span><span class="n">cf</span><span class="w"> </span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Hello</span><span class="w"> </span><span class="n">world</span><span class="err">!</span><span class="w"></span>
+<span class="n">cf</span><span class="o">-</span><span class="n">agent</span><span class="w"> </span><span class="o">-</span><span class="n">Kv</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="o">~/</span><span class="n">promisis</span><span class="p">.</span><span class="n">cf</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>The output looks like this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">...</span>
+<span class="err">cf3&gt;     .........................................................</span>
+<span class="err">cf3&gt;     Promise handle: </span>
+<span class="err">cf3&gt;     Promise made by: Hello world!</span>
+<span class="err">cf3&gt;     .........................................................</span>
+<span class="err">cf3&gt; </span>
+<span class="err">cf3&gt; Report: Hello world!</span>
+<span class="err">cf3&gt; R: Hello world!</span>
+<span class="err">cf3&gt; </span>
+<span class="err">cf3&gt;      +  Private classes augmented:</span>
+<span class="err">cf3&gt; </span>
+<span class="err">cf3&gt;      -  Private classes diminished:</span>
+<span class="err">...</span>
+<span class="err">cf3&gt; Outcome of version (not specified) (agent-0): Promises observed to be kept 0%, Promises repaired 100%, Promises not repaired 0%</span>
+<span class="err">cf3&gt; Estimated system complexity as touched objects = 0, for 1 promises</span>
+<span class="err">cf3&gt;  -&gt; Writing last-seen observations</span>
+<span class="err">cf3&gt;  -&gt; Keyring is empty</span>
+<span class="err">cf3&gt;  -&gt; No lock purging scheduled</span>
+</code></pre></div>
+
+
+<h2>Set timezone</h2>
+<p>The timezone for the server can be set with the command <code>dpkg-reconfigure tzdata</code>. It is also possible to set the timezone noninteractive.</p>
+<div class="highlight"><pre><span></span><code><span class="err">sudo sh -c &#39;echo &quot;Europe/Stockholm&quot; &gt; /etc/timezone&#39;  </span>
+<span class="err">sudo sh -c &#39;dpkg-reconfigure -f noninteractive tzdata&#39;</span>
+</code></pre></div>
+
+
+<p>The code can be found here: https://github.com/colmsjo/wip/blob/master/cfengine/timezone.cf</p>
+<h2>Install webmin</h2>
+<p>Make promises out of this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">sudo</span> <span class="err">nano</span> <span class="err">/etc/apt/sources.list</span>
+
+<span class="k">deb</span> <span class="s">http://download.webmin.com/download/repository</span> <span class="kp">sarge</span> <span class="kp">contrib</span>
+<span class="k">deb</span> <span class="s">http://webmin.mirror.somersettechsolutions.co.uk/repository</span> <span class="kp">sarge</span> <span class="kp">contrib</span>
+
+
+<span class="err">cd</span> <span class="err">/root</span>
+<span class="err">wget</span> <span class="err">http://www.webmin.com/jcameron-key.asc</span>
+<span class="err">apt-key</span> <span class="err">add</span> <span class="err">jcameron-key.asc</span>
+
+<span class="err">apt-get</span> <span class="err">update</span>
+<span class="err">apt-get</span> <span class="err">install</span> <span class="err">webmin</span>
+</code></pre></div>
+
+
+<h2>pull git repository periodically</h2>
+<ul>
+<li>https://cfengine.com/manuals/cf3-Reference#Familiiarizing-yourself</li>
+<li>http://cfengine.com/manuals/st-schedule#Commands-promises</li>
+<li>http://cfengine.com/manuals/cf3-Reference#Function-splayclass</li>
+</ul>
+<p>First git need to be setup. Login to the server and:</p>
+<div class="highlight"><pre><span></span><code><span class="n">cd</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="p">.</span><span class="n">ssh</span><span class="w"></span>
+<span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="n">rsa</span><span class="w"> </span><span class="o">-</span><span class="n">C</span><span class="w"> </span><span class="ss">&quot;your_email@youremail.com&quot;</span><span class="w"></span>
+<span class="err">#</span><span class="w"> </span><span class="k">Add</span><span class="w"> </span><span class="n">SSH</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">github</span><span class="w"> </span><span class="p">(</span><span class="ow">or</span><span class="w"> </span><span class="n">whatever</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="k">using</span><span class="p">)</span><span class="w"></span>
+<span class="n">ssh</span><span class="w"> </span><span class="o">-</span><span class="n">T</span><span class="w"> </span><span class="n">git</span><span class="nv">@github</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Pu</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">account</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="ss">&quot;cp /home/ubuntu/.ssh/id_rsa* /root/.ssh/&quot;</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">Now</span><span class="w"> </span><span class="n">checkout</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="n">repository</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cfengine</span><span class="w"> </span><span class="n">configuration</span><span class="w"></span>
+<span class="n">sudo</span><span class="w"> </span><span class="n">sh</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="ss">&quot;git clone git@github.com:XXXXX/XXXXXX.git&quot;</span><span class="w"></span>
+</code></pre></div>
+
+
+<h3>Have the cfengine configuration updated periodically</h3>
+<div class="highlight"><pre><span></span><code><span class="n">body</span> <span class="n">common</span> <span class="n">control</span>
+<span class="err">{</span>
+<span class="n">bundlesequence</span>  <span class="o">=&gt;</span> <span class="err">{</span> <span class="ss">&quot;pull_cf_config&quot;</span> <span class="err">}</span><span class="p">;</span>
+<span class="err">}</span>
+
+<span class="n">bundle</span> <span class="n">agent</span> <span class="n">pull_cf_config</span>
+<span class="err">{</span>
+<span class="n">classes</span><span class="p">:</span>
+
+  <span class="ss">&quot;my_result&quot;</span> <span class="n">expression</span> <span class="o">=&gt;</span> <span class="n">splayclass</span><span class="p">(</span><span class="ss">&quot;$(sys.host)$(sys.ipv4)&quot;</span><span class="p">,</span><span class="ss">&quot;hourly&quot;</span><span class="p">);</span>
+
+<span class="n">commands</span><span class="p">:</span>
+
+  <span class="ss">&quot;cd /etc/cfengine3 &amp;&amp; /usr/bin/git&quot;</span>
+     <span class="n">args</span> <span class="o">=&gt;</span> <span class="ss">&quot;pull&quot;</span><span class="p">,</span>
+     <span class="n">contain</span> <span class="o">=&gt;</span> <span class="n">standard</span><span class="p">;</span>
+<span class="err">}</span>
+
+<span class="n">body</span> <span class="n">contain</span> <span class="n">standard</span>
+<span class="err">{</span>
+<span class="n">exec_owner</span> <span class="o">=&gt;</span> <span class="ss">&quot;root&quot;</span><span class="p">;</span>
+<span class="n">useshell</span> <span class="o">=&gt;</span> <span class="ss">&quot;true&quot;</span><span class="p">;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<h2>Run cf-agent at random intervals</h2>
+<p>Run cf-agent at random interval no longer than maximum 10 minutes:</p>
+<div class="highlight"><pre><span></span><code><span class="err">body executor control</span>
+<span class="err">{</span>
+<span class="err">splaytime =&gt; &quot;10&quot;;              # Minutes</span>
+<span class="err">}</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

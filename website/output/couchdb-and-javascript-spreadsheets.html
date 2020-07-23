@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Couchdb and JavaScript Spreadsheets  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Couchdb and JavaScript Spreadsheets
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Tänke se om det finns något enkelt sätt att bygga prototyper med couchdb och tabeller i 
+JavaScript.</p>
+<p>Koppla spreadsheet till Couchdb:</p>
+<ul>
+<li>t.ex. använda <a href="http://handsontable.com/demo/datasources.html">handsontable</a></li>
+<li><a href="http://datatables.net/blog/Extended_data_source_options_with_DataTables">datatables</a></li>
+<li>jtable verkar inte fungera med couchdb</li>
+</ul>
+<p>Handsontable exmaple</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="n">objectData</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="err">{</span><span class="n">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="ss">&quot;Ted Right&quot;</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="ss">&quot;&quot;</span><span class="err">}</span><span class="p">,</span>
+  <span class="err">{</span><span class="n">id</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="ss">&quot;Frank Honest&quot;</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="ss">&quot;&quot;</span><span class="err">}</span><span class="p">,</span>
+  <span class="err">{</span><span class="n">id</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="ss">&quot;Joan Well&quot;</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="ss">&quot;&quot;</span><span class="err">}</span>
+<span class="p">];</span>
+
+<span class="n">var</span> <span class="err">$</span><span class="n">container</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="ss">&quot;#example3&quot;</span><span class="p">);</span>
+<span class="err">$</span><span class="n">container</span><span class="p">.</span><span class="n">handsontable</span><span class="p">(</span><span class="err">{</span>
+  <span class="k">data</span><span class="p">:</span> <span class="n">objectData</span><span class="p">,</span>
+  <span class="n">startRows</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="n">startCols</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="n">colHeaders</span><span class="p">:</span> <span class="k">true</span><span class="p">,</span>
+  <span class="n">minSpareRows</span><span class="p">:</span> <span class="mi">1</span>
+<span class="err">}</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Datatables</p>
+<div class="highlight"><pre><span></span><code><span class="err">[</span>
+<span class="err">    { &quot;cell1&quot;: &quot;row 1, cell 1&quot;,</span>
+<span class="err">      &quot;cell2&quot;: &quot;row 1, cell 2&quot;,</span>
+<span class="err">      &quot;cell3&quot;: &quot;row 1, cell 3&quot;</span>
+<span class="err">    },</span>
+<span class="err">    { &quot;cell1&quot;: &quot;row 2, cell 1&quot;,</span>
+<span class="err">      &quot;cell2&quot;: &quot;row 2, cell 2&quot;,</span>
+<span class="err">      &quot;cell3&quot;: &quot;row 2, cell 3&quot;</span>
+<span class="err">    }</span>
+<span class="err">]</span>
+</code></pre></div>
+
+
+<p>Handsontable vs. Datatable</p>
+<p>Handsontable fungerar bäst med couch eftersom objekt funkar och arrayer inte krävs.</p>
+<p>Pouchdb</p>
+<p>Spara dokument i pouch:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">var</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PouchDB</span><span class="p">(</span><span class="s1">&#39;dbname&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">db</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="err">{</span><span class="w"></span>
+<span class="w"> </span><span class="nl">_id</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;dave@gmail.com&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="nl">name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;David&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="nl">age</span><span class="p">:</span><span class="w"> </span><span class="mi">66</span><span class="w"></span>
+<span class="err">}</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Design av dokumentstruktur</p>
+<p>Couchdb (och pouchdb) dokument har två obligatoriska attribut: <code>_id</code> och <code>_rev</code>.</p>
+<p>Handsontable array i ett JSON dokument:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">    _id : &quot;whatever&quot;,</span>
+<span class="err">    _rev : &quot;set_by_the_server?&quot;,</span>
+<span class="err">    table: [</span>
+<span class="err">      {id: 1, name: &quot;Ted Right&quot;, address: &quot;&quot;},</span>
+<span class="err">      {id: 2, name: &quot;Frank Honest&quot;, address: &quot;&quot;},</span>
+<span class="err">      {id: 3, name: &quot;Joan Well&quot;, address: &quot;&quot;}</span>
+<span class="err">    ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Possible structure: <code>localhost:5984:/database/sheet/table</code>. Security is managed on the database level.
+Tables are organized in sheets.</p>
+<p>Example <code>/first_table_db/first_sheet</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">    _id: &quot;table1&quot;,</span>
+<span class="err">    table: [</span>
+<span class="err">        {id: 1, name &quot;John&quot;, address: &quot;P/O 1&quot;},</span>
+<span class="err">        {id: 2, name &quot;Doe&quot;,  address: &quot;P/O 2&quot;}</span>
+<span class="err">    ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Ett couchdb-dokument per tabell? Kan bli problem med stora tabeller. Kan dock ha flera tabeller på ett blad så
+det borde inte vara något problem.</p>
+<p>Couchdb security model</p>
+<p>Database admins and members are defined in the security object of a database. This security object, located under <code>/db_name/_security</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;admins&quot; : {</span>
+<span class="err">     &quot;names&quot; : [&quot;joe&quot;, &quot;phil&quot;],</span>
+<span class="err">     &quot;roles&quot; : [&quot;boss&quot;]</span>
+<span class="err">   },</span>
+<span class="err">   &quot;members&quot; : {</span>
+<span class="err">     &quot;names&quot; : [&quot;dave&quot;],</span>
+<span class="err">     &quot;roles&quot; : [&quot;producer&quot;, &quot;consumer&quot;]</span>
+<span class="err">   }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>The authentication database is a system database called <code>:_users</code></p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;_id&quot;          : &quot;org.couchdb.user:joe&quot;,</span>
+<span class="err">  &quot;type&quot;         : &quot;user&quot;,</span>
+<span class="err">  &quot;name&quot;         : &quot;joe&quot;,</span>
+<span class="err">  &quot;roles&quot;        : [&quot;erlanger&quot;],</span>
+<span class="err">  &quot;password_sha&quot; : &quot;fe95df1ca59a9b567bdca5cbaf8412abd6e06121&quot;,</span>
+<span class="err">  &quot;salt&quot;         : &quot;4e170ffeb6f34daecfd814dfb4001a73&quot;</span>
+<span class="err">}</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

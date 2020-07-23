@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Git internals  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Git internals
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Time to learn a bit more than the bare basics of git?</p>
+<p>Some notes taken when reading: http://git-scm.com/book/en/Git-Internals</p>
+<p>Git is a simple key-value data store.</p>
+<p>Create empty git repo:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">mkdir</span> <span class="no">git-test</span>
+<span class="nf">cd</span> <span class="no">git-test</span>
+<span class="nf">git</span> <span class="no">init</span>
+<span class="nf">Initialized</span> <span class="no">empty</span> <span class="no">Git</span> <span class="no">repository</span> <span class="no">in</span> <span class="err">/</span><span class="no">tmp</span><span class="err">/</span><span class="no">test</span><span class="err">/</span><span class="no">.git</span><span class="err">/</span>
+
+<span class="c1"># List all files and folders etc.</span>
+<span class="nf">find</span> <span class="no">.git</span><span class="err">/</span><span class="no">objects</span>
+<span class="na">.git</span><span class="err">/</span><span class="no">objects</span>
+<span class="na">.git</span><span class="err">/</span><span class="no">objects</span><span class="err">/</span><span class="no">info</span>
+<span class="na">.git</span><span class="err">/</span><span class="no">objects</span><span class="err">/</span><span class="no">pack</span>
+
+<span class="c1"># Search for regular files</span>
+<span class="nf">find</span> <span class="no">.git</span><span class="err">/</span><span class="no">objects</span> <span class="p">-</span><span class="no">type</span> <span class="no">f</span>
+</code></pre></div>
+
+
+<p>Store some content:</p>
+<div class="highlight"><pre><span></span><code><span class="err">echo &#39;test content&#39; | git hash-object -w --stdin</span>
+<span class="err">d670460b4b4aece5915caf5c68d12f560a9fe3e4</span>
+</code></pre></div>
+
+
+<p>Git returns the key for the object created, the so called checksum hash.</p>
+<p>The object has been stored in a file:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">find</span> <span class="no">.git</span><span class="err">/</span><span class="no">objects</span> <span class="p">-</span><span class="no">type</span> <span class="no">f</span> 
+<span class="no">.git</span><span class="err">/</span><span class="no">objects</span><span class="err">/</span><span class="no">d6</span><span class="err">/</span><span class="mi">70460</span><span class="no">b4b4aece5915caf5c68d12f560a9fe3e4</span>
+</code></pre></div>
+
+
+<p>Cat the contents of the file:</p>
+<div class="highlight"><pre><span></span><code><span class="err">git cat-file -p d670460b4b4aece5915caf5c68d12f560a9fe3e4</span>
+<span class="err">test content</span>
+</code></pre></div>
+
+
+<p>Store content i a ordinary file:</p>
+<div class="highlight"><pre><span></span><code><span class="err">echo &#39;version 1&#39; &gt; test.txt</span>
+<span class="err">git hash-object -w test.txt </span>
+<span class="err">83baae61804e65cc73a7201a7252750c76066a30</span>
+</code></pre></div>
+
+
+<p>Update with new version:</p>
+<div class="highlight"><pre><span></span><code><span class="err">echo &#39;version 2&#39; &gt; test.txt</span>
+<span class="err">git hash-object -w test.txt </span>
+<span class="err">1f7a7a472abf3dd9643fd615f6da379c4acb3e3a</span>
+</code></pre></div>
+
+
+<p>List the files:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">find</span> <span class="no">.git</span><span class="err">/</span><span class="no">objects</span> <span class="p">-</span><span class="no">type</span> <span class="no">f</span> 
+<span class="no">.git</span><span class="err">/</span><span class="no">objects</span><span class="err">/</span><span class="mi">1</span><span class="no">f</span><span class="err">/</span><span class="mi">7</span><span class="no">a7a472abf3dd9643fd615f6da379c4acb3e3a</span>
+<span class="na">.git</span><span class="err">/</span><span class="no">objects</span><span class="err">/</span><span class="mi">83</span><span class="err">/</span><span class="no">baae61804e65cc73a7201a7252750c76066a30</span>
+<span class="na">.git</span><span class="err">/</span><span class="no">objects</span><span class="err">/</span><span class="no">d6</span><span class="err">/</span><span class="mi">70460</span><span class="no">b4b4aece5915caf5c68d12f560a9fe3e4</span>
+</code></pre></div>
+
+
+<p>Revert to old version:</p>
+<div class="highlight"><pre><span></span><code><span class="err">git cat-file -p 83baae61804e65cc73a7201a7252750c76066a30 &gt; test.txt </span>
+<span class="err">cat test.txt </span>
+<span class="err">version 1</span>
+</code></pre></div>
+
+
+<p>Go back to new version:</p>
+<div class="highlight"><pre><span></span><code><span class="err">git cat-file -p 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a &gt; test.txt </span>
+<span class="err">cat test.txt </span>
+<span class="err">version 2</span>
+</code></pre></div>
+
+
+<p>Show the object type using the hash:</p>
+<div class="highlight"><pre><span></span><code><span class="err">git cat-file -t 1f7a7a472abf3dd9643fd615f6da379c4acb3e3a</span>
+<span class="err">blob</span>
+</code></pre></div>
+
+
+<p>Add a file and show the tree</p>
+<div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="k">add</span> <span class="o">*</span>
+<span class="n">git</span> <span class="k">commit</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">m</span> <span class="ss">&quot;initial commit&quot;</span>
+
+<span class="n">git</span> <span class="n">cat</span><span class="o">-</span><span class="n">file</span> <span class="o">-</span><span class="n">p</span> <span class="n">master</span><span class="o">^</span><span class="err">{</span><span class="n">tree</span><span class="err">}</span>
+<span class="mi">100644</span> <span class="nb">blob</span> <span class="mi">1</span><span class="n">f7a7a472abf3dd9643fd615f6da379c4acb3e3a</span>    <span class="n">test</span><span class="p">.</span><span class="n">txt</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

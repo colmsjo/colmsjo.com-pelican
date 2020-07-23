@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Export/Import docker container and other docker cleanup activities  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Export/Import docker container and other docker cleanup activities
+	</div>
+	<div class="message-body has-text-dark">
+		<h1>Import/export containers</h1>
+<p>Moving containers between hosts is simple:</p>
+<div class="highlight"><pre><span></span><code><span class="n">docker</span> <span class="n">export</span> <span class="n">NAME</span> <span class="o">|</span> <span class="n">gzip</span> <span class="o">&gt;</span> <span class="n">NAME</span><span class="o">.</span><span class="n">gz</span>
+<span class="c1"># Copy the gz file to the other host - I&#39;m using s3cmd and get external backup while doing it</span>
+<span class="n">zcat</span> <span class="n">NAME</span><span class="o">.</span><span class="n">gz</span> <span class="o">|</span> <span class="n">docker</span> <span class="kn">import</span> <span class="o">-</span> <span class="n">NAME</span>
+</code></pre></div>
+
+
+<p>It is probably a good idea to create a local copy of the configuration as well (just in case):</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker commit container-name new-image-name</span>
+<span class="err">docker run [...same arguments as the other one...] new-image-name</span>
+</code></pre></div>
+
+
+<h1>Other cleanup</h1>
+<p>Check how much memory different processes and containers are using:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker stats list_of_containers</span>
+<span class="err"># Run this in the host to see all processes or within a container to see process for the specific container</span>
+<span class="err">ps aux --sort --rss</span>
+</code></pre></div>
+
+
+<p><code>docker system df</code> show free disk space but is not available in older versions.
+Another way is to do <code>docker commit container</code> and then <code>docker images</code> and
+you'll see how much disk that is used. This way we also get a commit point that
+new containers can be started from.</p>
+<p><code>top</code> and <code>free</code> will show general CPU and memory information (as usual).</p>
+<p>Use this information to stop processes that consume system resources and aren't used.</p>
+<h1><code>screen</code></h1>
+<p><code>screen</code> is a good tool for running processes in the background when logged in
+via ssh if you want to log off without interrupting the process. Detach
+without stopping any processes with <code>ctrl-a d</code>.</p>
+<p>reconnect with <code>screen -r</code>. It is also possible to have several windows.
+Create a new window with <code>ctrl-a c</code> and switch between windows with <code>ctrl-a n</code>.</p>
+<h1>Resources</h1>
+<ul>
+<li><a href="https://www.techrepublic.com/article/how-to-exportimport-containers-with-docker/">Short article</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

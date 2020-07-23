@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Two-way data binding  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Two-way data binding
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Introduction</p>
+<p>There are several libraries that provide data binding.
+<a href="http://knockoutjs.com">knockout</a> and <a href="https://angularjs.org">angular</a>
+are two examples.</p>
+<p>It is actually simpler that you might think to roll this on your own.
+Here is an example where JavaScript setters are used. All the user has to do
+is to add the extra attribute <code>data-bind='property name'</code> to the DOM elements
+you need,  call <code>createUIObject</code> and voilá an object with the specified properties
+is created.</p>
+<p>code</p>
+<p>Example of two-way data binding:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&quot;Content-Type&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;text/html; charset=utf-8&quot;</span> <span class="p">/&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;nameId&#39;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#39;Enter name&#39;</span> <span class="na">data-binding</span><span class="o">=</span><span class="s">&#39;name&#39;</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;ageId&#39;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#39;Enter age&#39;</span> <span class="na">data-binding</span><span class="o">=</span><span class="s">&#39;age&#39;</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;genderId&#39;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#39;Enter gender&#39;</span> <span class="na">data-binding</span><span class="o">=</span><span class="s">&#39;gender&#39;</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;reset&#39;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#39;button&#39;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#39;reset&#39;</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&#39;print&#39;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#39;button&#39;</span> <span class="na">value</span><span class="o">=</span><span class="s">&#39;print&#39;</span> <span class="p">/&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">hr</span><span class="p">/&gt;</span> Open the console to see the details.
+
+  <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="c1">// workaround since NodeList do not inherit Array (not for IE6/7/8)</span>
+    <span class="nx">NodeList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">forEach</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">forEach</span><span class="p">;</span>
+    <span class="nx">NamedNodeMap</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">forEach</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">forEach</span><span class="p">;</span>
+
+    <span class="kd">var</span> <span class="nx">elementsAndProperties</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">var</span> <span class="nx">createUIObject</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">traverse</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nx">create_</span><span class="p">(</span><span class="nx">elementsAndProperties</span><span class="p">)</span>
+    <span class="p">};</span>
+
+    <span class="c1">// elProps = [[element0, property0], [element1, property1],...]</span>
+    <span class="kd">var</span> <span class="nx">create_</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">elProps</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">obj</span> <span class="o">||</span> <span class="p">{};</span>
+
+      <span class="nx">elProps</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">elProp</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">elProp</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="kd">var</span> <span class="nx">prop</span> <span class="o">=</span> <span class="nx">elProp</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+          <span class="p">},</span>
+          <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">element</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">val</span><span class="p">;</span>
+          <span class="p">},</span>
+          <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+          <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">});</span>
+      <span class="p">});</span>
+
+      <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="kd">var</span> <span class="nx">processNode</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">attributes</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">attributes</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">attr</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">attr</span><span class="p">.</span><span class="nx">name</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span><span class="p">.</span><span class="nx">name</span> <span class="o">===</span> <span class="s1">&#39;data-binding&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">elementsAndProperties</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">node</span><span class="p">,</span> <span class="nx">attr</span><span class="p">.</span><span class="nx">value</span><span class="p">]);</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="kd">var</span> <span class="nx">traverse</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">!==</span> <span class="s1">&#39;SCRIPT&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">node</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">!==</span> <span class="s1">&#39;HTML&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">processNode</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s1">&#39;SCRIPT&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="nx">node</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">traverse</span><span class="p">);</span>
+    <span class="p">};</span>
+
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;DOMContentLoaded&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">createUIObject</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">reset</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">&#39;Enter name&#39;</span><span class="p">;</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="s1">&#39;Enter age&#39;</span><span class="p">;</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">gender</span> <span class="o">=</span> <span class="s1">&#39;Enter gender&#39;</span><span class="p">;</span>
+      <span class="p">};</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="nx">reset</span><span class="p">);</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;print&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">age</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">gender</span><span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

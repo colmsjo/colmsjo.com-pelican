@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Offline Web Apps  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Offline Web Apps
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Webapps that are possible to run offline</p>
+<h3>Web apps in traditional browsers</h3>
+<p>Links:</p>
+<ul>
+<li>http://diveintohtml5.info/offline.html</li>
+<li>http://www.html5rocks.com/en/tutorials/appcache/beginner/</li>
+<li>http://diveintohtml5.info/storage.html</li>
+</ul>
+<p>Old style offline web applications.</p>
+<p>The manifest makes it possible to user web apps also without network connectivity. It is 
+also possible to store data locally in the browser. Both for a session and between sessions.</p>
+<h3>Web apps in Firefox OS</h3>
+<p>Links:</p>
+<ul>
+<li>https://developer.mozilla.org/en-US/docs/Apps/Getting_Started</li>
+<li>http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser</li>
+</ul>
+<p>The Firefox browser will support offline web apps in the future. Is is currently available
+in the beta version of Firefox. Here I'll do a small test of the API. This will also be the
+way apps are installed in Firefox OS which is a new OS for mobile devices.</p>
+<p>A Manifest is needed in order to publish the app on Firefox OS Market.</p>
+<p>The manifest must be hosted from the same domain as your website, 
+and must be served with a Content-Type of application/x-web-app-manifest+json`</p>
+<p>Small Offline Web App Example:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="n">Offline</span><span class="w"> </span><span class="n">webapp</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- Bootstrap --&gt;</span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">link</span><span class="w"> </span><span class="n">href</span><span class="o">=</span><span class="ss">&quot;http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css&quot;</span><span class="w"> </span><span class="n">rel</span><span class="o">=</span><span class="ss">&quot;stylesheet&quot;</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- HTML5 shim, for IE6-8 support of HTML5 elements --&gt;</span>
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">--[if lt IE 9]&gt;</span>
+<span class="w">      </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;http://html5shim.googlecode.com/svn/trunk/html5.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="o">[</span><span class="n">endif</span><span class="o">]</span><span class="c1">--&gt;</span>
+
+<span class="w">  </span><span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">  </span><span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">div</span><span class="w"> </span><span class="k">class</span><span class="o">=</span><span class="ss">&quot;container&quot;</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">      </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- The menu used to show different templates --&gt;</span>
+<span class="w">     </span><span class="o">&lt;</span><span class="n">div</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="ss">&quot;test1&quot;</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">        </span><span class="nl">Menu</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">a</span><span class="w"> </span><span class="n">href</span><span class="o">=</span><span class="ss">&quot;#route1&quot;</span><span class="o">&gt;</span><span class="n">#screen1</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="w"> </span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">a</span><span class="w"> </span><span class="n">href</span><span class="o">=</span><span class="ss">&quot;#route2&quot;</span><span class="o">&gt;</span><span class="n">#screen2</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="w"> </span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">a</span><span class="w"> </span><span class="n">href</span><span class="o">=</span><span class="ss">&quot;#route3&quot;</span><span class="o">&gt;</span><span class="n">#screen3</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span><span class="w"></span>
+
+
+<span class="w">      </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- Templates are rendered here --&gt;</span>
+<span class="w">      </span><span class="o">&lt;</span><span class="n">div</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="ss">&quot;ui&quot;</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- /container --&gt;</span>
+
+
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- Show test results --&gt;</span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">ul</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="ss">&quot;results&quot;</span><span class="o">&gt;&lt;/</span><span class="n">ul</span><span class="o">&gt;</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- Templates --&gt;</span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="ss">&quot;text/template&quot;</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="ss">&quot;template1&quot;</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">This</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">screen</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="ss">&quot;text/template&quot;</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="ss">&quot;template2&quot;</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">This</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">screen</span><span class="w"> </span><span class="mi">2</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="ss">&quot;text/template&quot;</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="ss">&quot;template3&quot;</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">      </span><span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">This</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">screen</span><span class="w"> </span><span class="mi">3</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+
+
+
+<span class="w">    </span><span class="o">&lt;</span><span class="err">!</span><span class="c1">-- Scripts at the end for better performance --&gt;</span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://raw.github.com/colmsjo/helpersjs/master/lib/js/helpers-1.0.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://login.persona.org/include.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://raw.github.com/colmsjo/helpersjs/master/lib/js/signals.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://raw.github.com/colmsjo/helpersjs/master/lib/js/crossroads.min.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://raw.github.com/colmsjo/helpersjs/master/lib/js/hasher.min.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="ss">&quot;https://raw.github.com/colmsjo/helpersjs/master/lib/js/plates.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="o">&lt;</span><span class="n">script</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="ss">&quot;text/javascript&quot;</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Make</span><span class="w"> </span><span class="n">sure</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">page</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">loading</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">window</span><span class="p">.</span><span class="n">onload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="err">{</span><span class="w"></span>
+
+
+<span class="w">      </span><span class="o">//</span><span class="w"> </span><span class="n">Define</span><span class="w"> </span><span class="ow">some</span><span class="w"> </span><span class="n">functions</span><span class="w"></span>
+
+<span class="w">      </span><span class="p">(</span><span class="k">function</span><span class="p">()</span><span class="err">{</span><span class="w"></span>
+
+<span class="w">        </span><span class="o">//</span><span class="w"> </span><span class="k">Check</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="n">apps</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">installed</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">otherwise</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">this</span><span class="p">.</span><span class="n">installApp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">installApp</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="w">          </span><span class="nf">var</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="n">mozApps</span><span class="p">.</span><span class="n">getSelf</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">          </span><span class="n">request</span><span class="p">.</span><span class="n">onsuccess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="k">result</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">              </span><span class="o">//</span><span class="w"> </span><span class="n">we</span><span class="s1">&#39;re installed</span>
+<span class="s1">              logDebug(&#39;</span><span class="n">App</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">already</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">installed</span><span class="s1">&#39;);</span>
+<span class="s1">            } else {</span>
+<span class="s1">              // not installed</span>
+<span class="s1">              logDebug(&#39;</span><span class="n">App</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">been</span><span class="w"> </span><span class="n">installed</span><span class="s1">&#39;);</span>
+
+<span class="s1">              var request2 = navigator.mozApps.install(&quot;http://path.to/my/example.webapp&quot;);</span>
+<span class="s1">              request2.onsuccess = function() {</span>
+<span class="s1">                // great - display a message, or redirect to a launch page</span>
+<span class="s1">                logDebug(&#39;</span><span class="n">App</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">successfully</span><span class="w"> </span><span class="nl">installed</span><span class="p">:</span><span class="w"> </span><span class="nl">Name</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39; + request2.result.manifest.name);</span>
+<span class="s1">              };</span>
+<span class="s1">              request2.onerror = function() {</span>
+<span class="s1">                // whoops - this.error.name has details</span>
+<span class="s1">                logErr(&#39;</span><span class="nl">ERROR</span><span class="p">:</span><span class="w"> </span><span class="n">Could</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">app</span><span class="err">!</span><span class="w"> </span><span class="nl">Error</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39; + request2.error.name);</span>
+
+<span class="s1">              };</span>
+<span class="s1">            }</span>
+<span class="s1">          };</span>
+
+<span class="s1">          request.onerror = function() {</span>
+<span class="s1">            logError(&#39;</span><span class="n">Error</span><span class="w"> </span><span class="n">checking</span><span class="w"> </span><span class="n">installation</span><span class="w"> </span><span class="nl">status</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39; + this.error.message);</span>
+<span class="s1">          };</span>
+
+
+<span class="s1">        };</span>
+
+<span class="s1">      }());</span>
+
+
+<span class="s1">      // Some general setup</span>
+
+<span class="s1">      logging.threshold  = logging.debug;</span>
+<span class="s1">      logDebug(&#39;</span><span class="n">Loading</span><span class="w"> </span><span class="n">page</span><span class="p">...</span><span class="s1">&#39;);</span>
+
+<span class="s1">      if(checkBrowser() != &quot;firefox&quot;) {</span>
+<span class="s1">        logErr(&#39;</span><span class="nl">ERROR</span><span class="p">:</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="n">firefox</span><span class="w"> </span><span class="n">supports</span><span class="w"> </span><span class="n">offline</span><span class="w"> </span><span class="n">webapps</span><span class="err">!</span><span class="w"> </span><span class="n">You</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="s1">&#39; + checkBrowser() + &#39;</span><span class="p">.</span><span class="s1">&#39;);</span>
+<span class="s1">        logErr(&quot;Continuing but you&#39;</span><span class="n">ll</span><span class="w"> </span><span class="n">most</span><span class="w"> </span><span class="n">likely</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">bunch</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">erorrs</span><span class="err">!</span><span class="ss">&quot;);</span>
+<span class="ss">      }</span>
+
+<span class="ss">      // Install the app</span>
+<span class="ss">      installApp();</span>
+
+<span class="ss">      // Setup routing</span>
+
+<span class="ss">      // Screen 1</span>
+<span class="ss">      crossroads.addRoute(&#39;route1&#39;, function() { </span>
+<span class="ss">        var html = $(&#39;#template1&#39;).html();</span>
+<span class="ss">        var output = Plates.bind(html, null, null);</span>
+<span class="ss">        $(&#39;#ui&#39;).html(output);</span>
+<span class="ss">        logDebug(&#39;logging static route1...&#39;);} </span>
+<span class="ss">      );</span>
+
+
+<span class="ss">       // Screen 2</span>
+<span class="ss">       crossroads.addRoute(&#39;route2&#39;, function() {</span>
+<span class="ss">       var html = $(&#39;#template2&#39;).html();</span>
+<span class="ss">        var output = Plates.bind(html, null, null);</span>
+<span class="ss">        $(&#39;#ui&#39;).html(output);</span>
+<span class="ss">        logDebug(&#39;logging static route2...&#39;);} </span>
+<span class="ss">      ); </span>
+
+<span class="ss">     // Screen 3      </span>
+<span class="ss">      crossroads.addRoute(&#39;route3&#39;, function() {</span>
+<span class="ss">        var html = $(&#39;#template3&#39;).html();</span>
+<span class="ss">        var output = Plates.bind(html, null, null);</span>
+<span class="ss">        $(&#39;#ui&#39;).html(output);</span>
+<span class="ss">        logDebug(&#39;logging static route3...&#39;);} </span>
+<span class="ss">      ); </span>
+
+
+<span class="ss">      // Also log routes that did not match anything (useful for debugging)</span>
+<span class="ss">      crossroads.bypassed.add(function(request){</span>
+<span class="ss">        logDebug(&quot;</span><span class="n">A</span><span class="w"> </span><span class="n">route</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">wasn</span><span class="s1">&#39;t matched:&quot;+request); </span>
+<span class="s1">      });</span>
+
+
+<span class="s1">      // Setup hasher</span>
+
+<span class="s1">      function parseHash(newHash, oldHash){</span>
+<span class="s1">        crossroads.parse(newHash); </span>
+<span class="s1">      }</span>
+
+<span class="s1">      // parse initial hash </span>
+<span class="s1">      hasher.initialized.add(parseHash);</span>
+
+<span class="s1">      // parse hash changes</span>
+<span class="s1">      hasher.changed.add(parseHash);</span>
+
+<span class="s1">      // start listening for history change</span>
+<span class="s1">      hasher.init();</span>
+
+<span class="s1">      //update URL fragment generating new history record </span>
+<span class="s1">      hasher.setHash(&#39;</span><span class="n">route1</span><span class="err">&#39;</span><span class="p">);</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="err">}</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="k">window</span><span class="p">.</span><span class="n">onload</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span><span class="w"></span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span><span class="w"></span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

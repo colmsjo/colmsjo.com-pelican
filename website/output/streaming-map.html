@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Streaming Map  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Streaming Map
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Streaming Map/Reduce in Python</p>
+<p>Links:</p>
+<ul>
+<li>http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/</li>
+<li>http://wiki.apache.org/hadoop/ImportantConcepts</li>
+</ul>
+<h2>Introduction</h2>
+<p>Python seams to a language supported by many Hadoop providers (like Amazon etc). I would prefer
+NodeJS but Python will have to do for now.</p>
+<p>I have installed hadoop on my Mac (see separate post).</p>
+<p>First create the map and reduct python scripts in the article.</p>
+<p>Then copy the data to the hadoop file system:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">Create</span> <span class="n">a</span> <span class="n">directories</span> <span class="k">for</span> <span class="n">the</span> <span class="n">job</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">mkdir</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">jonas</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">wordcount</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">mkdir</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">jonas</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">wordcount</span><span class="o">-</span><span class="k">output</span>
+
+<span class="o">#</span> <span class="k">Copy</span> <span class="n">the</span> <span class="k">data</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">put</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">jonas</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">colmsjo</span><span class="o">/</span><span class="n">wip</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="n">MapReduce_example</span><span class="o">/</span><span class="n">zaratustra</span><span class="p">.</span><span class="n">txt</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">jonas</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">wordcount</span>
+
+<span class="o">#</span> <span class="k">Check</span> <span class="n">that</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">there</span>
+<span class="n">hadoop</span> <span class="n">fs</span> <span class="o">-</span><span class="n">ls</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">jonas</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="n">store</span><span class="o">/</span><span class="n">mapred</span><span class="o">/</span><span class="n">wordcount</span>
+</code></pre></div>
+
+
+<p>Now run the job:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hadoop jar /usr/local/Cellar/hadoop/1.1.1/libexec/contrib/streaming/hadoop-streaming-1.1.1.jar  \</span>
+<span class="err">  -file    /Users/jonas/git/colmsjo/wip/Python/MapReduce_example/mapper.py \</span>
+<span class="err">  -mapper  /Users/jonas/git/colmsjo/wip/Python/MapReduce_example/mapper.py \</span>
+<span class="err">  -file    /Users/jonas/git/colmsjo/wip/Python/MapReduce_example/reducer.py \</span>
+<span class="err">  -reducer /Users/jonas/git/colmsjo/wip/Python/MapReduce_example/reducer.py \</span>
+<span class="err">  -input   /Users/jonas/hadoop-store/mapred/wordcount/* \</span>
+<span class="err">  -output  /Users/jonas/hadoop-store/mapred/wordcount-output</span>
+</code></pre></div>
+
+
+<p>Show the output:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hadoop fs -cat /Users/jonas/hadoop-store/mapred/wordcount-output/part-00000</span>
+</code></pre></div>
+
+
+<p>Delete the output dir if you want to run the job again:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hadoop fs -rmr /Users/jonas/hadoop-store/mapred/wordcount-output</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

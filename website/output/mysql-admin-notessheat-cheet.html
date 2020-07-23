@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>MySQL Admin Notes/Sheat cheet  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		MySQL Admin Notes/Sheat cheet
+	</div>
+	<div class="message-body has-text-dark">
+		<p>My MySQL Admin notes.</p>
+<p>I have a docker image with MariaDB (the new version of MySQL)
+<a href="https://github.com/gizur/docker-mariadb">here</a></p>
+<p>Show users</p>
+<p>Logon as root: <code>mysql -uroot -p</code></p>
+<div class="highlight"><pre><span></span><code><span class="err">use mysql</span>
+<span class="err">select host, user from user;</span>
+</code></pre></div>
+
+
+<p>Create new schema/user</p>
+<div class="highlight"><pre><span></span><code><span class="err">create database SCHEMA_NAME;</span>
+<span class="err">create user &#39;SCHEMA_NAME&#39;@&#39;localhost&#39;;</span>
+<span class="err">grant all privileges on SCHEMA_NAME.* to &#39;SCHEMA_NAME&#39;@&#39;localhost&#39; with grant option;</span>
+<span class="err">set password for &#39;SCHEMA_NAME&#39;@&#39;localhost&#39; = password(&#39;PASSWORD&#39;);</span>
+</code></pre></div>
+
+
+<p>Test to login with the new schema: <code>mysql -uSCHEMA_NAME -pPASSWORD</code></p>
+<p>Allow to login from any host:
+<code>GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'my-new-password' WITH GRANT OPTION;</code></p>
+<p>Grant file privileges: <code>grant file on *.* to 'jsiotpe'@'localhost';</code>. This is needed for
+<code>load_file</code>.</p>
+<p>Drop user</p>
+<div class="highlight"><pre><span></span><code><span class="err">drop user &#39;SCHEMA_NAME&#39;@&#39;localhost&#39;;</span>
+<span class="err">drop database SCHEMA_NAME;</span>
+</code></pre></div>
+
+
+<p>Make sure the users can't login anymore: <code>mysql -uSCHEMA_NAME -pPASSWORD</code></p>
+<p>Allow root to logon from other/any host</p>
+<p>Show hostname using the Show users command above.</p>
+<div class="highlight"><pre><span></span><code><span class="err">update user set host=’%’ where user=’root’ and host=’HOSTNAME’;</span>
+<span class="err">GRANT ALL PRIVILEGES ON *.* TO &#39;root&#39;@&#39;%&#39; IDENTIFIED BY &#39;my-new-password&#39; WITH GRANT OPTION;</span>
+<span class="err">flush privileges;</span>
+</code></pre></div>
+
+
+<p><code>bind-address</code> in <code>my.cnf</code> also needs to be updated to <code>*</code> or the IP of the
+host you want to connect from.</p>
+<p>Enable query log</p>
+<p>Assuming version 5.1 or higher.</p>
+<div class="highlight"><pre><span></span><code><span class="k">SET</span> <span class="k">GLOBAL</span> <span class="n">general_log</span> <span class="o">=</span> <span class="s1">&#39;ON&#39;</span><span class="p">;</span>
+
+<span class="k">show</span> <span class="n">variables</span> <span class="k">like</span> <span class="s1">&#39;general%&#39;</span><span class="p">;</span>
+</code></pre></div>
+
+
+<p>Show grants</p>
+<p><code>SHOW GRANTS FOR 'USER'@'localhost';</code></p>
+<p>Resources</p>
+<ul>
+<li><a href="http://www.tecmint.com/mysqladmin-commands-for-database-administration-in-linux/"><code>mysqladmin</code> commands</a></li>
+<li><a href="http://lzone.de/cheat-sheet/MySQL">MySQL Cheat Sheet</a></li>
+<li><a href="http://dev.mysql.com/doc/refman/5.7/en/query-log.html">query log</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>NodeJS Hosting  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		NodeJS Hosting
+	</div>
+	<div class="message-body has-text-dark">
+		<p>NodeJS Hosting</p>
+<p>Links:</p>
+<ul>
+<li>https://github.com/joyent/node/wiki/Node-Hosting</li>
+<li>http://dreamand.me/cloud/paas-comparison-appfog-vs-heroku/</li>
+<li>http://blog.appfog.com/how-to-use-appfogs-multi-infrastructure-architecture-in-the-command-line/</li>
+</ul>
+<h2>Quick review of hosting alternatives for NodeJS</h2>
+<p>The two prime candidates seams to be Heroku and Nodejitsu. I've been using Heroku for some time
+and it works fine but there are some drawbacks that made me look aroung:</p>
+<ul>
+<li>It is only possible to bind to <em>one</em> port</li>
+<li>It is not possible to create a private cloud, preferable instance within AWS Ireland region with
+    and within my Security Group</li>
+</ul>
+<p>Other alternaives:</p>
+<ul>
+<li>Joyent - same as nodejitsu?</li>
+<li>appfog.com</li>
+<li>nodester.com - deployment tools for Node that runs on appfog</li>
+<li>Cloud Foundry compatible</li>
+<li>Runs in AWS Ireland</li>
+<li>git integration not as good as heroku</li>
+<li>Windows Azure</li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Github API  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Github API
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Github can be accessed using their excellent API</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">List</span> <span class="k">public</span> <span class="n">gists</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">X</span> <span class="k">GET</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">gists</span><span class="o">/</span><span class="k">public</span>
+
+<span class="o">#</span> <span class="n">List</span> <span class="n">my</span> <span class="n">gists</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">X</span> <span class="k">GET</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">colmsjo</span><span class="o">/</span><span class="n">gists</span>
+
+<span class="o">#</span> <span class="k">Get</span> <span class="n">the</span> <span class="n">contents</span> <span class="k">of</span> <span class="n">a</span> <span class="k">public</span> <span class="n">Gist</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">X</span> <span class="k">GET</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">gists</span><span class="o">/</span><span class="mi">3684023</span>
+
+<span class="o">#</span> <span class="k">Get</span> <span class="n">the</span> <span class="n">rate</span> <span class="k">limit</span><span class="p">,</span> <span class="n">the</span> <span class="k">limit</span> <span class="k">is</span> <span class="mi">5000</span> <span class="n">per</span> <span class="n">hour</span><span class="p">.</span> <span class="n">This</span> <span class="k">is</span> <span class="n">keyed</span> <span class="k">off</span> <span class="n">either</span> <span class="n">your</span> <span class="n">login</span><span class="p">,</span> <span class="n">your</span> <span class="n">OAuth</span> <span class="n">token</span><span class="p">,</span> <span class="k">or</span> <span class="n">request</span> <span class="n">IP</span>
+<span class="n">curl</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">X</span> <span class="k">GET</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">api</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">rate_limit</span>
+</code></pre></div>
+
+
+<h2>Gist comments</h2>
+<p>API for comments: http://developer.github.com/v3/gists/comments/</p>
+<div class="highlight"><pre><span></span><code><span class="err"># Get the comments for a Gist</span>
+<span class="err">curl -i -X GET https://api.github.com/gists/3684138/comments</span>
+</code></pre></div>
+
+
+<h2>Pagination</h2>
+<p>Requests that return multiple items will be paginated to 30 items by default.</p>
+<div class="highlight"><pre><span></span><code><span class="err"># Get the two first public Gists, see the response header for a link to the next page</span>
+<span class="err">curl -i -X GET https://api.github.com/gists/public?per_page=2</span>
+<span class="err">...</span>
+<span class="c">Status: 200 OK</span>
+<span class="c">Link: &lt;https://api.github.com/gists/public?page=2&amp;per_page=2&gt;; rel=&quot;next&quot;, &lt;https://api.github.com/gists/public?page=398043&amp;per_page=2&gt;; rel=&quot;last&quot;</span>
+<span class="c">X-GitHub-Media-Type: github.beta</span>
+<span class="err">...</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="err"># Get the next page</span>
+<span class="err">curl -i -X GET &quot;https://api.github.com/gists/public?page=2&amp;per_page=2&quot;</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

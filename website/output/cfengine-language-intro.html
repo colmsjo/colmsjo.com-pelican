@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Cfengine language intro  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Cfengine language intro
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Getting started with cfengine promises (the language)</p>
+<h1>Getting started with configurations</h1>
+<p>The learning curve for cfengine seams rather steep. I started with reading this crash course: https://cfengine.com/manuals/cf3-Reference#A-simple-crash-course</p>
+<p>You should now be familiar with these concepts:</p>
+<ol>
+<li>promiser-type</li>
+<li>associations - are used by the promiser-type</li>
+<li>promiser - the abstract object making the promise</li>
+<li>promisee - the abstract object to whom the promise is made</li>
+</ol>
+<p>Generalized syntax:</p>
+<div class="highlight"><pre><span></span><code><span class="n">type</span><span class="o">:</span>
+
+        <span class="n">classes</span><span class="o">::</span>
+
+         <span class="s2">&quot;promiser&quot;</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="s2">&quot;promisee1&quot;</span><span class="o">,</span> <span class="s2">&quot;promisee2&quot;</span><span class="o">,</span> <span class="o">...</span> <span class="o">}</span>
+
+            <span class="n">attribute_1</span> <span class="o">=&gt;</span> <span class="n">value_1</span><span class="o">,</span>
+            <span class="n">attribute_2</span> <span class="o">=&gt;</span> <span class="n">value_2</span><span class="o">,</span>
+            <span class="o">...</span>
+            <span class="n">attribute_n</span> <span class="o">=&gt;</span> <span class="n">value_n</span><span class="o">;</span>
+</code></pre></div>
+
+
+<p>You should also have learned the best practices when writing promises:</p>
+<div class="highlight"><pre><span></span><code>    <span class="k">comment</span> <span class="o">=&gt;</span> <span class="ss">&quot;Update the configuration from a master server&quot;</span><span class="p">,</span>
+    <span class="n">handle</span>     <span class="o">=&gt;</span> <span class="ss">&quot;update_policy&quot;</span><span class="p">,</span>
+
+    <span class="n">depends_on</span> <span class="o">=&gt;</span> <span class="err">{</span><span class="ss">&quot;serve_updates&quot;</span><span class="err">}</span><span class="p">,</span>
+</code></pre></div>
+
+
+<p>Show availande classes:</p>
+<div class="highlight"><pre><span></span><code><span class="err">sudo cf-promises -v</span>
+</code></pre></div>
+
+
+<p>Types of hosts:</p>
+<ul>
+<li>cf-agent - Keeps promisis in common and agent</li>
+<li>execd - Runs agent and also keeps promisis in common</li>
+<li>monitord - keeps promisis in common and monitor</li>
+<li>serverd - Keeps promisis in common and server</li>
+<li>cf-report - print reports from the cfengine database, keeps promisis in common</li>
+</ul>
+<p>Now take a look at this: https://cfengine.com/manuals/cf3-solutions/</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

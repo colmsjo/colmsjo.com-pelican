@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Python notes  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Python notes
+	</div>
+	<div class="message-body has-text-dark">
+		<h1>Setup</h1>
+<p>Anaconda is a data science platform that is useful when developing AI stuff.
+It includes a package manager with support for virtual environment called <code>conda</code>.
+Using <a href="https://conda.io/miniconda.html">miniconda</a> you install only the packages
+needed. <code>conda</code> has support for both python2 and python3 using the <code>python=2|3</code>
+flag (default python version is different between miniconda and miniconda3).</p>
+<p>You probably want to be able to run any existing Python installations from
+time to time, so answer <strong>no</strong> when the installer asks if the <code>PATH</code> should
+be updated in <code>bash_profile</code>. I'm using these aliases instead:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Just type `useConda` to use on `conda` and `useDefault` to stop using `conda`</span>
+<span class="n">alias</span> <span class="n">useConda</span><span class="o">=</span><span class="s1">&#39;export PATH=&quot;/Users/jonas/local/conda3/bin:$PATH&quot;&#39;</span>
+<span class="n">alias</span> <span class="n">useDefault</span><span class="o">=</span><span class="s1">&#39;export PATH=${PATH/\/Users\/jonas\/local\/conda3\/bin:}&#39;</span>
+</code></pre></div>
+
+
+<p>My cheat sheet:</p>
+<ul>
+<li>Create a virtual environment using Python 2 and install the anaconda packages:
+<code>conda create -n cenv anaconda python=2</code></li>
+<li>Activate an environment: <code>source activate cenv</code></li>
+<li>Deactivate an environment: <code>source deactivate cenv</code></li>
+<li>Show some info about the conda installation: <code>conda info</code></li>
+</ul>
+<p>Keep in mind that environments are setup in the <code>conda</code> installtion folder (and not in the current
+folder like <code>virtualenv</code>). So environments needs to have unique names.</p>
+<p>Resources:</p>
+<ul>
+<li><a href="https://conda.io/docs/using/envs.html">Managing environments</a></li>
+<li><a href="https://conda.io/docs/using/cheatsheet.html">The conda cheat sheet</a></li>
+<li><a href="https://conda.io/docs/index.html">Conda docs</a></li>
+</ul>
+<h1>Misc packages</h1>
+<p><a href="https://pygraphviz.github.io/#">PyGraphviz</a></p>
+<p>Make sure java installed, for instance with <code>brew cask</code>: <code>brew cask install java</code></p>
+<p><a href="http://www.graphviz.org">Graphviz</a> needs to be installed. Install on OSX with
+<code>brew</code>: <code>brew install graphviz --with-app --with-bindings --with-librsvg</code></p>
+<p>Then install with: <code>conda install -c pdrops pygraphviz=1.2</code></p>
+<p><a href="https://bioconda.github.io/">BioConda</a></p>
+<p>Includes bio informatics software. Contains a newer version of <code>pygraphviz</code>.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

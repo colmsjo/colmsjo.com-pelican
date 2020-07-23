@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>SmartOS  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		SmartOS
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Introduction</p>
+<p>SmartOS is a version of Sun's Solaris/SunOS with support for the excellent
+<code>dtrace</code> tool. <code>dtrace</code> is starting to find its way into the Linux world
+and there is also support for OSX (which I'm running). But it would be nice
+to be able to use <code>dtrace</code> in production which means that I need to look at
+SmartOS for now. Joyent, which is behind SmartOS, has a cloud running on
+SmartOS to it is easy to get started with a production server. But I'd
+also like to develop and test on a similar setup. So here I am giving
+SmartOS a first spin.</p>
+<p>Quick reference</p>
+<p>Some commands:</p>
+<ul>
+<li>List zones (containers): <code>vmadm list</code></li>
+<li>Show data links: <code>dladm show-link</code></li>
+<li>Show physical networks: <code>dladm show-phys</code></li>
+<li>Show NICs: <code>dladm show-vnic</code></li>
+<li>Show IP addresses: <code>ipadm show-addr</code></li>
+<li>Show network configuration of zone: <code>vmadm get 2d688169-9bd1-4677-bb67-99b8740d70e0|json nics</code></li>
+</ul>
+<p>This gist automates the install (after SmartOS has been installed):
+<code>curl -k https://gist.githubusercontent.com/colmsjo/a0d5307e8b61ca905ce7/raw/60e80e70aced8bb12a1a544b40036c210b015efc/install.sh | bash</code></p>
+<p>Installation</p>
+<p>I'll setup SmartOS on VirtualBox in OSX. This is easy, just follow these
+instructions on the <a href="https://wiki.smartos.org/display/DOC/SmartOS+as+a+Sandboxed+VirtualBox+Guest">SmartOS wiki</a></p>
+<p>Check what IP adress the machine received and login with <code>ssh</code>. This is much
+simpler than using the terminal in VirtualBox. I use bridged network to make this
+easy.</p>
+<p>The network within zones were not reachable with this approach. Testing this instead:</p>
+<ul>
+<li>Boot from the ISO as a LiveCD</li>
+<li>use "bridge mode"</li>
+<li>in the advanced settings, enable "promiscuous mode".</li>
+</ul>
+<p>SmartOS first steps</p>
+<p>I havent worked with zones, zfs etc. on Solaris so I needed to check otu the common
+commands:</p>
+<p>Zones are created using images. This lists the availble images: <code>imgadm avail</code></p>
+<p>These are the basic images to build custom images from: <code>imgadm avail|grep base64</code></p>
+<p>Import the latest (at hthe time of writing) basic image: <code>imgadm import 62f148f8-6e84-11e4-82c5-efca60348b9f</code></p>
+<p>Put this into zone01.json:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;brand&quot;: &quot;joyent&quot;,</span>
+<span class="err">  &quot;image_uuid&quot;: &quot;62f148f8-6e84-11e4-82c5-efca60348b9f&quot;,</span>
+<span class="err">  &quot;alias&quot;: &quot;zone01&quot;,</span>
+<span class="err">  &quot;hostname&quot;: &quot;zone01&quot;,</span>
+<span class="err">  &quot;max_physical_memory&quot;: 512,</span>
+<span class="err">  &quot;quota&quot;: 10,</span>
+<span class="err">  &quot;resolvers&quot;: [&quot;8.8.8.8&quot;, &quot;208.67.220.220&quot;],</span>
+<span class="err">  &quot;nics&quot;: [</span>
+<span class="err">  {</span>
+<span class="err">    &quot;nic_tag&quot;: &quot;admin&quot;,</span>
+<span class="err">    &quot;ip&quot;: &quot;192.168.1.131&quot;,</span>
+<span class="err">    &quot;netmask&quot;: &quot;255.255.255.0&quot;,</span>
+<span class="err">    &quot;gateway&quot;: &quot;192.168.1.1&quot;</span>
+<span class="err">  }</span>
+<span class="err">  ]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Create the zone:</p>
+<div class="highlight"><pre><span></span><code><span class="err">vmadm create -f zone01.json</span>
+<span class="err">Successfully created VM 2d688169-9bd1-4677-bb67-99b8740d70e0</span>
+</code></pre></div>
+
+
+<p>Login:</p>
+<div class="highlight"><pre><span></span><code><span class="n">zlogin</span> <span class="mi">2</span><span class="n">d688169</span><span class="o">-</span><span class="mi">9</span><span class="n">bd1</span><span class="o">-</span><span class="mi">4677</span><span class="o">-</span><span class="n">bb67</span><span class="o">-</span><span class="mi">99</span><span class="n">b8740d70e0</span>
+<span class="o">#</span> <span class="k">set</span> <span class="n">password</span> <span class="k">to</span> <span class="n">make</span> <span class="n">it</span> <span class="n">possible</span> <span class="k">to</span> <span class="n">login</span> <span class="k">with</span> <span class="n">vmadm</span>
+<span class="n">passwd</span> <span class="n">root</span>
+
+<span class="n">vmadm</span> <span class="n">console</span> <span class="mi">2</span><span class="n">d688169</span><span class="o">-</span><span class="mi">9</span><span class="n">bd1</span><span class="o">-</span><span class="mi">4677</span><span class="o">-</span><span class="n">bb67</span><span class="o">-</span><span class="mi">99</span><span class="n">b8740d70e0</span>
+</code></pre></div>
+
+
+<p>Now in the new zone, install some software:</p>
+<div class="highlight"><pre><span></span><code><span class="err">[root@zone01 ~]# pkgin ls</span>
+<span class="err">reading local summary...</span>
+<span class="err">processing local summary...</span>
+<span class="err">updating database: 100%</span>
+</code></pre></div>
+
+
+<p>Setup global zone</p>
+<p>Make it possible to install packages in the global zone:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cd /</span>
+<span class="err">curl -k http://pkgsrc.joyent.com/packages/SmartOS/bootstrap/bootstrap-2013Q1-x86_64.tar.gz | gzcat | tar -xf -</span>
+<span class="err">pkg_admin rebuild</span>
+<span class="err">pkgin -y up</span>
+</code></pre></div>
+
+
+<p>Install whatever you need: <code>pkgin -y install nano ...</code></p>
+<p>Networking</p>
+<p>Networking with NIC, data links etc. connected to zones is a bit of a mystreri
+(at least for me). A found an introduction to <a href="http://docs.oracle.com/cd/E23824_01/html/821-1458/geyrb.html">data links</a> that is good
+to check out.</p>
+<ul>
+<li>Show links: <code>dladm show-link</code></li>
+<li>This shows the physical interfaces (NIC) when executed in the global zone:
+<code>dladm show-phys</code></li>
+<li>There is also virtual NICs: <code>dladm show-vnic</code></li>
+<li>Show bridges: <code>dladm show-bridge</code></li>
+</ul>
+<p>Create a NIC (not sure howto make this works):</p>
+<div class="highlight"><pre><span></span><code><span class="err">dladm create-vnic -l e1000g0 zone0</span>
+<span class="err">ifconfig zone0 plumb</span>
+<span class="err">ifconfig zone0 dhcp</span>
+<span class="err"># dhcp timed out, tested thus instead (use inet of server+1)</span>
+<span class="err">ifconfig zone0 inet 192.168.1.135 netmask 255.255.255.0 up</span>
+</code></pre></div>
+
+
+<p>Testing some more:</p>
+<div class="highlight"><pre><span></span><code><span class="err">dladm show-phys</span>
+<span class="err">dladm show-link</span>
+<span class="err">ipadm show-addr</span>
+<span class="err">dladm create-vnic -l link vnic</span>
+<span class="err">ipadm create-ip vnic</span>
+<span class="err">ipadm create-addr -T static -a address addrobj</span>
+<span class="err">ipadm create-addr -T dhcp  e1000g0/zone0</span>
+</code></pre></div>
+
+
+<p>Troubleshooting:</p>
+<ul>
+<li>This seams promissing - <a href="https://forums.virtualbox.org/viewtopic.php?f=20&amp;t=52428">VirtualBox and Zones</a></li>
+<li><a href="http://www.virtualbox.org/manual/ch09.html#vboxbowsolaris11">VirtualBox and Solaris networking</a></li>
+<li>Check routes: <code>routeadm</code></li>
+<li>Restart route service : ``</li>
+</ul>
+<p>Setup a firewall for zones using NAT</p>
+<p>Followed this article <a href="http://wiki.smartos.org/display/DOC/NAT+using+Etherstubs">NAT using Etherstubs</a></p>
+<div class="highlight"><pre><span></span><code><span class="n">cat</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ipf</span><span class="o">/</span><span class="n">ipnat</span><span class="p">.</span><span class="n">conf</span> <span class="o">&lt;&lt;</span><span class="n">EOL</span>
+<span class="k">map</span> <span class="n">net0</span> <span class="mi">10</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span><span class="o">/</span><span class="mi">32</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">/</span><span class="mi">32</span>
+<span class="n">EOL</span>
+
+<span class="n">routeadm</span> <span class="o">-</span><span class="n">u</span> <span class="o">-</span><span class="n">e</span> <span class="n">ipv4</span><span class="o">-</span><span class="n">forwarding</span>
+<span class="n">svcadm</span> <span class="n">enable</span> <span class="n">ipfilter</span>
+<span class="n">ipnat</span> <span class="o">-</span><span class="n">l</span>
+</code></pre></div>
+
+
+<p>Services</p>
+<p>SmartOS is built around services using Service Management Framework (SMF).
+Some intro can be <a href="http://wiki.joyent.com/wiki/display/jpc2/Using+the+Service+Management+Facility">found here</a></p>
+<p>Resources</p>
+<ul>
+<li><a href="http://wiki.joyent.com/wiki/display/jpc2/The+Joyent+Linux-to-SmartOS+Cheat+Sheet">Cheat Sheet</a></li>
+<li><a href="https://wiki.smartos.org/display/DOC/How+to+create+a+zone+%28+OS+virtualized+machine+%29+in+SmartOS">Create a zone</a></li>
+<li><a href="http://wiki.smartos.org/display/DOC/The+OpenSolaris+Bible">The bible</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

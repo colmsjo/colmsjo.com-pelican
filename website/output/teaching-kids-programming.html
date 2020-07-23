@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Teaching kids programming  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Teaching kids programming
+	</div>
+	<div class="message-body has-text-dark">
+		<p>I wrote this short article after showing my 11 years old boy howto develop a simple web app.</p>
+<p>We using a mac but it works just as well with windows or some linux flavour (or any other OS).</p>
+<h2>Preparations</h2>
+<p>Three applications needs to be installed and you need to register for a free Heroku account:</p>
+<ul>
+<li>NodeJS and npm - http://nodejs.org/download/</li>
+<li>Heroku account and toolbelt</li>
+<li>Register for an account at https://id.heroku.com/signup</li>
+<li>Download toolbelt - https://toolbelt.heroku.com/</li>
+<li>git - download at http://git-scm.com/downloads</li>
+</ul>
+<p>A text editor is also needed. we're using nano which is included in OSX, this way we only need a terminal window and the browser.</p>
+<p>Open a terminal window and do this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;heroku login</span>
+</code></pre></div>
+
+
+<p>Enter the mail adress and login you registered with heroku.</p>
+<h2>Article 1</h2>
+<p>Create a folder to put the app in:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;mkdir web-appar</span>
+<span class="err">&gt;cd web-appar</span>
+<span class="err">&gt;mkdir hello</span>
+<span class="err">&gt;cd hello</span>
+</code></pre></div>
+
+
+<p>Create a git repository (just google git for an introduction) and create a new heroku app:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;git init</span>
+<span class="err">&gt;heroku create</span>
+</code></pre></div>
+
+
+<p>Create these three files.</p>
+<p>app.js:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;nano app.js</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="err">var express = require(&#39;express&#39;);</span>
+<span class="err">var PORT = process.env.PORT || 8080;</span>
+<span class="err">var app = express();</span>
+<span class="err">app.get(&#39;/&#39;, function (req, res){</span>
+<span class="err">  res.send(&#39;hello everyone i am Algolt and i am eleven years old.&#39;);</span>
+<span class="err">});</span>
+<span class="err">app.get(&#39;/bajs&#39;, function (req, res){</span>
+<span class="err">  res.send(&#39;Harry loves poop.&#39;);</span>
+<span class="err">});</span>
+<span class="err">app.listen(PORT);</span>
+<span class="err">console.log(&#39;running on http://localhost:&#39; + PORT);</span>
+</code></pre></div>
+
+
+<p>package.json:</p>
+<div class="highlight"><pre><span></span><code><span class="err">nano package.json</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;name&quot;:&quot;algot-app&quot;,</span>
+<span class="err">  &quot;dependencies&quot;: {</span>
+<span class="err">   &quot;express&quot;: &quot;*&quot;</span>
+<span class="err">  }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Procfile:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;nano Procfile</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="n">web</span><span class="o">:</span> <span class="n">node</span> <span class="n">app</span><span class="o">.</span><span class="na">js</span>
+</code></pre></div>
+
+
+<p>Try to run the app on the local computer:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;npm install</span>
+<span class="err">&gt;node app.js</span>
+</code></pre></div>
+
+
+<p>Open http://localhost:8080 in your favorite browser.</p>
+<p>Then hit <code>ctrl+c</code> in the terminal to stop the web server.</p>
+<p>Publish the app to heroku:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;git add .</span>
+<span class="err">&gt;git commit -am &quot;my first app&quot;</span>
+<span class="err">&gt;git push heroku master</span>
+</code></pre></div>
+
+
+<p>This will open the heroku app in a browser:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt;heroku open</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Cfengine installation  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Cfengine installation
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Installation of the excellent Configuration Management Tool cfengine</p>
+<h2>Installation</h2>
+<p>I'm using Ubuntu 12.04. </p>
+<p>NOTE: Make sure you don't miss the <code>sudo</code> command. The command will run as user ubuntu otherwise and use input files from the .cfagent folder in the home directory</p>
+<pre>
+sudo apt-get install cfengine3
+
+sudo ls /etc/cfengine3/
+ls /var/lib/cfengine3/
+
+sudo nano /var/lib/cfengine3/inputs/hello.cf
+body common control  
+{
+bundlesequence => { "test" };
+}
+
+bundle agent test
+{
+reports:
+  cfengine_3::
+      "Hello world!";
+}
+
+# Fix permission
+sudo chmod og-rwx /var/lib/cfengine3/inputs/hello.cf 
+
+# Should not show anything
+sudo cf-promises -f /var/lib/cfengine3/inputs/hello.cf
+
+# Should print Hello world
+sudo cf-agent -f /var/lib/cfengine3/inputs/hello.cf 
+</pre>
+
+<h2>Start daemons</h2>
+<p>I'm going to setup a minimalistic configuration with:</p>
+<ol>
+<li>cf-execd - scheduler, means that cron does not need to be scheduled. Keeps the promises made in common and monitor bundles, and is affected by common and monitor control bodies. cf-agent is executed which keeps the promises made in common and agent bundles, and is affected by common and agent control bodies.</li>
+<li>cf-monitord - keeps the promises made in common bundles, and is affected by common and executor control bodies</li>
+</ol>
+<p>I'm not running cf-serverd since I'm using git to distribute configuration files.</p>
+<p>Example files are shipped with the installation:</p>
+<div class="highlight"><pre><span></span><code><span class="k">more</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">share</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">README</span><span class="p">.</span><span class="n">Debian</span> 
+
+<span class="n">ls</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">share</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">examples</span><span class="o">/</span>
+
+<span class="n">sudo</span> <span class="n">cp</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">share</span><span class="o">/</span><span class="n">doc</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">examples</span><span class="cm">/* /etc/cfengine3/</span>
+
+<span class="cm">sudo nano /etc/cfengine3/site.cf</span>
+
+<span class="cm">sudo vi /etc/default/cfengine3</span>
+<span class="cm">...</span>
+<span class="cm">RUN_CFMONITORD=1</span>
+<span class="cm">RUN_CFSERVERD=0</span>
+<span class="cm">RUN_CFEXECD=1</span>
+
+<span class="cm">sudo /etc/init.d/cfengine3 start</span>
+
+<span class="cm">ps -ef | grep cf</span>
+
+<span class="cm">sudo cf-agent --verbose </span>
+</code></pre></div>
+
+
+<h3>Troubleshooting</h3>
+<div class="highlight"><pre><span></span><code><span class="err">sudo cf-agent --verbose </span>
+<span class="err">...</span>
+<span class="err">cf3&gt; SERIOUS SECURITY ALERT: path race exploited in recursion to/from /var/lib/cfengine3/inputs. Not safe for agent to continue - aborting</span>
+</code></pre></div>
+
+
+<p>Found this: https://bugs.launchpad.net/ubuntu/+source/cfengine3/+bug/646777</p>
+<div class="highlight"><pre><span></span><code><span class="n">ls</span> <span class="o">-</span><span class="n">al</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">inputs</span>
+
+<span class="o">#</span> <span class="k">Update</span> <span class="n">the</span> <span class="n">config</span> <span class="n">file</span> <span class="k">and</span> <span class="k">replace</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">inputs</span> <span class="k">with</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cfengine3</span>
+<span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="k">update</span><span class="p">.</span><span class="n">cf</span>
+
+<span class="n">sudo</span> <span class="n">cf</span><span class="o">-</span><span class="n">agent</span> <span class="c1">--verbose</span>
+<span class="p">...</span>
+<span class="n">cf3</span><span class="o">&gt;</span> <span class="n">Outcome</span> <span class="k">of</span> <span class="k">version</span> <span class="p">(</span><span class="k">not</span> <span class="n">specified</span><span class="p">)</span> <span class="p">(</span><span class="n">agent</span><span class="o">-</span><span class="mi">0</span><span class="p">):</span> <span class="n">Promises</span> <span class="n">observed</span> <span class="k">to</span> <span class="n">be</span> <span class="n">kept</span> <span class="mi">56</span><span class="o">%</span><span class="p">,</span> <span class="n">Promises</span> <span class="n">repaired</span> <span class="mi">44</span><span class="o">%</span><span class="p">,</span> <span class="n">Promises</span> <span class="k">not</span> <span class="n">repaired</span> <span class="mi">0</span><span class="o">%</span>
+</code></pre></div>
+
+
+<p>Now it seams to work better. I have no clue with the exmample files we copied actually do though...</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

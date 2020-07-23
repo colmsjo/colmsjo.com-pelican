@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Functional combinators  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Functional combinators
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Introduction</p>
+<p>JavasScript is a functional language so functions can therefore return new
+functions. So called currying (from the mathematician Haskell Curry) is a
+feature that some functional languages have. It is not exactly the same as
+partial binding but I'll treat them as same for this post.</p>
+<p><code>Function.prototype.bind</code> can be use to partially bind initial arguments of a
+function. Here is an exmaple:</p>
+<div class="highlight"><pre><span></span><code><span class="err">&gt; var hi = console.log.bind(console, &#39;hi&#39;);</span>
+<span class="err">undefined</span>
+<span class="err">&gt; hi(&#39;jonas&#39;);</span>
+<span class="err">hi jonas</span>
+</code></pre></div>
+
+
+<p>The partial generator <code>P</code> below makes it possible not only to bind initial
+arguments.</p>
+<p>curry.js</p>
+<p>An example of using <a href="https://www.npmjs.com/package/curry"><code>curry.js</code></a> where
+a specific argument needs to be placed last:</p>
+<div class="highlight"><pre><span></span><code><span class="k">function</span><span class="w"> </span><span class="n">swap</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="w"> </span><span class="n">i1</span><span class="p">,</span><span class="w"> </span><span class="n">i2</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Array</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">slice</span><span class="p">.</span><span class="k">call</span><span class="p">(</span><span class="n">arguments</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="o">[</span><span class="n">i1</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span><span class="o">[</span><span class="n">i1</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="o">[</span><span class="n">i2</span><span class="o">]</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span><span class="o">[</span><span class="n">i2</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fn</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+
+<span class="nf">var</span><span class="w"> </span><span class="n">write4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curry</span><span class="p">.</span><span class="k">to</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">swap</span><span class="p">(</span><span class="n">fs</span><span class="p">.</span><span class="n">writeFile</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="n">write4</span><span class="p">(</span><span class="s1">&#39;outfile4.txt&#39;</span><span class="p">)(</span><span class="k">null</span><span class="p">)(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)(</span><span class="s1">&#39;string 4 to write&#39;</span><span class="p">);</span><span class="w"></span>
+<span class="n">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s1">&#39;check outfile4.txt&#39;</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>compose</p>
+<p>Compose makes it possible to do: <code>compose(f,g)(x)</code>
+instead of: <code>f(g(x))</code>. This is for instance useful when working with 
+promises.</p>
+<p>This is the implementation of underscore:</p>
+<div class="highlight"><pre><span></span><code><span class="n">_</span><span class="p">.</span><span class="n">compose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="k">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="p">.</span><span class="n">length</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">start</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="o">[</span><span class="n">start</span><span class="o">]</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="c1">--) result = args[i].call(this, result);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>code</p>
+<p>Some useful functional combinators:</p>
+<div class="highlight"><pre><span></span><code><span class="o">//</span><span class="w"> </span><span class="nf">Log</span><span class="w"> </span><span class="k">result</span><span class="w"></span>
+<span class="n">Helpers</span><span class="p">.</span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fn</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">result</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">Run</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">once</span><span class="w"> </span><span class="p">(</span><span class="k">from</span><span class="w"> </span><span class="n">underscore</span><span class="p">)</span><span class="w"></span>
+<span class="n">Helpers</span><span class="p">.</span><span class="n">O</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="nf">var</span><span class="w"> </span><span class="n">ran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="n">memo</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="p">()</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ran</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">memo</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">memo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">func</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">func</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">memo</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="o">//</span><span class="w"> </span><span class="n">Compose</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">functions</span><span class="w"></span>
+<span class="n">Helpers</span><span class="p">.</span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">fn1</span><span class="p">,</span><span class="w"> </span><span class="n">fn2</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">compose_</span><span class="w"> </span><span class="p">(</span><span class="n">something</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fn1</span><span class="p">.</span><span class="k">call</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">fn2</span><span class="p">.</span><span class="k">call</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">something</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="o">//</span><span class="w"> </span><span class="k">Partial</span><span class="w"> </span><span class="n">generator</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="n">make</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">arguments</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">partially</span><span class="w"> </span><span class="n">applied</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="n">P</span><span class="p">(</span><span class="n">fn</span><span class="p">)(</span><span class="o">[</span><span class="n">1,,3</span><span class="o">]</span><span class="p">)(</span><span class="o">[</span><span class="n">,2,undefined</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="n">fn</span><span class="p">(</span><span class="o">[</span><span class="n">1,2,3</span><span class="o">]</span><span class="p">)</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="n">It</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">necessary</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="k">array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">input</span><span class="w"> </span><span class="k">when</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">first</span><span class="w"> </span><span class="n">argument</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="nf">left</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="n">unbound</span><span class="p">.</span><span class="w"> </span><span class="n">Here</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="nl">example</span><span class="p">:</span><span class="w"></span>
+<span class="o">//</span><span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">pretty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">H</span><span class="p">.</span><span class="n">C</span><span class="p">(</span><span class="n">console</span><span class="p">.</span><span class="nf">log</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">.</span><span class="n">P</span><span class="p">(</span><span class="n">JSON</span><span class="p">.</span><span class="n">stringify</span><span class="p">)(</span><span class="o">[</span><span class="n">,null,4</span><span class="o">]</span><span class="p">));</span><span class="w"></span>
+<span class="o">//</span><span class="w">    </span><span class="n">pretty</span><span class="p">(</span><span class="err">{</span><span class="nl">one</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nl">two</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;two&#39;</span><span class="p">,</span><span class="w"> </span><span class="nl">three</span><span class="p">:</span><span class="w"> </span><span class="mf">3.14</span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="o">//</span><span class="w"> </span><span class="nl">NOTE</span><span class="p">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">last</span><span class="w"> </span><span class="k">element</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="k">array</span><span class="w"> </span><span class="n">must</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">specifically</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">undefined</span><span class="w"></span>
+<span class="n">Helpers</span><span class="p">.</span><span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">function</span><span class="w"> </span><span class="n">combine</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="nf">var</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">a1</span><span class="p">.</span><span class="n">length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">res</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="w"> </span><span class="n">a1</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="n">undefined</span><span class="w"> </span><span class="vm">?</span><span class="w"> </span><span class="n">a1</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">a2</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">function</span><span class="w"> </span><span class="n">undef</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="nf">var</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="n">undefined</span><span class="w"> </span><span class="vm">?</span><span class="w"> </span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">undefined</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">invoke</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">undef</span><span class="p">(</span><span class="n">args</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">undefined</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">fn</span><span class="p">.</span><span class="n">apply</span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="n">args</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">args2</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="err">!</span><span class="p">(</span><span class="n">args2</span><span class="w"> </span><span class="n">instanceof</span><span class="w"> </span><span class="k">Array</span><span class="p">))</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">          </span><span class="n">args2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">Array</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">slice</span><span class="p">.</span><span class="k">call</span><span class="p">(</span><span class="n">arguments</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">args2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">undef</span><span class="p">(</span><span class="n">args2</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">invoke</span><span class="p">(</span><span class="n">combine</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="n">args2</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+
+
+<span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="k">Array</span><span class="p">(</span><span class="n">length</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">a</span><span class="o">[</span><span class="n">idx</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="err">}</span><span class="w"></span>
+<span class="err">}</span><span class="p">;</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Resources</p>
+<ul>
+<li><a href="https://www.npmjs.com/package/curry">curryjs</a></li>
+<li><a href="http://www.crockford.com/javascript/www_svendtofte_com/code/curried_javascript/index.html">Crockford</a></li>
+<li><a href="http://ejohn.org/blog/partial-functions-in-javascript/">John Resig</a></li>
+<li><a href="http://raganwald.com/2013/01/03/function_and_method_decorators.html">Function and method decorators</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

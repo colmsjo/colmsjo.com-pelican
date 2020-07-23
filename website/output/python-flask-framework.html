@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Python Flask Framework  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Python Flask Framework
+	</div>
+	<div class="message-body has-text-dark">
+		<h2>Generate SQLA Models</h2>
+<div class="highlight"><pre><span></span><code><span class="n">conda</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">conda</span><span class="o">-</span><span class="n">forge</span><span class="w"> </span><span class="n">sqlacodegen</span><span class="w"></span>
+<span class="n">conda</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">bioconda</span><span class="w"> </span><span class="n">mysqlclient</span><span class="w"></span>
+
+<span class="n">sqlacodegen</span><span class="w"> </span><span class="nl">mysql</span><span class="p">:</span><span class="o">//</span><span class="nl">invest</span><span class="p">:</span><span class="n">invest</span><span class="nv">@localhost</span><span class="o">/</span><span class="n">invest</span><span class="w"></span>
+</code></pre></div>
+
+
+<h2>WTForms &amp; SLQA example using model_form</h2>
+<p>app.py:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># app.py - https://medium.com/better-programming/how-to-use-flask-wtforms-faab71d5a034</span>
+<span class="c1">#!bin/python</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="kn">from</span> <span class="nn">model</span> <span class="kn">import</span> <span class="n">RegForm</span><span class="p">,</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">flask_bootstrap</span> <span class="kn">import</span> <span class="n">Bootstrap</span>
+
+<span class="kn">from</span> <span class="nn">wtforms.widgets</span> <span class="kn">import</span> <span class="n">TableWidget</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_mapping</span><span class="p">(</span>
+    <span class="n">SECRET_KEY</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xd6\x04\xbd</span><span class="s1">j</span><span class="se">\xfe\xed</span><span class="s1">$c</span><span class="se">\x1e</span><span class="s1">@</span><span class="se">\xad\x0f\x13</span><span class="s1">,@G&#39;</span><span class="p">)</span>
+
+<span class="n">Bootstrap</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">registration</span><span class="p">():</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="n">RegForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">()</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">populate_obj</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;users.html&#39;</span><span class="p">,</span>  <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Users&#39;</span><span class="p">,</span> <span class="n">users</span><span class="o">=</span><span class="n">User</span><span class="o">.</span><span class="n">get_all</span><span class="p">())</span>
+        <span class="c1">#return &#39;We confirm your registration {} {}!&lt;br/&gt;{}&#39;.format(user.email, user.name, User.get_df().to_html())</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;registration.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p>model.py:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="kn">as</span> <span class="nn">sa</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">sessionmaker</span>
+<span class="c1"># from wtforms_alchemy import ModelForm</span>
+
+<span class="kn">from</span> <span class="nn">flask_wtf</span> <span class="kn">import</span> <span class="n">Form</span>
+<span class="kn">from</span> <span class="nn">wtforms.fields</span> <span class="kn">import</span> <span class="n">SubmitField</span>
+<span class="kn">from</span> <span class="nn">wtforms.ext.sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">model_form</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="c1">#engine = create_engine(&#39;sqlite:///:memory:&#39;, echo=True)</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">&#39;sqlite:///user.db&#39;</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+<span class="n">Session</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;user&#39;</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">autoincrement</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">sa</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="c1"># Ued with DataTable</span>
+    <span class="k">def</span> <span class="nf">dt_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;{}&lt;/th&gt;&lt;th&gt;{}&lt;/th&gt;&lt;th&gt;{}&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">dt_footer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&lt;/tbody&gt;&lt;tfoot&gt;&lt;tr&gt;&lt;th&gt;{}&lt;/th&gt;&lt;th&gt;{}&lt;/th&gt;&lt;th&gt;{}&lt;/th&gt;&lt;/tr&gt;&lt;/tfoot&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;&lt;tr&gt;&lt;td&gt;{}r&lt;/td&gt;&lt;td&gt;{}&lt;/td&gt;&lt;td&gt;{}&lt;/td&gt;&lt;/tr&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">session</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_all</span><span class="p">():</span>
+        <span class="k">global</span> <span class="n">session</span>
+        <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">():</span>
+        <span class="k">global</span> <span class="n">session</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">statement</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">)</span>
+
+
+<span class="n">RegForm</span> <span class="o">=</span> <span class="n">model_form</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">base_class</span><span class="o">=</span><span class="n">Form</span><span class="p">)</span>
+<span class="n">RegForm</span><span class="o">.</span><span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s1">&#39;Create&#39;</span><span class="p">)</span>
+
+<span class="n">Base</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>templates/registration.html:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># templates/registration.html</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s2">&quot;bootstrap/base.html&quot;</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="kn">import</span> <span class="s2">&quot;bootstrap/wtf.html&quot;</span> <span class="k">as</span> <span class="n">wtf</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Create</span> <span class="n">your</span> <span class="n">account</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
+    <span class="p">{{</span> <span class="n">wtf</span><span class="o">.</span><span class="n">quick_form</span><span class="p">(</span><span class="n">form</span><span class="p">)</span> <span class="p">}}</span>
+  <span class="o">&lt;</span><span class="n">hr</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">Open</span> <span class="n">one</span> <span class="n">account</span> <span class="o">-</span> <span class="n">All</span> <span class="n">humans</span> <span class="n">working</span> <span class="k">for</span> <span class="n">you</span><span class="o">.&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="o">&gt;</span><span class="n">Sign</span> <span class="ow">in</span> <span class="n">instead</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</code></pre></div>
+
+
+<p>templates/users.html:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># templates/registration.html</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s2">&quot;bootstrap/base.html&quot;</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="kn">import</span> <span class="s2">&quot;bootstrap/wtf.html&quot;</span> <span class="k">as</span> <span class="n">wtf</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">content</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;container&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Users</span><span class="o">&lt;/</span><span class="n">h3</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">{{</span> <span class="n">user</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="o">&gt;</span><span class="n">Add</span> <span class="n">new</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</code></pre></div>
+
+
+<p>Run the app:</p>
+<div class="highlight"><pre><span></span><code><span class="err">export FLASK_APP=app.py</span>
+<span class="err">flask run</span>
+</code></pre></div>
+
+
+<h1>Resources</h1>
+<ul>
+<li><a href="https://flask.palletsprojects.com/en/1.1.x/">Flask Docs</a></li>
+<li><a href="https://www.sqlalchemy.org/">SQL Alchemy Docs</a></li>
+<li><a href="https://www.pythonsheets.com/notes/python-sqlalchemy.html">SQLA Cheat Sheet</a></li>
+<li><a href="https://wtforms.readthedocs.io/en/2.3.x/">WT Forms</a></li>
+<li><a href="https://pypi.org/project/sqlacodegen/">Generate SQLA Models</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Reactive programming  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Reactive programming
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Introduction</p>
+<p>Reactive programming is a concept for managing asynchronous events and streams.
+The streams are transformed from one stream into antoher using functions that
+are composed. The stream are immutable, i.e. cannot be changed.</p>
+<p>Here is a small example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="k">input</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">);</span>
+<span class="n">var</span> <span class="n">input2</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;input2&#39;</span><span class="p">);</span>
+<span class="n">var</span> <span class="n">results</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">);</span>
+
+<span class="n">Observable</span><span class="p">.</span><span class="n">fromEvent</span><span class="p">(</span><span class="k">input</span><span class="p">,</span> <span class="s1">&#39;keyup&#39;</span><span class="p">)</span>
+  <span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Observable</span><span class="p">.</span><span class="n">fromEvent</span><span class="p">(</span><span class="n">input2</span><span class="p">,</span> <span class="s1">&#39;keyup&#39;</span><span class="p">))</span>
+  <span class="p">.</span><span class="k">map</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span> <span class="err">{</span>
+    <span class="k">return</span> <span class="n">evt</span><span class="p">.</span><span class="n">target</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+  <span class="err">}</span><span class="p">)</span>
+  <span class="p">.</span><span class="k">map</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="err">{</span>
+    <span class="n">results</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">str</span>
+  <span class="err">}</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>Keyboard events/streams from two input fields are merged into one stream.
+This stream is then used to update a result field.</p>
+<p>code</p>
+<p>Here is a small Observable implementation.</p>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="k">input</span> <span class="k">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;enter something&#39;</span> <span class="n">id</span><span class="o">=</span><span class="s1">&#39;input&#39;</span> <span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="k">input</span> <span class="k">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;enter something else&#39;</span> <span class="n">id</span><span class="o">=</span><span class="s1">&#39;input2&#39;</span> <span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="k">input</span> <span class="k">type</span><span class="o">=</span><span class="s1">&#39;text&#39;</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;result&#39;</span> <span class="n">id</span><span class="o">=</span><span class="s1">&#39;results&#39;</span> <span class="o">/&gt;</span>
+
+
+  <span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+    <span class="o">//</span> <span class="n">Observable</span><span class="p">.</span><span class="n">fromEvent</span><span class="p">(</span><span class="k">input</span><span class="p">,</span> <span class="s1">&#39;keyup&#39;</span><span class="p">).</span><span class="n">merge</span><span class="p">(</span><span class="n">fromEvent</span><span class="p">(</span><span class="n">input2</span><span class="p">,</span> <span class="s1">&#39;keyup&#39;</span><span class="p">)).</span><span class="k">map</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="o">//</span>
+    <span class="o">//</span> <span class="n">event</span> <span class="o">-&gt;</span> <span class="n">observable</span><span class="p">.</span><span class="k">notify</span>  <span class="o">-&gt;</span> <span class="n">observable3</span><span class="p">.</span><span class="k">notify</span> <span class="o">-&gt;</span> <span class="n">fn</span>
+    <span class="o">//</span> <span class="n">event</span> <span class="o">-&gt;</span> <span class="n">observable2</span><span class="p">.</span><span class="k">notify</span> <span class="o">-&gt;</span>
+
+
+    <span class="n">var</span> <span class="n">Observable</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="k">operation</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">this</span><span class="p">.</span><span class="n">operation_</span> <span class="o">=</span> <span class="k">operation</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">operation</span> <span class="o">===</span> <span class="s1">&#39;map&#39;</span><span class="p">)</span> <span class="n">this</span><span class="p">.</span><span class="n">fn_</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">operation</span> <span class="o">===</span> <span class="s1">&#39;merge&#39;</span><span class="p">)</span> <span class="n">this</span><span class="p">.</span><span class="n">mergeWith_</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
+      <span class="n">this</span><span class="p">.</span><span class="n">observers_</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">Observable</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">register</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">observer</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">this</span><span class="p">.</span><span class="n">observers_</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">observer</span><span class="p">);</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">Observable</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="k">notify</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span> <span class="err">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">this</span><span class="p">.</span><span class="n">operation_</span> <span class="o">===</span> <span class="s1">&#39;map&#39;</span><span class="p">)</span> <span class="err">{</span>
+        <span class="n">var</span> <span class="n">tmpEvt</span> <span class="o">=</span> <span class="n">this</span><span class="p">.</span><span class="n">fn_</span><span class="p">(</span><span class="n">evt</span><span class="p">);</span>
+        <span class="n">evt</span> <span class="o">=</span> <span class="n">tmpEvt</span> <span class="o">?</span> <span class="n">tmpEvt</span> <span class="p">:</span> <span class="n">evt</span><span class="p">;</span>
+      <span class="err">}</span>
+
+      <span class="n">this</span><span class="p">.</span><span class="n">observers_</span><span class="p">.</span><span class="n">forEach</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="err">{</span>
+        <span class="n">o</span><span class="p">.</span><span class="k">notify</span><span class="p">(</span><span class="n">evt</span><span class="p">);</span>
+      <span class="err">}</span><span class="p">);</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">Observable</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="k">listen</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">element</span><span class="p">.</span><span class="n">addEventListener</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">this</span><span class="p">.</span><span class="k">notify</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">this</span><span class="p">));</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">Observable</span><span class="p">.</span><span class="n">fromEvent</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">var</span> <span class="n">observable</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Observable</span><span class="p">();</span>
+      <span class="n">observable</span><span class="p">.</span><span class="k">listen</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">event</span><span class="p">);</span>
+      <span class="k">return</span> <span class="n">observable</span><span class="p">;</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">Observable</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="k">map</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">var</span> <span class="n">observable2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Observable</span><span class="p">(</span><span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="n">fn</span><span class="p">);</span>
+      <span class="n">this</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">observable2</span><span class="p">);</span>
+
+      <span class="k">return</span> <span class="n">observable2</span><span class="p">;</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">Observable</span><span class="p">.</span><span class="n">prototype</span><span class="p">.</span><span class="n">merge</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">observable2</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">var</span> <span class="n">observable3</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Observable</span><span class="p">(</span><span class="s1">&#39;merge&#39;</span><span class="p">,</span> <span class="n">observable2</span><span class="p">);</span>
+
+      <span class="n">this</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">observable3</span><span class="p">);</span>
+      <span class="n">observable2</span><span class="p">.</span><span class="n">register</span><span class="p">(</span><span class="n">observable3</span><span class="p">);</span>
+
+      <span class="k">return</span> <span class="n">observable3</span><span class="p">;</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">var</span> <span class="n">init</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span> <span class="err">{</span>
+      <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">);</span>
+
+      <span class="n">var</span> <span class="k">input</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">);</span>
+      <span class="n">var</span> <span class="n">input2</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;input2&#39;</span><span class="p">);</span>
+      <span class="n">var</span> <span class="n">results</span> <span class="o">=</span> <span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">);</span>
+
+      <span class="n">Observable</span><span class="p">.</span><span class="n">fromEvent</span><span class="p">(</span><span class="k">input</span><span class="p">,</span> <span class="s1">&#39;keyup&#39;</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">merge</span><span class="p">(</span><span class="n">Observable</span><span class="p">.</span><span class="n">fromEvent</span><span class="p">(</span><span class="n">input2</span><span class="p">,</span> <span class="s1">&#39;keyup&#39;</span><span class="p">))</span>
+        <span class="p">.</span><span class="k">map</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">evt</span><span class="p">)</span> <span class="err">{</span>
+          <span class="k">return</span> <span class="n">evt</span><span class="p">.</span><span class="n">target</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+        <span class="err">}</span><span class="p">)</span>
+        <span class="p">.</span><span class="k">map</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="err">{</span>
+          <span class="n">results</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">str</span>
+        <span class="err">}</span><span class="p">);</span>
+    <span class="err">}</span><span class="p">;</span>
+
+    <span class="n">document</span><span class="p">.</span><span class="n">addEventListener</span><span class="p">(</span><span class="s1">&#39;DOMContentLoaded&#39;</span><span class="p">,</span> <span class="n">init</span><span class="p">);</span>
+  <span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</code></pre></div>
+
+
+<p>Resources</p>
+<ul>
+<li><a href="https://github.com/Reactive-Extensions/RxJS">RxJS</a></li>
+<li><a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754">Another introduction</a></li>
+<li><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/creating.md#cold-vs-hot-observables">Hot vs cold observables</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

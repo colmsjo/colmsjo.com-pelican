@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Python web apps  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Python web apps
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Python web apps</p>
+<p>Virtualenv is used here, have a look at: http://wip.herokuapp.com/130227_Update_Pyhton_Skills if you're unfamiliair with it.</p>
+<p>Links:</p>
+<ul>
+<li>http://werkzeug.pocoo.org/</li>
+<li>http://gunicorn.org/</li>
+</ul>
+<h2>Hello world in werkzeug</h2>
+<p>Create a virtual env:</p>
+<div class="highlight"><pre><span></span><code><span class="err">virtualenv venv --distribute</span>
+<span class="err">source venv/bin/activate</span>
+</code></pre></div>
+
+
+<p>Now pip, python etc. will refer to the virtual env:</p>
+<div class="highlight"><pre><span></span><code><span class="err">(venv)Gizur-MacBook-ca00510e:werkzeug jonas$ which pip</span>
+<span class="err">/Users/jonas/git/colmsjo/python_sandbox/werkzeug/venv/bin/pip</span>
+</code></pre></div>
+
+
+<p>hello.py:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">werkzeug.wrappers</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="nd">@Request.application</span>
+<span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">werkzeug.serving</span> <span class="kn">import</span> <span class="n">run_simple</span>
+    <span class="n">run_simple</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="n">application</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>requirements.txt:</p>
+<div class="highlight"><pre><span></span><code><span class="err">werkzeug</span>
+</code></pre></div>
+
+
+<div class="highlight"><pre><span></span><code><span class="err">pip install -r requirements.txt</span>
+</code></pre></div>
+
+
+<p>Run the web app</p>
+<div class="highlight"><pre><span></span><code><span class="err">python hello.py</span>
+</code></pre></div>
+
+
+<p>open http://localhost:4000/</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Hive and Excel on Elastic Map Reduce  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Hive and Excel on Elastic Map Reduce
+	</div>
+	<div class="message-body has-text-dark">
+		<p>I'VE NOT MANAGED CONNECT FROM EXCEL ON OSX (ODBC installation is much simpler on Windows)...</p>
+<p>Links:</p>
+<ul>
+<li>https://cwiki.apache.org/Hive/hiveawsemr.html</li>
+<li>http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-cli-commands.html</li>
+<li>https://cwiki.apache.org/confluence/display/Hive/GettingStarted</li>
+<li>http://blog.mustardgrain.com/2010/09/30/using-hive-with-existing-files-on-s3/</li>
+<li>https://cwiki.apache.org/confluence/display/Hive/HiveAws</li>
+<li>https://cwiki.apache.org/confluence/display/Hive/HiveAws+HivingS3nRemotely</li>
+</ul>
+<p>ODBC:</p>
+<ul>
+<li>http://www.mapr.com/doc/display/MapR/Hive+ODBC+Connector</li>
+<li>http://social.technet.microsoft.com/wiki/contents/articles/6226.how-to-connect-excel-to-hadoop-on-azure-via-hiveodbc.aspx</li>
+<li>http://oakleafblog.blogspot.se/2012/04/using-excel-2010-and-hive-odbc-driver.html</li>
+</ul>
+<h2>Introduction</h2>
+<p>Excel can fetch data from external data sources using ODBC connections. There are ODBC drivers for Hive.</p>
+<p>These have ODBC drivers for Hive:</p>
+<ul>
+<li>MapR </li>
+<li>Hadooponazure</li>
+<li>Hortonworks</li>
+<li>Simba</li>
+<li>DataDirect</li>
+</ul>
+<p>The MapR Hadoop distribution (which contains Hive) can be used from Elastic Map Reduce soo I'll go for 
+this one. </p>
+<h2>Step 1 - start an EMR Hive cluster</h2>
+<p>I'm using some helper scripts that are available <a href="https://github.com/colmsjo/emr-scripts">on Github</a>:</p>
+<p>You need to follow the instruction in the README to do the setup of AWS credentials etc.
+I'll assume that the fab alias has been setup, see the README file.</p>
+<div class="highlight"><pre><span></span><code><span class="n">fab</span> <span class="n">create_hive_job</span>
+
+<span class="o">#</span> <span class="k">or</span><span class="p">,</span> <span class="k">do</span> <span class="n">this</span>
+<span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--create --instance-type m1.large --alive num-instances 1 --with-supported-products mapr-m3</span>
+</code></pre></div>
+
+
+<p>View progress of startup</p>
+<div class="highlight"><pre><span></span><code><span class="n">fab</span> <span class="n">list_jobs</span>
+
+<span class="o">#</span> <span class="k">or</span><span class="p">,</span> <span class="k">do</span> <span class="n">this</span>
+<span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--list --active</span>
+</code></pre></div>
+
+
+<p>Login to the server with ssh. Make sure that </p>
+<div class="highlight"><pre><span></span><code><span class="n">fab</span> <span class="s">ssh</span>
+
+# <span class="n">or</span><span class="p">,</span> <span class="n">do</span> <span class="n">this</span>
+<span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="o">--</span><span class="n">ssh</span> <span class="o">--</span><span class="n">jobflow</span> <span class="o">&lt;</span><span class="n">JOBFLOWID</span><span class="o">&gt;</span>
+
+# <span class="n">Start</span> <span class="n">an</span> <span class="n">interactive</span> <span class="n">session</span>
+<span class="n">bin</span><span class="o">/</span><span class="n">hive</span>
+
+# <span class="n">List</span> <span class="n">all</span> <span class="n">Hive</span> <span class="k">properties</span>
+<span class="n">hive</span><span class="o">&gt;</span><span class="n">set</span> <span class="o">-</span><span class="n">v</span>
+<span class="n">datanucleus</span><span class="p">.</span><span class="n">autoCreateSchema</span><span class="p">=</span><span class="n">true</span>
+<span class="n">datanucleus</span><span class="p">.</span><span class="n">autoStartMechanismMode</span><span class="p">=</span><span class="n">checked</span>
+<span class="n">datanucleus</span><span class="p">.</span><span class="n">cache</span><span class="p">.</span><span class="n">level2</span><span class="p">=</span><span class="n">false</span>
+<span class="c">...</span>
+
+# <span class="n">List</span> <span class="n">the</span> <span class="n">tables</span><span class="p">,</span> <span class="n">empty</span> <span class="n">of</span> <span class="n">course</span>
+<span class="n">hive</span><span class="o">&gt;</span> <span class="n">show</span> <span class="n">tables</span><span class="p">;</span>
+<span class="n">OK</span>
+<span class="s">Time</span> <span class="s">taken:</span> <span class="s">3.141</span> <span class="s">seconds</span>
+
+# <span class="n">Show</span> <span class="n">all</span> <span class="n">available</span> <span class="n">functions</span>
+<span class="n">hive</span><span class="o">&gt;</span> <span class="n">show</span> <span class="n">functions</span><span class="p">;</span>
+<span class="n">OK</span>
+<span class="s">!</span>
+<span class="sx">!=</span>
+<span class="c">%</span>
+<span class="o">&amp;</span>
+<span class="o">*</span>
+<span class="c">...</span>
+</code></pre></div>
+
+
+<h2>Step 2 - Load some data into Hive</h2>
+<p>I've stolen this example from Kirk True's Mustard Grain Blog, see link at the top.</p>
+<p>You need a S3 bucket to place the data in. All data in a bucket should be formated the 
+same way. Folders should not be used.</p>
+<div class="highlight"><pre><span></span><code><span class="err"># List available buckets, s3cmd mb &lt;name&gt; will create a new bucket </span>
+<span class="err">./python-env/bin/s3cmd ls</span>
+</code></pre></div>
+
+
+<p>Create a file on S3 containing this content:</p>
+<div class="highlight"><pre><span></span><code><span class="n">echo</span> <span class="o">-</span><span class="n">e</span> <span class="ss">&quot;jim=89347\ndave=313925\nnoddy=21516\ndon=6771&quot;</span> <span class="o">&gt;</span> <span class="k">data</span><span class="p">.</span><span class="n">txt</span>
+
+<span class="p">.</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">s3cmd</span> <span class="n">put</span> <span class="k">data</span><span class="p">.</span><span class="n">txt</span> <span class="n">s3</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">bucket</span><span class="o">&gt;</span>
+
+<span class="o">#</span> <span class="k">Check</span> <span class="n">that</span> <span class="n">the</span> <span class="n">file</span> <span class="k">is</span> <span class="n">there</span>
+<span class="p">.</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">s3cmd</span> <span class="n">ls</span> <span class="n">s3</span><span class="p">:</span><span class="o">//&lt;</span><span class="n">bucket</span><span class="o">&gt;</span>
+</code></pre></div>
+
+
+<p>Login to the cluster and start hive cli again. </p>
+<div class="highlight"><pre><span></span><code><span class="nt">fab</span> <span class="nt">ssh</span>
+<span class="nt">bin</span><span class="o">/</span><span class="nt">hive</span>
+
+<span class="nt">hive</span><span class="o">&gt;</span> <span class="nt">CREATE</span> <span class="nt">EXTERNAL</span> <span class="nt">TABLE</span> <span class="nt">mydata1</span> <span class="o">(</span><span class="nt">key</span> <span class="nt">STRING</span><span class="o">,</span> <span class="nt">value</span> <span class="nt">INT</span><span class="o">)</span>
+    <span class="nt">ROW</span> <span class="nt">FORMAT</span> <span class="nt">DELIMITED</span> <span class="nt">FIELDS</span> <span class="nt">TERMINATED</span> <span class="nt">BY</span> <span class="s1">&#39;=&#39;</span>
+    <span class="nt">LOCATION</span> <span class="s1">&#39;s3n://emr-sbx/&#39;</span><span class="o">;</span>
+<span class="nt">OK</span>
+<span class="nt">Time</span> <span class="nt">taken</span><span class="o">:</span> <span class="nt">4</span><span class="p">.</span><span class="nc">264</span> <span class="nt">seconds</span>
+
+
+<span class="nt">hive</span><span class="o">&gt;</span><span class="nt">select</span> <span class="o">*</span> <span class="nt">from</span> <span class="nt">mydata</span><span class="o">;</span>
+</code></pre></div>
+
+
+<p>You can create several tables of the same raw data. This exmaple shows howto create tabels 
+with more and less options:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">hive</span><span class="o">&gt;</span> <span class="nt">CREATE</span> <span class="nt">EXTERNAL</span> <span class="nt">TABLE</span> <span class="nt">mydata2</span> <span class="o">(</span><span class="nt">key</span> <span class="nt">STRING</span><span class="o">,</span> <span class="nt">value</span> <span class="nt">INT</span><span class="o">)</span> <span class="nt">LOCATION</span> <span class="s1">&#39;s3n://emr-sbx/&#39;</span><span class="o">;</span>
+<span class="nt">OK</span>
+<span class="nt">Time</span> <span class="nt">taken</span><span class="o">:</span> <span class="nt">4</span><span class="p">.</span><span class="nc">264</span> <span class="nt">seconds</span>
+
+<span class="nt">hive</span><span class="o">&gt;</span><span class="nt">CREATE</span> <span class="nt">EXTERNAL</span> <span class="nt">TABLE</span> <span class="nt">mydata3</span> <span class="o">(</span><span class="nt">key</span> <span class="nt">STRING</span><span class="o">,</span> <span class="nt">value</span> <span class="nt">INT</span><span class="o">)</span>
+            <span class="nt">ROW</span> <span class="nt">FORMAT</span> <span class="nt">DELIMITED</span> <span class="nt">FIELDS</span> <span class="nt">TERMINATED</span> <span class="nt">BY</span> <span class="s1">&#39;=&#39;</span>
+            <span class="nt">LINES</span> <span class="nt">TERMINATED</span> <span class="nt">BY</span> <span class="s1">&#39;\n&#39;</span> 
+            <span class="nt">STORED</span> <span class="nt">AS</span> <span class="nt">TEXTFILE</span>
+            <span class="nt">LOCATION</span> <span class="s1">&#39;s3n://emr-sbx/&#39;</span><span class="o">;</span>
+</code></pre></div>
+
+
+<p>Drop a table like this. The data is still there since it is external to the table:</p>
+<div class="highlight"><pre><span></span><code><span class="err">hive&gt;drop table mydata3;s</span>
+</code></pre></div>
+
+
+<h2>Connect from Excel</h2>
+<p>The ODBC connector is only available for windows. There is both a 32-bit and a 64-bit version.
+I'm running windows in a Virtual Box machine on my Mac.</p>
+<p>Download the driver: </p>
+<ul>
+<li>32-bit: http://package.mapr.com/tools/MapR-ODBC/MapR_odbc_2.0.0_x86.exe</li>
+<li>64-bit: http://package.mapr.com/tools/MapR-ODBC/MapR_odbc_2.0.0_x64.exe</li>
+</ul>
+<p>You also need <a href="http://www.microsoft.com/en-us/download/details.aspx?id=5555">Windows C++ 2010 Runtimes</a></p>
+<p>You need the name of the hive server (master node) below:</p>
+<div class="highlight"><pre><span></span><code><span class="n">fab</span><span class="w"> </span><span class="n">list_jobs</span><span class="w"></span>
+<span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="err">:</span><span class="n">emr</span><span class="o">-</span><span class="n">scripts</span><span class="w"> </span><span class="n">jonas</span><span class="err">$</span><span class="w"> </span><span class="n">fab</span><span class="w"> </span><span class="n">list_jobs</span><span class="w"></span>
+<span class="o">[</span><span class="n">localhost</span><span class="o">]</span><span class="w"> </span><span class="k">local</span><span class="err">:</span><span class="w"> </span><span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span><span class="w"> </span><span class="c1">--list --active</span>
+<span class="n">j</span><span class="o">-</span><span class="n">JP4N7YPN4DW1</span><span class="w">      </span><span class="n">WAITING</span><span class="w">        </span><span class="n">ec2</span><span class="o">-</span><span class="mi">54</span><span class="o">-</span><span class="mi">246</span><span class="o">-</span><span class="mi">35</span><span class="o">-</span><span class="mf">239.</span><span class="n">eu</span><span class="o">-</span><span class="n">west</span><span class="o">-</span><span class="mf">1.</span><span class="k">compute</span><span class="p">.</span><span class="n">amazonaws</span><span class="p">.</span><span class="n">com</span><span class="w"> </span><span class="n">Development</span><span class="w"> </span><span class="n">Job</span><span class="w"> </span><span class="n">Flow</span><span class="w"> </span><span class="p">(</span><span class="n">requires</span><span class="w"> </span><span class="n">manual</span><span class="w"> </span><span class="n">termination</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>You also need to open up port <code>10000</code> in the security groups that EMR uses (ElasticMapReduce-master by default). Login with the AWS Console and open <code>10000</code> for <code>0.0.0.0</code> (everyone).</p>
+<p>Steps:</p>
+<ol>
+<li>Install both C++ runtimes and MapR-ODBC drivers</li>
+<li>Create a Data Source Name (Start-&gt;MapR..-&gt;ODBC Driver Manager)</li>
+<li>Create a new User DSN</li>
+<li>Select: Hive Server 2</li>
+<li>Authentication: User name with User name set to mapr</li>
+<li>Hit the test button</li>
+</ol>
+<h2>Troubleshooting</h2>
+<p>Open SSH tunnel to master node:</p>
+<p>ssh -o ServerAliveInterval=10 -o StrictHostKeyChecking=no -i ~/keys/gc4-keypair1.pem hadoop@ec2-46-137-34-113.eu-west-1.compute.amazonaws.com -N -L 1234:localhost:10000</p>
+<h3>Check ODBC setup</h3>
+<p>See <a href="https://cwiki.apache.org/confluence/display/Hive/HiveODBC">HiveODBC</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">odbcinst -j</span>
+</code></pre></div>
+
+
+<p>Add to odbc.ini:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[Hive]</span>
+ <span class="na">Driver</span> <span class="o">=</span> <span class="s">&lt;path_to_libodbchive.so&gt;</span>
+<span class="s"> Description = Hive Driver v1</span>
+<span class="s"> DATABASE = default</span>
+<span class="s"> HOST = &lt;Hive_server_address&gt;</span>
+<span class="s"> PORT = &lt;Hive_server_port&gt;</span>
+<span class="s"> FRAMED = 0</span>
+</code></pre></div>
+
+
+<p>Test and see if it works:</p>
+<p>isql -v Hive</p>
+<h2>Misc</h2>
+<p>The hive configuration file is located here: <code>.versions/hive-0.8.1/conf/hive-default.xml</code> in the master node</p>
+<p>maprcli:</p>
+<p>maprcli
+  maprcli service list
+  maprcli dashboard info
+  maprcli entity list</p>
+<p>jps:</p>
+<p>hadoop@ip-10-36-129-22:~/conf$ jps
+  2132 instance-controller.jar
+  25922 Jps
+  2757 RolesController</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>First Shot at Map  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		First Shot at Map
+	</div>
+	<div class="message-body has-text-dark">
+		<p>First shot at Map/Reduce on EMR</p>
+<p>Links:</p>
+<ul>
+<li>http://aws.amazon.com/documentation/elasticmapreduce/</li>
+<li>http://www.bytemining.com/2011/08/hadoop-fatigue-alternatives-to-hadoop/</li>
+<li>http://aws.amazon.com/articles/Elastic-MapReduce/4926593393724923</li>
+<li>http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-what-is-emr.html</li>
+<li>http://wiki.apache.org/hadoop/AmazonS3</li>
+</ul>
+<h2>Introduction</h2>
+<p>Big data soltuions are becoming ever more relevant for many companies. There are some 
+open source alterntives out there and more solutions are being released all the time.
+It seams as though open source actually is ahead of the propriatary solutions in this 
+area thanks to companies as Google, Facebook, Twitter and Yahoo.</p>
+<p>Hadoop is the pre-dominant file system used so this seams like a logical point to start
+the learning at. There are different query languages such as Hive and Pig etc.</p>
+<p>There are also in-memory as Druid, Spark, and GridGain (not open source) which gives
+a speed not possible to achieve before.</p>
+<h2>Gettings started with AWS Elastic Map Reduce</h2>
+<p>EMR is Hadoop hosted at Amazon.</p>
+<p>First download the Command Line tools here: http://aws.amazon.com/developertools/2264</p>
+<p>Unzip and follow the instructions in the README file. There is also a getting started guide:
+https://www.google.se/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=0CC8QFjAA&amp;url=http%3A%2F%2Fs3.amazonaws.com%2Fawsdocs%2FElasticMapReduce%2Flatest%2Femr-gsg.pdf&amp;ei=aPYtUY_0K-eG4gSf4ICYAQ&amp;usg=AFQjCNFro5b-u-O0eJhbsRZKuNxJYWvRvA&amp;bvm=bv.42965579,d.bGE</p>
+<ol>
+<li>Create a S3 bucket using the AWS console.</li>
+<li>I'm assuming that you have SSH setup for access to ec2 insances (see the EMR Gettings 
+Started guide otherwise)</li>
+</ol>
+<p>A credentials file needs to be created:</p>
+<div class="highlight"><pre><span></span><code><span class="c">Gizur-Laptop-5:MapReduce jonas$ cat credentials.json </span>
+<span class="c">  {</span>
+<span class="c">    &quot;access-id&quot;: &quot;xxx&quot;,</span>
+<span class="c">    &quot;private-key&quot;: &quot;yyy&quot;,</span>
+<span class="c">    &quot;key-pair&quot;: &quot;keypair1&quot;,</span>
+<span class="c">    &quot;key-pair-file&quot;: &quot;keypair1.pem&quot;,</span>
+<span class="c">    &quot;log_uri&quot;: &quot;s3n://gc4-emr-sbx/&quot;,</span>
+<span class="c">    &quot;region&quot;: &quot;eu-west-1&quot;</span>
+<span class="c">  }</span>
+</code></pre></div>
+
+
+<ol>
+<li>Run a simple test after the credentials.json has been created. The output is empty</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="err">elastic-mapreduce -c credentials.json --list</span>
+</code></pre></div>
+
+
+<h2>Develop a first job</h2>
+<p>Jobs can be developed in Hive and Pig and also Cascading, Java, Ruby, Perl, Python, PHP, R, or C++´</p>
+<p>Start, list and terminate a job:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="k">Start</span> <span class="n">a</span> <span class="k">new</span> <span class="n">job</span>
+<span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">MapReduce</span> <span class="n">jonas$</span> <span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--create --alive</span>
+<span class="n">Created</span> <span class="n">job</span> <span class="n">flow</span> <span class="n">j</span><span class="o">-</span><span class="mi">2</span><span class="n">MAR9VAHZNCHC</span>
+
+<span class="o">#</span> <span class="n">List</span> <span class="n">running</span> <span class="n">jobs</span>
+<span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">MapReduce</span> <span class="n">jonas$</span> <span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--list</span>
+<span class="n">j</span><span class="o">-</span><span class="mi">3</span><span class="n">JNIPPAJX24ZG</span>     <span class="n">STARTING</span>                                                         <span class="n">Development</span> <span class="n">Job</span> <span class="n">Flow</span> <span class="p">(</span><span class="n">requires</span> <span class="n">manual</span> <span class="n">termination</span><span class="p">)</span>
+
+<span class="o">#</span> <span class="k">Terminate</span> <span class="n">job</span>
+<span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">MapReduce</span> <span class="n">jonas$</span> <span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--terminate j-2MAR9VAHZNCHC</span>
+<span class="n">Terminated</span> <span class="n">job</span> <span class="n">flow</span> <span class="n">j</span><span class="o">-</span><span class="mi">2</span><span class="n">MAR9VAHZNCHC</span>
+</code></pre></div>
+
+
+<p>Information about a job:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">MapReduce</span> <span class="n">jonas$</span> <span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--create --alive</span>
+<span class="n">Created</span> <span class="n">job</span> <span class="n">flow</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="n">KGNP3UVZKL2E</span>
+
+<span class="n">Gizur</span><span class="o">-</span><span class="n">Laptop</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="n">MapReduce</span> <span class="n">jonas$</span> <span class="n">elastic</span><span class="o">-</span><span class="n">mapreduce</span> <span class="c1">--describe --jobflow j-1KGNP3UVZKL2E</span>
+<span class="err">{</span>
+  <span class="ss">&quot;JobFlows&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="err">{</span>
+      <span class="ss">&quot;LogUri&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+      <span class="ss">&quot;ExecutionStatusDetail&quot;</span><span class="p">:</span> <span class="err">{</span>
+        <span class="ss">&quot;CreationDateTime&quot;</span><span class="p">:</span> <span class="mi">1361970253</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span>
+        <span class="ss">&quot;EndDateTime&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+        <span class="ss">&quot;LastStateChangeReason&quot;</span><span class="p">:</span> <span class="ss">&quot;Starting instances&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;ReadyDateTime&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+        <span class="ss">&quot;State&quot;</span><span class="p">:</span> <span class="ss">&quot;STARTING&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;StartDateTime&quot;</span><span class="p">:</span> <span class="k">null</span>
+      <span class="err">}</span><span class="p">,</span>
+      <span class="ss">&quot;JobFlowRole&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+      <span class="ss">&quot;VisibleToAllUsers&quot;</span><span class="p">:</span> <span class="k">false</span><span class="p">,</span>
+      <span class="ss">&quot;SupportedProducts&quot;</span><span class="p">:</span> <span class="p">[],</span>
+      <span class="ss">&quot;JobFlowId&quot;</span><span class="p">:</span> <span class="ss">&quot;j-1KGNP3UVZKL2E&quot;</span><span class="p">,</span>
+      <span class="ss">&quot;Steps&quot;</span><span class="p">:</span> <span class="p">[],</span>
+      <span class="ss">&quot;Name&quot;</span><span class="p">:</span> <span class="ss">&quot;Development Job Flow (requires manual termination)&quot;</span><span class="p">,</span>
+      <span class="ss">&quot;Instances&quot;</span><span class="p">:</span> <span class="err">{</span>
+        <span class="ss">&quot;MasterPublicDnsName&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+        <span class="ss">&quot;KeepJobFlowAliveWhenNoSteps&quot;</span><span class="p">:</span> <span class="k">true</span><span class="p">,</span>
+        <span class="ss">&quot;Ec2KeyName&quot;</span><span class="p">:</span> <span class="ss">&quot;gc4-keypair1&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;HadoopVersion&quot;</span><span class="p">:</span> <span class="ss">&quot;1.0.3&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;SlaveInstanceType&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+        <span class="ss">&quot;MasterInstanceType&quot;</span><span class="p">:</span> <span class="ss">&quot;m1.small&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;MasterInstanceId&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+        <span class="ss">&quot;InstanceGroups&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="err">{</span>
+            <span class="ss">&quot;InstanceType&quot;</span><span class="p">:</span> <span class="ss">&quot;m1.small&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;CreationDateTime&quot;</span><span class="p">:</span> <span class="mi">1361970253</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span>
+            <span class="ss">&quot;LaunchGroup&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+            <span class="ss">&quot;InstanceGroupId&quot;</span><span class="p">:</span> <span class="ss">&quot;ig-1GZBXVKU4V8Q1&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;EndDateTime&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+            <span class="ss">&quot;LastStateChangeReason&quot;</span><span class="p">:</span> <span class="ss">&quot;&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;ReadyDateTime&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+            <span class="ss">&quot;InstanceRunningCount&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="ss">&quot;State&quot;</span><span class="p">:</span> <span class="ss">&quot;PROVISIONING&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;StartDateTime&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+            <span class="ss">&quot;Market&quot;</span><span class="p">:</span> <span class="ss">&quot;ON_DEMAND&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;InstanceRequestCount&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="ss">&quot;InstanceRole&quot;</span><span class="p">:</span> <span class="ss">&quot;MASTER&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;Name&quot;</span><span class="p">:</span> <span class="ss">&quot;Master Instance Group&quot;</span><span class="p">,</span>
+            <span class="ss">&quot;BidPrice&quot;</span><span class="p">:</span> <span class="k">null</span>
+          <span class="err">}</span>
+        <span class="p">],</span>
+        <span class="ss">&quot;TerminationProtected&quot;</span><span class="p">:</span> <span class="k">false</span><span class="p">,</span>
+        <span class="ss">&quot;Placement&quot;</span><span class="p">:</span> <span class="err">{</span>
+          <span class="ss">&quot;AvailabilityZone&quot;</span><span class="p">:</span> <span class="ss">&quot;eu-west-1a&quot;</span>
+        <span class="err">}</span><span class="p">,</span>
+        <span class="ss">&quot;NormalizedInstanceHours&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="ss">&quot;Ec2SubnetId&quot;</span><span class="p">:</span> <span class="k">null</span><span class="p">,</span>
+        <span class="ss">&quot;InstanceCount&quot;</span><span class="p">:</span> <span class="mi">1</span>
+      <span class="err">}</span><span class="p">,</span>
+      <span class="ss">&quot;BootstrapActions&quot;</span><span class="p">:</span> <span class="p">[],</span>
+      <span class="ss">&quot;AmiVersion&quot;</span><span class="p">:</span> <span class="ss">&quot;2.3.2&quot;</span>
+    <span class="err">}</span>
+  <span class="p">]</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Add a step tp the running job:</p>
+<div class="highlight"><pre><span></span><code><span class="err">elastic-mapreduce -j JobFlowID --stream \</span>
+<span class="err">                  --mapper s3://elasticmapreduce/samples/wordcount/wordSplitter.py \ </span>
+<span class="err">                  --input s3://elasticmapreduce/samples/wordcount/input \</span>
+<span class="err">                  --output s3n://myawsbucket/output \</span>
+<span class="err">                  --reducer aggregate</span>
+</code></pre></div>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

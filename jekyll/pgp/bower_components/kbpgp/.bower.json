@@ -1,0 +1,14 @@
+{
+  "name": "kbpgp",
+  "homepage": "https://github.com/keybase/kbpgp",
+  "version": "2.0.6",
+  "_release": "2.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.6",
+    "commit": "88ddad51978a4a3f380d0d0fb6f694f49dddb0bf"
+  },
+  "_source": "git://github.com/keybase/kbpgp.git",
+  "_target": "~2.0.6",
+  "_originalSource": "kbpgp"
+}

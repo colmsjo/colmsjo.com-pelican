@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Big Data BI in the cloud  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Big Data BI in the cloud
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Big Data BI in the cloud</p>
+<h2>Introduction</h2>
+<p>Big data solutiuons is marching into the BI space big time. The space for traditional data warehouses
+solutions will mos tlikely decrease and big data solutions with web based front-ends will take market
+shares.</p>
+<p>This is s high level overview over some alternatives.</p>
+<h2>List of solutions</h2>
+<p>The open source Hadoop stack is dominating this space. These solutions are not very end user friendly 
+but there are popping up miscellaneous solutions, often based on Haddop that adress that issue.</p>
+<p>Some solutions:</p>
+<ul>
+<li>SiSense - Web front-end. In-memory solution for the back-end, needs to be installed on a local server, cloud options are coming</li>
+<li>KarmaSphere - appliance that neeeds to be installed</li>
+<li>Datameer - </li>
+<li>Platfora - cloud and on-premise solution available</li>
+<li>Birst</li>
+</ul>
+<p>My plan is to find some time the coming week to try these out.</p>
+<p>More solutions to check out:
+ * http://www.qubole.com/
+ * http://www.hapyrus.com/</p>
+<h2>Datameer</h2>
+<p>I've tried to signup for a cloud based trial but haven't received any mail. I've contacted support about this.</p>
+<ul>
+<li>Download - http://download.datameer.com/trial/Datameer-2.1/Datameer-2.1.2.5/Datameer-2.1.2.5.dmg</li>
+<li>http://www.datameer.com/download-direct.html</li>
+</ul>
+<p>The personal edition seams to run ok on my mac. The web based interface is intuitive and easy to use. JDBC drivers needs to be setup in order to access relational databses. </p>
+<p>An interesting feature is that there is an app market with apps for SalesForce, Zendesk, Web site stats etc. </p>
+<h2>Karmasphere</h2>
+<ul>
+<li>
+<p>Installation Guide - http://support.karmasphere.com/customer/portal/articles/792010-trial-vm-configuration?mkt_tok=3RkMMJWWfF9wsRonvK%2FJZKXonjHpfsX56ewrUaW%2FlMI%2F0ER3fOvrPUfGjI4DTcNqI%2BSLDwEYGJlv6SgFSLnBMbhrwLgEWRY%3D</p>
+</li>
+<li>
+<p>Resource center - http://support.karmasphere.com/customer/portal/articles/768615-karmasphere-resource-center?mkt_tok=3RkMMJWWfF9wsRonvK%2FJZKXonjHpfsX56ewrUaW%2FlMI%2F0ER3fOvrPUfGjI4DTcNqI%2BSLDwEYGJlv6SgFSLnBMbhrwLgEWRY%3D</p>
+</li>
+</ul>
+<p>start a medium size ubuntu 12.04 instance and login</p>
+<p>Install Ubuntu desktop. I'm using a NoMachine client to login (VNC etc. can also be used) s</p>
+<ul>
+<li>https://github.com/colmsjo/ubuntu_desktop</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">This</span> <span class="n">cfengine</span> <span class="n">script</span> <span class="n">install</span> <span class="n">what</span> <span class="k">is</span> <span class="n">needed</span>
+
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">cfengine3</span> <span class="n">git</span>
+
+<span class="n">cd</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cfengine3</span>
+<span class="n">sudo</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">colmsjo</span><span class="o">/</span><span class="n">ubuntu_desktop</span><span class="p">.</span><span class="n">git</span> <span class="p">.</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="o">-</span><span class="n">R</span> <span class="n">og</span><span class="o">=</span><span class="n">r</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cfengine3</span><span class="o">/</span><span class="n">roles</span>
+
+<span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="k">default</span><span class="o">/</span><span class="n">cfengine3</span>
+<span class="n">sudo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">cfengine3</span> <span class="k">restart</span>
+
+<span class="n">sudo</span> <span class="n">sh</span> <span class="o">-</span><span class="k">c</span> <span class="ss">&quot;cf-agent --verbose --define phonegap&gt; cfengine-log.txt&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">more</span> <span class="n">cfengine</span><span class="o">-</span><span class="n">log</span><span class="p">.</span><span class="n">txt</span>
+
+<span class="o">#</span> <span class="n">This</span> <span class="n">needs</span> <span class="k">to</span> <span class="n">be</span> <span class="n">fixed</span> <span class="n">manually</span><span class="p">,</span> <span class="n">the</span> <span class="n">cfengine</span> <span class="n">script</span> <span class="n">doesn</span><span class="err">&#39;</span><span class="n">t</span>
+<span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_config</span> 
+<span class="p">...</span>
+<span class="n">PasswordAuthentication</span> <span class="n">yes</span>
+
+
+<span class="o">#</span> <span class="n">reboot</span> <span class="k">in</span> <span class="k">order</span> <span class="k">to</span> <span class="k">restart</span> <span class="k">all</span> <span class="n">processes</span><span class="p">,</span> <span class="n">sshd</span> <span class="n">etc</span><span class="p">.</span> <span class="n">has</span> <span class="n">changed</span> <span class="n">configuration</span>
+<span class="n">sudo</span> <span class="n">reboot</span>
+</code></pre></div>
+
+
+<p>The root password needs to be set in order to login with NX</p>
+<div class="highlight"><pre><span></span><code><span class="err">sudo passwd ubuntu</span>
+</code></pre></div>
+
+
+<p>Download Oracle Java 6: http://www.oracle.com/technetwork/java/javase/downloads/jre6downloads-1902815.html</p>
+<ul>
+<li>http://askubuntu.com/questions/67909/how-do-i-install-oracle-jdk-6</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">I</span><span class="err">&#39;</span><span class="n">m</span> <span class="k">using</span> <span class="n">a</span> <span class="n">S3</span> <span class="n">bucket</span> <span class="k">to</span> <span class="n">upload</span> <span class="n">the</span> <span class="n">Java</span> <span class="n">install</span> <span class="n">file</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="n">s3cmd</span>
+
+<span class="n">s3cmd</span> <span class="c1">--configure</span>
+
+<span class="n">s3cmd</span> <span class="k">get</span> <span class="p">...</span>
+
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">jre</span><span class="o">-</span><span class="mi">6</span><span class="n">u45</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x64</span><span class="p">.</span><span class="n">bin</span> 
+<span class="p">.</span><span class="o">/</span><span class="n">jre</span><span class="o">-</span><span class="mi">6</span><span class="n">u45</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">x64</span><span class="p">.</span><span class="n">bin</span>
+
+<span class="n">mv</span> <span class="n">jre1</span><span class="p">.</span><span class="mi">6</span><span class="p">.</span><span class="mi">0</span><span class="n">_45</span> <span class="n">java</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="n">oracle</span>
+<span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span>
+<span class="n">sudo</span> <span class="n">mv</span> <span class="n">java</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="n">oracle</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span>
+
+<span class="o">#</span> <span class="k">Update</span> <span class="n">path</span> <span class="n">etc</span><span class="p">.</span>
+<span class="n">nano</span> <span class="p">.</span><span class="n">bashrc</span>
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="err">$</span><span class="n">PATH</span><span class="p">:</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span><span class="o">/</span><span class="n">java</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="n">oracle</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">export</span> <span class="n">JAVA_HOME</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">jvm</span><span class="o">/</span><span class="n">java</span><span class="o">-</span><span class="mi">6</span><span class="o">-</span><span class="n">oracle</span>
+</code></pre></div>
+
+
+<p>Connect with NoMachine</p>
+<div class="highlight"><pre><span></span><code><span class="err">s3cmd get s3://gizur-tmp/ksanalyst_linux_emr.sh</span>
+<span class="err">chmod +x ksanalyst_linux_emr.sh </span>
+<span class="err">./ksanalyst_linux_emr.sh </span>
+</code></pre></div>
+
+
+<h2>Some links</h2>
+<ul>
+<li>http://whatsthebigdata.com/2012/06/11/3-big-data-startups-datameer-dataxu-bison/</li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

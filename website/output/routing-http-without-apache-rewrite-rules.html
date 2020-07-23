@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Routing HTTP without apache rewrite rules  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Routing HTTP without apache rewrite rules
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Routing HTTP without apache rewrite rules - L7 proxy</p>
+<p>Wouldn't it be nice to manage without re-write rules in apache. It would also be nice of the HTTP routing could be detached from a single Elastic Beanstalk/Heroku etc. application.</p>
+<p>One alternative is to setup a proxy using HAProxy or ngix etc. Still, it would be better if this can be done
+in a modern solution like NodeJS. And actually it can, using node-http-proxy.</p>
+<ul>
+<li>https://github.com/nodejitsu/node-http-proxy</li>
+</ul>
+<p>Let's take a example.</p>
+<p>I want to use URL like these</p>
+<ol>
+<li>App X at gizur.com/X</li>
+<li>App Y at gizur.com/Y</li>
+</ol>
+<p>The requests should transparently be routed to:</p>
+<ol>
+<li>App X at x.paas.com</li>
+<li>App Y at y.paas.com </li>
+</ol>
+<p>How is this achived with http-proxy?</p>
+<div class="highlight"><pre><span></span><code><span class="err">npm install http-proxy</span>
+</code></pre></div>
+
+
+<h1>Reverse proxy</h1>
+<p>Reverse proxies can only be used to route to URL:s on the same server</p>
+<p>Router app:</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="n">http</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">),</span>
+    <span class="n">httpProxy</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;http-proxy&#39;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">proxy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">httpProxy</span><span class="p">.</span><span class="n">RoutingProxy</span><span class="p">();</span>
+
+
+<span class="n">var</span> <span class="k">options</span> <span class="o">=</span> <span class="err">{</span>
+  <span class="n">router</span><span class="p">:</span> <span class="err">{</span>
+    <span class="s1">&#39;localhost/X&#39;</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1:8001&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;localhost/Y&#39;</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1:8002&#39;</span><span class="p">,</span>
+  <span class="err">}</span>
+<span class="err">}</span><span class="p">;</span>
+
+
+<span class="n">var</span> <span class="n">proxyServer</span> <span class="o">=</span> <span class="n">httpProxy</span><span class="p">.</span><span class="n">createServer</span><span class="p">(</span><span class="k">options</span><span class="p">);</span>
+<span class="n">proxyServer</span><span class="p">.</span><span class="k">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>Simple app to route the request to:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">var</span> <span class="nt">http</span> <span class="o">=</span> <span class="nt">require</span><span class="o">(</span><span class="s1">&#39;http&#39;</span><span class="o">);</span>
+
+<span class="nt">http</span><span class="p">.</span><span class="nc">createServer</span><span class="o">(</span><span class="nt">function</span> <span class="o">(</span><span class="nt">req</span><span class="o">,</span> <span class="nt">res</span><span class="o">)</span> <span class="p">{</span>
+  <span class="err">res.writeHead(200,</span> <span class="err">{</span> <span class="err">&#39;Content-Type&#39;:</span> <span class="err">&#39;text/plain&#39;</span> <span class="p">}</span><span class="o">);</span>
+  <span class="nt">res</span><span class="p">.</span><span class="nc">write</span><span class="o">(</span><span class="s1">&#39;request successfully proxied: &#39;</span> <span class="o">+</span> <span class="nt">req</span><span class="p">.</span><span class="nc">url</span> <span class="o">+</span><span class="s1">&#39;\n&#39;</span> <span class="o">+</span> <span class="nt">JSON</span><span class="p">.</span><span class="nc">stringify</span><span class="o">(</span><span class="nt">req</span><span class="p">.</span><span class="nc">headers</span><span class="o">,</span> <span class="nt">true</span><span class="o">,</span> <span class="nt">2</span><span class="o">));</span>
+  <span class="nt">res</span><span class="p">.</span><span class="nc">end</span><span class="o">();</span>
+<span class="err">}</span><span class="o">)</span><span class="p">.</span><span class="nc">listen</span><span class="o">(</span><span class="nt">8001</span><span class="o">);</span> <span class="o">//</span> <span class="nt">change</span> <span class="nt">to</span> <span class="nt">8002</span> <span class="nt">for</span> <span class="nt">app</span> <span class="nt">Y</span>
+</code></pre></div>
+
+
+<h1>Forwarding proxy</h1>
+<p>A really simple router:</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="n">httpProxy</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;http-proxy&#39;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="k">options</span> <span class="o">=</span> <span class="err">{</span>
+  <span class="n">router</span><span class="p">:</span> <span class="err">{</span>
+    <span class="s1">&#39;localhost/X&#39;</span><span class="p">:</span> <span class="s1">&#39;wip.herokuapp.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;localhost/Y&#39;</span><span class="p">:</span> <span class="s1">&#39;wip.herokuapp.com&#39;</span><span class="p">,</span>
+  <span class="err">}</span>
+<span class="err">}</span><span class="p">;</span>
+
+<span class="n">httpProxy</span><span class="p">.</span><span class="n">createServer</span><span class="p">(</span><span class="k">options</span><span class="p">).</span><span class="k">listen</span><span class="p">(</span><span class="mi">80</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>Pretty much the same thing but with some logging and a lot more flexibility:</p>
+<div class="highlight"><pre><span></span><code><span class="nf">var</span><span class="w"> </span><span class="n">httpProxy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;http-proxy&#39;</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">httpProxy</span><span class="p">.</span><span class="n">createServer</span><span class="p">(</span><span class="k">function</span><span class="w"> </span><span class="p">(</span><span class="n">req</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">proxy</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s1">&#39;url:&#39;</span><span class="o">+</span><span class="n">req</span><span class="p">.</span><span class="n">url</span><span class="o">+</span><span class="s1">&#39; headers:&#39;</span><span class="o">+</span><span class="n">JSON</span><span class="p">.</span><span class="n">stringify</span><span class="p">(</span><span class="n">req</span><span class="p">.</span><span class="n">headers</span><span class="p">));</span><span class="w"></span>
+
+<span class="w">    </span><span class="nf">var</span><span class="w"> </span><span class="n">pathMatched</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">defaultRoute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="s1">&#39;host&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;gizur.com&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;port&#39;</span><span class="err">:</span><span class="w"> </span><span class="mi">80</span><span class="w"> </span><span class="err">}</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">//</span><span class="w"> </span><span class="n">Tried</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">forward</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">heroku</span><span class="w"> </span><span class="n">apps</span><span class="w"> </span><span class="n">but</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">don</span><span class="s1">&#39;t work</span>
+
+<span class="s1">    /*var routes = [</span>
+<span class="s1">        { &#39;</span><span class="n">regex</span><span class="s1">&#39;: &#39;</span><span class="o">^/</span><span class="n">X</span><span class="p">(</span><span class="o">/[</span><span class="n">a-zA-Z0-9</span><span class="o">]</span><span class="p">)</span><span class="o">*</span><span class="err">$</span><span class="s1">&#39;,</span>
+<span class="s1">          &#39;</span><span class="k">host</span><span class="s1">&#39;: &#39;</span><span class="n">infinite</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="mf">4813.</span><span class="n">herokuapp</span><span class="p">.</span><span class="n">com</span><span class="s1">&#39;, </span>
+<span class="s1">          &#39;</span><span class="n">port</span><span class="s1">&#39;: 80 },</span>
+
+<span class="s1">        { &#39;</span><span class="n">regex</span><span class="s1">&#39;: &#39;</span><span class="o">^/</span><span class="n">Y</span><span class="err">$</span><span class="s1">&#39;,  </span>
+<span class="s1">          &#39;</span><span class="k">host</span><span class="s1">&#39;: &#39;</span><span class="n">infinite</span><span class="o">-</span><span class="n">crag</span><span class="o">-</span><span class="mf">4813.</span><span class="n">herokuapp</span><span class="p">.</span><span class="n">com</span><span class="s1">&#39;, </span>
+<span class="s1">          &#39;</span><span class="n">port</span><span class="s1">&#39;: 80 },</span>
+<span class="s1">    ];*/</span>
+
+<span class="s1">    var routes = [</span>
+<span class="s1">        { &#39;</span><span class="n">regex</span><span class="s1">&#39;: &#39;</span><span class="o">^/</span><span class="n">X</span><span class="p">(</span><span class="o">/[</span><span class="n">a-zA-Z0-9</span><span class="o">]</span><span class="p">)</span><span class="o">*</span><span class="err">$</span><span class="s1">&#39;,</span>
+<span class="s1">          &#39;</span><span class="k">host</span><span class="s1">&#39;: &#39;</span><span class="n">localhost</span><span class="s1">&#39;, </span>
+<span class="s1">          &#39;</span><span class="n">port</span><span class="s1">&#39;: 8000 },</span>
+
+<span class="s1">        { &#39;</span><span class="n">regex</span><span class="s1">&#39;: &#39;</span><span class="o">^/</span><span class="n">Y</span><span class="err">$</span><span class="s1">&#39;,  </span>
+<span class="s1">          &#39;</span><span class="k">host</span><span class="s1">&#39;: &#39;</span><span class="n">localhost</span><span class="s1">&#39;, </span>
+<span class="s1">          &#39;</span><span class="n">port</span><span class="s1">&#39;: 8000 },</span>
+
+<span class="s1">        // Match almost any URL</span>
+<span class="s1">        { &#39;</span><span class="n">regex</span><span class="s1">&#39;: &#39;</span><span class="o">^/[</span><span class="n">a-zA-Z0-9\-\.</span><span class="o">]+</span><span class="err">\</span><span class="p">.</span><span class="o">[</span><span class="n">a-zA-Z</span><span class="o">]</span><span class="err">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="err">}</span><span class="p">(</span><span class="err">:</span><span class="o">[</span><span class="n">a-zA-Z0-9</span><span class="o">]*</span><span class="p">)</span><span class="vm">?</span><span class="o">/</span><span class="vm">?</span><span class="p">(</span><span class="o">[</span><span class="n">a-zA-Z0-9\-\._\?\,\&#39;/\\\+&amp;amp;%\$#\=~</span><span class="o">]</span><span class="p">)</span><span class="o">*</span><span class="err">$</span><span class="s1">&#39;,  </span>
+<span class="s1">          &#39;</span><span class="k">host</span><span class="s1">&#39;: &#39;</span><span class="n">localhost</span><span class="s1">&#39;, </span>
+<span class="s1">          &#39;</span><span class="n">port</span><span class="s1">&#39;: 8000 },</span>
+<span class="s1">    ];</span>
+
+<span class="s1">    for (idx in routes) {</span>
+<span class="s1">        var regex = new RegExp(routes[idx].regex);</span>
+
+<span class="s1">        if (regex.test(req.url)) {</span>
+<span class="s1">            console.log(&#39;</span><span class="n">Routing</span><span class="w"> </span><span class="s1">&#39;+req.url+&#39;</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;+routes[idx].host+&#39;</span><span class="err">:</span><span class="s1">&#39;+routes[idx].port);</span>
+
+<span class="s1">            var buffer = httpProxy.buffer(req);</span>
+
+<span class="s1">            proxy.proxyRequest(req, res, {</span>
+<span class="s1">                host: routes[idx].host,</span>
+<span class="s1">                port: routes[idx].port,</span>
+<span class="s1">                buffer: buffer</span>
+<span class="s1">            });</span>
+
+<span class="s1">            pathMatched = true;</span>
+<span class="s1">            break;</span>
+<span class="s1">        }</span>
+<span class="s1">    }</span>
+
+<span class="s1">    if (!pathMatched) {</span>
+<span class="s1">        console.log(&#39;</span><span class="n">Unmatched</span><span class="w"> </span><span class="nl">URL</span><span class="p">:</span><span class="s1">&#39;+req.url+&#39;</span><span class="w"> </span><span class="n">routing</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;+defaultRoute.host+&#39;</span><span class="err">:</span><span class="s1">&#39;+defaultRoute.port);</span>
+
+<span class="s1">        var buffer = httpProxy.buffer(req);</span>
+
+<span class="s1">        req.url = &#39;</span><span class="o">/</span><span class="mi">404</span><span class="err">&#39;</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">proxy</span><span class="p">.</span><span class="n">proxyRequest</span><span class="p">(</span><span class="n">req</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">host</span><span class="err">:</span><span class="w"> </span><span class="n">defaultRoute</span><span class="p">.</span><span class="k">host</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nl">port</span><span class="p">:</span><span class="w"> </span><span class="n">defaultRoute</span><span class="p">.</span><span class="n">port</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nl">buffer</span><span class="p">:</span><span class="w"> </span><span class="n">buffer</span><span class="w"></span>
+<span class="w">        </span><span class="err">}</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+
+
+<span class="err">}</span><span class="p">).</span><span class="n">listen</span><span class="p">(</span><span class="n">process</span><span class="p">.</span><span class="n">env</span><span class="p">.</span><span class="n">PORT</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="mi">8080</span><span class="p">);</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Proven regular expressions can be found at regexlib.com:</p>
+<ul>
+<li>Any URL - <code>^(http|https|ftp)\://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;amp;%\$#\=~])*$</code></li>
+</ul>
+<h1>Re-writing headers - CORS</h1>
+<p>I ran into problems using the forward proxy. Heroku for instance don't like when a request if forwarded
+using the solution above. The reason is the content of some HTTP headers. I think that lack of CORS support 
+is the reason but I'm not sure (see http://enable-cors.org/).</p>
+<p>I'll try to get around this. I received some input here: https://github.com/nodejitsu/node-http-proxy/issues/378#issuecomment-14687480</p>
+<div class="highlight"><pre><span></span><code><span class="err">var options = {</span>
+<span class="err">  router: {</span>
+<span class="err">    &#39;localhost/X&#39;: &#39;wip.herokuapp.com&#39;,</span>
+<span class="err">    &#39;localhost/Y&#39;: &#39;wip.herokuapp.com&#39;,</span>
+<span class="err">  },</span>
+<span class="err">  changeOrigin: true</span>
+<span class="err">};</span>
+</code></pre></div>
+
+
+<p>I haven't tested this yet...</p>
+<p>Next, using a middleware is suggested if chaning the options isn't enough. Could check this one:</p>
+<ul>
+<li>https://github.com/senchalabs/connect</li>
+</ul>
+<h1>Links</h1>
+<ul>
+<li>http://stackoverflow.com/questions/224664/difference-between-proxy-server-and-reverse-proxy-server</li>
+<li>http://cuppster.com/2012/04/10/cors-middleware-for-node-js-and-express/</li>
+</ul>
+<h1>Links about proxies and load balancing the old way</h1>
+<ul>
+<li>http://serverfault.com/questions/282919/looking-for-alternatives-to-f5-load-balancer</li>
+<li>http://serverfault.com/questions/208981/how-can-i-deploy-a-scalable-reliable-haproxy-cluster-on-amazon-ec2</li>
+<li>https://devcentral.f5.com/blogs/us/making-the-most-of-your-ip-address-space-with-layer-7-switching#.UTIf5n-9KK1</li>
+<li>http://blog.silverbucket.net/post/31927044856/3-ways-to-configure-haproxy-for-websockets</li>
+<li>http://www.conigliaro.org/2010/11/30/high-availability-load-balancing-with-haproxy-and-amazon-elastic-load-balancers-on-ec2/</li>
+</ul>
+<h2>Architecture alternatives</h2>
+<ol>
+<li>Elb (L4)-&gt;haproxy (L7)-&gt;app</li>
+<li>Dns rr-&gt;Elastic IP haproxy (L7)-&gt;app</li>
+<li>need external monitoring of L7</li>
+<li>DNS Round robin will route requests to a HAprocy even if it is dead -&gt; no good</li>
+</ol>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

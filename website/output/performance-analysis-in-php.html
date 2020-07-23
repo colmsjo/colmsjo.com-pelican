@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Performance analysis in PHP  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Performance analysis in PHP
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Time to do some performance analysis for PHP apps</p>
+<p>xdebug has profiler for performance analysis, I though I'd test this. Documentation:</p>
+<ul>
+<li>http://xdebug.org/docs/profiler</li>
+</ul>
+<h2>Install xdebug</h2>
+<p>I have a Elastic Beanstalk server running in AWS. Amazon Linux seams to be CentOS/Redhat based soo packages are installed using yum. </p>
+<p>NOTE: You need to assign a keypair to the server in order to be able to login (using the private key in the keypair).</p>
+<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="n">ec2-user@ip-10-234-213-53: ~</span><span class="o">]</span><span class="w"> </span><span class="err">$</span><span class="w"> </span><span class="n">yum</span><span class="w"> </span><span class="k">search</span><span class="w"> </span><span class="n">xdebug</span><span class="w"></span>
+<span class="n">Loaded</span><span class="w"> </span><span class="nl">plugins</span><span class="p">:</span><span class="w"> </span><span class="n">fastestmirror</span><span class="p">,</span><span class="w"> </span><span class="n">priorities</span><span class="p">,</span><span class="w"> </span><span class="n">security</span><span class="p">,</span><span class="w"> </span><span class="k">update</span><span class="o">-</span><span class="n">motd</span><span class="w"></span>
+<span class="n">Loading</span><span class="w"> </span><span class="n">mirror</span><span class="w"> </span><span class="n">speeds</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">cached</span><span class="w"> </span><span class="n">hostfile</span><span class="w"></span>
+<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">amzn</span><span class="o">-</span><span class="nl">main</span><span class="p">:</span><span class="w"> </span><span class="n">packages</span><span class="p">.</span><span class="n">eu</span><span class="o">-</span><span class="n">west</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
+<span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">amzn</span><span class="o">-</span><span class="nl">updates</span><span class="p">:</span><span class="w"> </span><span class="n">packages</span><span class="p">.</span><span class="n">eu</span><span class="o">-</span><span class="n">west</span><span class="o">-</span><span class="mf">1.</span><span class="n">amazonaws</span><span class="p">.</span><span class="n">com</span><span class="w"></span>
+<span class="err">#</span><span class="o">============================================</span><span class="w"> </span><span class="n">N</span><span class="o">/</span><span class="n">S</span><span class="w"> </span><span class="nl">Matched</span><span class="p">:</span><span class="w"> </span><span class="n">xdebug</span><span class="w"> </span><span class="o">============================================</span><span class="w"></span>
+<span class="n">php</span><span class="o">-</span><span class="n">pecl</span><span class="o">-</span><span class="n">xdebug</span><span class="p">.</span><span class="n">x86_64</span><span class="w"> </span><span class="err">:</span><span class="w"> </span><span class="n">PECL</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">debugging</span><span class="w"> </span><span class="n">PHP</span><span class="w"> </span><span class="n">scripts</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">Name</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">summary</span><span class="w"> </span><span class="n">matches</span><span class="w"> </span><span class="k">only</span><span class="p">,</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="ss">&quot;search all&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">everything</span><span class="p">.</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>xdebug is available as a PECL package so itcan probably be installed with PECL as well:</p>
+<div class="highlight"><pre><span></span><code><span class="err">[ec2-user@ip-10-234-213-53: ~] $ pecl search xdebug</span>
+<span class="c">WARNING: channel &quot;pecl.php.net&quot; has updated its protocols, use &quot;pecl channel-update pecl.php.net&quot; to update</span>
+<span class="err">Retrieving data...0%</span>
+<span class="err">Matched packages, channel pecl.php.net:</span>
+<span class="err">#=====================================</span>
+<span class="err">Package Stable/(Latest) Local</span>
+<span class="err">xdebug  2.2.1 (stable)  2.1.2 Provides functions for function traces and profiling</span>
+</code></pre></div>
+
+
+<p>I'll install with PECL:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">pecl</span> <span class="n">install</span> <span class="n">xdebug</span>
+
+<span class="p">...</span>
+
+  <span class="o">|</span>                                                                      <span class="o">|</span>
+  <span class="o">|</span>   <span class="n">INSTALLATION</span> <span class="n">INSTRUCTIONS</span>                                          <span class="o">|</span>
+  <span class="o">|</span>   <span class="o">=========================</span>                                          <span class="o">|</span>
+  <span class="o">|</span>                                                                      <span class="o">|</span>
+  <span class="o">|</span>   <span class="n">See</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">xdebug</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">install</span><span class="p">.</span><span class="n">php</span><span class="o">#</span><span class="n">configure</span><span class="o">-</span><span class="n">php</span> <span class="k">for</span> <span class="n">instructions</span>   <span class="o">|</span>
+  <span class="o">|</span>   <span class="k">on</span> <span class="n">how</span> <span class="k">to</span> <span class="n">enable</span> <span class="n">Xdebug</span> <span class="k">for</span> <span class="n">PHP</span><span class="p">.</span>                                   <span class="o">|</span>
+  <span class="o">|</span>                                                                      <span class="o">|</span>
+  <span class="o">|</span>   <span class="n">Documentation</span> <span class="k">is</span> <span class="n">available</span> <span class="n">online</span> <span class="k">as</span> <span class="n">well</span><span class="p">:</span>                         <span class="o">|</span>
+  <span class="o">|</span>   <span class="o">-</span> <span class="n">A</span> <span class="n">list</span> <span class="k">of</span> <span class="k">all</span> <span class="n">settings</span><span class="p">:</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">xdebug</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">settings</span><span class="p">.</span><span class="n">php</span>     <span class="o">|</span>
+  <span class="o">|</span>   <span class="o">-</span> <span class="n">A</span> <span class="n">list</span> <span class="k">of</span> <span class="k">all</span> <span class="n">functions</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">xdebug</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">functions</span><span class="p">.</span><span class="n">php</span>    <span class="o">|</span>
+  <span class="o">|</span>   <span class="o">-</span> <span class="n">Profiling</span> <span class="n">instructions</span><span class="p">:</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">xdebug</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">profiling2</span><span class="p">.</span><span class="n">php</span>   <span class="o">|</span>
+  <span class="o">|</span>   <span class="o">-</span> <span class="n">Remote</span> <span class="n">debugging</span><span class="p">:</span>        <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">xdebug</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">docs</span><span class="o">-</span><span class="n">debugger</span><span class="p">.</span><span class="n">php</span>     <span class="o">|</span>
+  <span class="o">|</span>                                                                      <span class="o">|</span>
+  <span class="o">|</span>                                                                      <span class="o">|</span>
+  <span class="o">|</span>   <span class="n">NOTE</span><span class="p">:</span> <span class="n">Please</span> <span class="n">disregard</span> <span class="n">the</span> <span class="n">message</span>                                 <span class="o">|</span>
+  <span class="o">|</span>       <span class="n">You</span> <span class="n">should</span> <span class="k">add</span> <span class="ss">&quot;extension=xdebug.so&quot;</span> <span class="k">to</span> <span class="n">php</span><span class="p">.</span><span class="n">ini</span>                <span class="o">|</span>
+  <span class="o">|</span>   <span class="n">that</span> <span class="k">is</span> <span class="n">emitted</span> <span class="k">by</span> <span class="n">the</span> <span class="n">PECL</span> <span class="n">installer</span><span class="p">.</span> <span class="n">This</span> <span class="n">does</span> <span class="k">not</span> <span class="k">work</span> <span class="k">for</span>      <span class="o">|</span>
+  <span class="o">|</span>   <span class="n">Xdebug</span><span class="p">.</span>                                                            <span class="o">|</span>
+  <span class="o">|</span>                                                                      <span class="o">|</span>
+
+
+<span class="n">running</span><span class="p">:</span> <span class="n">find</span> <span class="ss">&quot;/var/tmp/pear-build-rootBt1Sib/install-xdebug-2.2.1&quot;</span> <span class="o">|</span> <span class="n">xargs</span> <span class="n">ls</span> <span class="o">-</span><span class="n">dils</span>
+<span class="mi">145600</span>   <span class="mi">4</span> <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span> <span class="mi">3</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">4096</span> <span class="mi">22</span> <span class="n">aug</span> <span class="mi">10</span><span class="p">.</span><span class="mi">22</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pear</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">rootBt1Sib</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span>
+<span class="mi">145656</span>   <span class="mi">4</span> <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span> <span class="mi">3</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">4096</span> <span class="mi">22</span> <span class="n">aug</span> <span class="mi">10</span><span class="p">.</span><span class="mi">22</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pear</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">rootBt1Sib</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">usr</span>
+<span class="mi">145657</span>   <span class="mi">4</span> <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span> <span class="mi">3</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">4096</span> <span class="mi">22</span> <span class="n">aug</span> <span class="mi">10</span><span class="p">.</span><span class="mi">22</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pear</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">rootBt1Sib</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib64</span>
+<span class="mi">145658</span>   <span class="mi">4</span> <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span> <span class="mi">3</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">4096</span> <span class="mi">22</span> <span class="n">aug</span> <span class="mi">10</span><span class="p">.</span><span class="mi">22</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pear</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">rootBt1Sib</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib64</span><span class="o">/</span><span class="n">php</span>
+<span class="mi">145659</span>   <span class="mi">4</span> <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span> <span class="mi">2</span> <span class="n">root</span> <span class="n">root</span>   <span class="mi">4096</span> <span class="mi">22</span> <span class="n">aug</span> <span class="mi">10</span><span class="p">.</span><span class="mi">22</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pear</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">rootBt1Sib</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib64</span><span class="o">/</span><span class="n">php</span><span class="o">/</span><span class="n">modules</span>
+<span class="mi">145655</span> <span class="mi">768</span> <span class="o">-</span><span class="n">rwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span> <span class="mi">1</span> <span class="n">root</span> <span class="n">root</span> <span class="mi">785022</span> <span class="mi">22</span> <span class="n">aug</span> <span class="mi">10</span><span class="p">.</span><span class="mi">22</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pear</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">rootBt1Sib</span><span class="o">/</span><span class="n">install</span><span class="o">-</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib64</span><span class="o">/</span><span class="n">php</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="n">xdebug</span><span class="p">.</span><span class="n">so</span>
+
+<span class="n">Build</span> <span class="n">process</span> <span class="n">completed</span> <span class="n">successfully</span>
+<span class="n">Installing</span> <span class="s1">&#39;/usr/lib64/php/modules/xdebug.so&#39;</span>
+<span class="n">install</span> <span class="n">ok</span><span class="p">:</span> <span class="n">channel</span><span class="p">:</span><span class="o">//</span><span class="n">pecl</span><span class="p">.</span><span class="n">php</span><span class="p">.</span><span class="n">net</span><span class="o">/</span><span class="n">xdebug</span><span class="o">-</span><span class="mi">2</span><span class="p">.</span><span class="mi">2</span><span class="p">.</span><span class="mi">1</span>
+<span class="n">configuration</span> <span class="k">option</span> <span class="ss">&quot;php_ini&quot;</span> <span class="k">is</span> <span class="k">not</span> <span class="k">set</span> <span class="k">to</span> <span class="n">php</span><span class="p">.</span><span class="n">ini</span> <span class="k">location</span>
+<span class="n">You</span> <span class="n">should</span> <span class="k">add</span> <span class="ss">&quot;extension=xdebug.so&quot;</span> <span class="k">to</span> <span class="n">php</span><span class="p">.</span><span class="n">ini</span>
+</code></pre></div>
+
+
+<h2>Configure the profiler</h2>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">php</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">xdebug</span><span class="p">.</span><span class="n">ini</span>
+
+<span class="n">xdebug</span><span class="p">.</span><span class="n">profiler_enable</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">xdebug</span><span class="p">.</span><span class="n">profiler_output_dir</span> <span class="o">=</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">httpd</span><span class="o">/</span>
+
+<span class="n">sudo</span> <span class="n">service</span> <span class="n">httpd</span> <span class="k">restart</span>
+</code></pre></div>
+
+
+<p>I had problems restarting apache (httpd) so I tried to do a reboot (sudo reboot).</p>
+<h2>View profiler files</h2>
+<p>Run some scenarios you want to profile. Then, login to the EBT server and download the cachgrind files that are in the /var/log/httpd folder (as specified above).</p>
+<p>The server has s3put installed, just run: </p>
+<div class="highlight"><pre><span></span><code><span class="err">s3put -a &lt;ACCESS KEY&gt; -s &lt;SECRET LEY&gt; -b &lt;BUCKET NAME&gt; /var/log/httpd/cachegrind.out.nnnnn</span>
+</code></pre></div>
+
+
+<p>Install a tool that can view cachegrind files, I'm using qcachegrind on OSX (assuming you have brew installed):</p>
+<div class="highlight"><pre><span></span><code><span class="n">brew</span> <span class="n">install</span> <span class="n">qcachegrind</span>
+
+<span class="n">qcachegrind</span> <span class="o">&amp;</span>
+</code></pre></div>
+
+
+<p>Now you can open the cachegrind files.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

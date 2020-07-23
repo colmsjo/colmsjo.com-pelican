@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>JavaScript Routing  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		JavaScript Routing
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Client side routing in JavaScript</p>
+<p>JavaScript Routing</p>
+<h1>================</h1>
+<p>We need a solid way of managing navigation between different parts (pages etc.) in the application that is easy to understand and maintain. Using different routing techniques has become common in web applications and there are JavaScript libraries for this.</p>
+<p>We'll take a look at crossroads.js and Hasher. </p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Module Example<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;lib/basic.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;lib/signals.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;lib/crossroads.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;lib/hasher.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script&gt;</span>
+
+    window.onload = function(){
+        test(&quot;Testing Crossroads.js and Hasher.&quot;, function(){
+
+            // setup crossroads, using the global object. 
+            // It is also possible to have several independent Routers
+            crossroads.addRoute(&#39;route1&#39;, function() { 
+                log(&#39;logging static route1...&#39;);} 
+            );
+
+            crossroads.addRoute(&#39;route2&#39;, function() {
+                log(&#39;logging static route2...&#39;);} 
+            ); 
+
+            crossroads.addRoute(&#39;/{route}/{param1}/{param2}&#39;, function(route, param1, param2){
+                log(&#39;logging dynamic route:&#39;+route+&#39;, param1:&#39;+param1+&#39;, param2:&#39;+param2+&#39;...&#39;);} 
+            ); 
+
+            // default listener, log all routes that has been matched
+            crossroads.routed.add(console.log, console); 
+
+            // Also log routes that did not match anything (useful for debugging)
+            crossroads.bypassed.add(function(request){
+                log(&quot;A route that wasn&#39;t matched:&quot;+request); 
+            });
+
+            //setup hasher
+            function parseHash(newHash, oldHash){
+                crossroads.parse(newHash); 
+            }
+
+            hasher.initialized.add(parseHash); // parse initial hash 
+            hasher.changed.add(parseHash);  // parse hash changes 
+            hasher.init();                  // start listening for history change
+
+            //update URL fragment generating new history record 
+            hasher.setHash(&#39;route1&#39;);
+
+        });
+
+    };
+
+
+    <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        #results li.pass { color: green; }
+        #results li.fail { color: red; }
+    <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;ul</span> <span class="na">id=</span><span class="s">&quot;results&quot;</span><span class="nt">&gt;&lt;/ul&gt;</span>
+
+
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;test1&quot;</span><span class="nt">&gt;</span>
+        Some links:<span class="nt">&lt;br/&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#route1&quot;</span><span class="nt">&gt;</span>#route1<span class="nt">&lt;/a&gt;&lt;br/&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#route2&quot;</span><span class="nt">&gt;</span>#route2<span class="nt">&lt;/a&gt;&lt;br/&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#/route3/i_love/this&quot;</span><span class="nt">&gt;</span>#route3<span class="nt">&lt;/a&gt;&lt;br/&gt;</span>
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#route4&quot;</span><span class="nt">&gt;</span>#route4<span class="nt">&lt;/a&gt;&lt;br/&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
+
+
+<p>crossroads associates a route with a callback functions. Callbaks are very common in modern JavaScript so just get used to them (if you're not already). For instance will clikcing on the link <code>&lt;a href="#route1"&gt;#route1&lt;/a&gt;</code> trigger a call to the function <code>function() { log('logging static route1...');} );</code>. This function was associated with the event using <code>crossroads.addRoute</code>.</p>
+<p>The statement <code>hasher.changed.add(parseHash)</code> will make sure that Hasher calls the function <code>parseHash</code> each time the URL in the application changes. This is so called hash navigation.</p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

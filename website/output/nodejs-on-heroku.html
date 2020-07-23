@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Nodejs on heroku  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Nodejs on heroku
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Get started with NodeJS on Heroku</p>
+<ol>
+<li>Register for an account on heroku.com</li>
+<li>Install heroku toolbelt - https://toolbelt.heroku.com/</li>
+<li>Login running <code>heroku login</code> - your SSH key will be uploaded</li>
+<li>Develop a first app</li>
+</ol>
+<p>Save this as web.js:</p>
+<div class="highlight"><pre><span></span><code><span class="n">var</span> <span class="n">express</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">app</span> <span class="o">=</span> <span class="n">express</span><span class="p">.</span><span class="n">createServer</span><span class="p">(</span><span class="n">express</span><span class="p">.</span><span class="n">logger</span><span class="p">());</span>
+
+<span class="n">app</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="err">{</span>
+  <span class="n">response</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="s1">&#39;Hello World!&#39;</span><span class="p">);</span>
+<span class="err">}</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">port</span> <span class="o">=</span> <span class="n">process</span><span class="p">.</span><span class="n">env</span><span class="p">.</span><span class="n">PORT</span> <span class="o">||</span> <span class="mi">5000</span><span class="p">;</span>
+<span class="n">app</span><span class="p">.</span><span class="k">listen</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="k">function</span><span class="p">()</span> <span class="err">{</span>
+  <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="ss">&quot;Listening on &quot;</span> <span class="o">+</span> <span class="n">port</span><span class="p">);</span>
+<span class="err">}</span><span class="p">);</span>
+</code></pre></div>
+
+
+<p>Save this as package.json:</p>
+<div class="highlight"><pre><span></span><code><span class="err">{</span>
+<span class="err">  &quot;name&quot;: &quot;heroku-node-example&quot;,</span>
+<span class="err">  &quot;version&quot;: &quot;0.0.1&quot;,</span>
+<span class="err">  &quot;dependencies&quot;: {</span>
+<span class="err">    &quot;express&quot;: &quot;2.5.x&quot;</span>
+<span class="err">  },</span>
+<span class="err">  &quot;engines&quot;: {</span>
+<span class="err">    &quot;node&quot;: &quot;0.8.x&quot;,</span>
+<span class="err">    &quot;npm&quot;: &quot;1.1.x&quot;</span>
+<span class="err">  }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Install the application locally (I always install globally)</p>
+<div class="highlight"><pre><span></span><code><span class="err"># Run in same folder as web.js and package.json are in</span>
+<span class="err">npm install -g</span>
+</code></pre></div>
+
+
+<p>Check that the install is ok:</p>
+<div class="highlight"><pre><span></span><code><span class="n">npm</span> <span class="n">ls</span> 
+
+<span class="o">#</span> <span class="k">for</span> <span class="k">more</span> <span class="n">details</span>
+<span class="n">npm</span> <span class="n">ll</span>
+</code></pre></div>
+
+
+<p>Install using foreman:</p>
+<div class="highlight"><pre><span></span><code><span class="o">#</span> <span class="n">I</span> <span class="n">need</span> <span class="k">to</span> <span class="n">cd</span> <span class="k">to</span> <span class="n">the</span> <span class="n">installation</span> <span class="n">path</span> <span class="p">(</span><span class="n">since</span> <span class="n">it</span> <span class="k">is</span> <span class="n">installed</span> <span class="n">globally</span><span class="p">)</span>
+<span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">heroku</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="n">example</span><span class="o">/</span>
+
+<span class="n">foreman</span> <span class="k">start</span>
+</code></pre></div>
+
+
+<p>Test that it is working in a separate terminal:</p>
+<div class="highlight"><pre><span></span><code><span class="err">curl -j localhost:5000</span>
+</code></pre></div>
+
+
+<h1>Upload to heroku</h1>
+<p>Create Procfile containing this:</p>
+<div class="highlight"><pre><span></span><code><span class="n">web</span><span class="o">:</span> <span class="n">node</span> <span class="n">web</span><span class="o">.</span><span class="na">js</span>
+</code></pre></div>
+
+
+<p>Create a git repo:</p>
+<div class="highlight"><pre><span></span><code><span class="err"># cd back to the source</span>
+<span class="err">cd ~/.../heroku-test1/</span>
+<span class="err">git init</span>
+<span class="err">git add *</span>
+<span class="err">git commit -a -m &quot;Initial commit&quot;</span>
+</code></pre></div>
+
+
+<p>Create the app:</p>
+<div class="highlight"><pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="n">app</span><span class="w"></span>
+<span class="n">heroku</span><span class="w"> </span><span class="k">create</span><span class="w"></span>
+<span class="n">Creating</span><span class="w"> </span><span class="n">agile</span><span class="o">-</span><span class="n">oasis</span><span class="o">-</span><span class="mf">4317.</span><span class="p">..</span><span class="w"> </span><span class="n">done</span><span class="p">,</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">cedar</span><span class="w"></span>
+<span class="nl">http</span><span class="p">:</span><span class="o">//</span><span class="n">agile</span><span class="o">-</span><span class="n">oasis</span><span class="o">-</span><span class="mf">4317.</span><span class="n">herokuapp</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">git</span><span class="nv">@heroku</span><span class="p">.</span><span class="nl">com</span><span class="p">:</span><span class="n">agile</span><span class="o">-</span><span class="n">oasis</span><span class="o">-</span><span class="mf">4317.</span><span class="n">git</span><span class="w"></span>
+<span class="n">Git</span><span class="w"> </span><span class="n">remote</span><span class="w"> </span><span class="n">heroku</span><span class="w"> </span><span class="n">added</span><span class="w"></span>
+
+<span class="err">#</span><span class="w"> </span><span class="n">push</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">heroku</span><span class="w"></span>
+<span class="n">git</span><span class="w"> </span><span class="n">push</span><span class="w"> </span><span class="n">heroku</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="p">...</span><span class="w"></span>
+<span class="nl">http</span><span class="p">:</span><span class="o">//</span><span class="n">agile</span><span class="o">-</span><span class="n">oasis</span><span class="o">-</span><span class="mf">4317.</span><span class="n">herokuapp</span><span class="p">.</span><span class="n">com</span><span class="w"> </span><span class="n">deployed</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">Heroku</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>Start a dyno</p>
+<div class="highlight"><pre><span></span><code><span class="n">heroku</span> <span class="n">ps</span><span class="p">:</span><span class="k">scale</span> <span class="n">web</span><span class="o">=</span><span class="mi">1</span>
+
+<span class="o">#</span> <span class="k">Check</span> <span class="n">that</span> <span class="n">everything</span> <span class="k">is</span> <span class="n">ok</span><span class="p">:</span>
+<span class="n">heroku</span> <span class="n">ps</span>
+</code></pre></div>
+
+
+<h1>Test</h1>
+<p>Test the app, I got this URL, see above:</p>
+<ul>
+<li>http://agile-oasis-4317.herokuapp.com/</li>
+</ul>
+<p>The app can also be run like this:</p>
+<div class="highlight"><pre><span></span><code><span class="err">heroku open</span>
+</code></pre></div>
+
+
+<h1>Logs and finetuning</h1>
+<div class="highlight"><pre><span></span><code><span class="err">heroku logs</span>
+</code></pre></div>
+
+
+<p>Set envionment vairables:</p>
+<div class="highlight"><pre><span></span><code><span class="err">heroku config:add NODE_ENV=production</span>
+</code></pre></div>
+
+
+<p>Connect to remote heroku node from terminal (in order to experiment):</p>
+<div class="highlight"><pre><span></span><code><span class="err">heroku run node</span>
+</code></pre></div>
+
+
+<h1>Add ons</h1>
+<p>There is a large number of addons</p>
+<p>One example:</p>
+<ul>
+<li>https://addons.heroku.com/scheduler</li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

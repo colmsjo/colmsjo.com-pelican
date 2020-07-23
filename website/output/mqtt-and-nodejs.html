@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>mqtt and NodeJS  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/theme/images/buruma_logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		mqtt and NodeJS
+	</div>
+	<div class="message-body has-text-dark">
+		<p><a href="http://mqtt.org">mqtt</a> is a lightweight publish/subscribe protocol often used for connecting devices in the 
+Internet Of Things (IoT) world. There are competing protocols but some larger players, like for instance
+<a href="https://aws.amazon.com/iot/">Amazon IoT</a>, supports mqtt.</p>
+<p>This post shows how to setup a mqtt server using docker and NodeJS. It is also fairly easy to setup
+a load balanced pool of mqtt servers behind haproxy. This also shown.</p>
+<h1>Getting started</h1>
+<p>Some notes about running a mqtt server and client in docker using nodejs.</p>
+<ol>
+<li>
+<p>Install and start a nodejs docker container using <a href="https://github.com/gizur/docker-nodejs">docker-nodejs</a></p>
+</li>
+<li>
+<p>In the container, change node version: <code>nvm install v0.12.9; nvm alias default v0.12.9</code></p>
+</li>
+<li>
+<p>Install dependencies: <code>apt install -y libzmq-dev libkrb5-dev</code></p>
+</li>
+<li>
+<p>Install mqtt server: <code>cd /apps; npm install mosca bunyan</code></p>
+</li>
+<li>
+<p>Start the <code>mosca</code> mqtt server in the foreground: <code>./node_modules/mosca/bin/mosca -v | ./node_modules/bunyan/bin/bunyan</code>. Disconnect with <code>ctrl-p</code> <code>ctrl-q</code>.</p>
+</li>
+<li>
+<p>Install a mqtt client: <code>npm install mqtt -g</code>. You need to install NodeJS on your local machine first. I'd suggest you use <a href="https://github.com/creationix/nvm"><code>nvm</code></a> to manage NodeJS versions.</p>
+</li>
+<li>
+<p>Check the IP of the docker server. I'm using <code>docker-machine</code> to manage docker on my laptop: <code>docker-machine ls</code></p>
+</li>
+<li>
+<p>Subscribe (replace the IP-address with your docker server IP): <code>mqtt sub -t 'hello' -h '192.168.99.100' -v</code></p>
+</li>
+<li>
+<p>In another terminal, publish a message (replace the IP-address with your docker server IP): <code>mqtt pub -t 'hello' -h '192.168.99.100' -m 'from MQTT.js'</code></p>
+</li>
+<li>
+<p>You should see the message in the terminal where you are subscribing! mqtt.js can be used from browsers (and therefore also with Cordova when developing mobile apps) and is also possible to use together with the excellent module manager <a href="http://browserify.org">browserify</a>.</p>
+</li>
+</ol>
+<h1>Using with <code>haproxy</code> as load balancer</h1>
+<p><a href="http://www.haproxy.com"><code>haproxy</code></a> is a open source load balancer that is commonly used.</p>
+<ol>
+<li>
+<p>Install <code>haproxy</code> in a docker container using <a href="https://github.com/gizur/docker-haproxy">docker-haproxy</a></p>
+</li>
+<li>
+<p>Check the IP-address of the docker container running <code>mosca</code> (stop the server and run <code>ifconfig</code> and then start it again).</p>
+</li>
+<li>
+<p>If you're on a laptop, then you can setup an entry in <code>/etc/hosts</code>. On servers, setup the DNS as usual.</p>
+</li>
+<li>
+<p>Setup a frontend and backend in haproxy for the <code>mosca</code> server. Use the same configuration as for any http(s) backend.
+The docker-haproxy repo has a template that can be used.</p>
+</li>
+<li>
+<p>Subscribe: <code>mqtt sub -t 'hello' -h 'mqtt.gizur.local' -v</code></p>
+</li>
+<li>
+<p>Publish: <code>mqtt pub -t 'hello' -h 'mqtt.gizur.local' -m 'from MQTT.js'</code></p>
+</li>
+<li>
+<p>You should see the message in the terminal, just like before. The difference is that now we can add several mqtt servers
+behind the haproxy load balancer!</p>
+</li>
+</ol>
+<p>Another nice feature is that <code>haproxy</code> can be used to terminate SSL. This way SSL is used between the mqtt client and haproxy and simple TCP/HTTP used between <code>haproxy</code> 
+and the server behind.</p>
+<p>This command will subscribe using TLS: <code>mqtt sub -t 'hello' -h 'mqtt.gizur.local' -p 8883 -m -C 'tls' --insecure</code>.
+We accept self-signed certificates here. Remove <code>--insecure</code> when testing production environments.</p>
+<p>This command will publish using TLS: <code>mqtt pub -t 'hello' -h 'mqtt.gizur.local' -p 8883 -m 'from MQTT.js' -C 'tls' --insecure</code></p>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Blacksmith CMS  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Blacksmith CMS
+	</div>
+	<div class="message-body has-text-dark">
+		<p>The CMS built in NodeJS that is used for this blog</p>
+<p>Looking into CMS on NodeJS, see [[CMS on NodeJS]], led me to play around with blacksmith.</p>
+<p>Articles:</p>
+<ul>
+<li>http://blog.flatironjs.org/01-a-whole-new-blacksmith</li>
+</ul>
+<p>Get started, verify that the tests can be rendered:</p>
+<div class="highlight"><pre><span></span><code><span class="err">git clone https://github.com/flatiron/blacksmith.git</span>
+<span class="err">cd blacksmith</span>
+<span class="err">npm install</span>
+<span class="err">ls test/fixtures/docsite/public</span>
+<span class="err">./bin/blacksmith test/fixtures/docsite</span>
+<span class="err">ls test/fixtures/docsite/public</span>
+</code></pre></div>
+
+
+<p>Then render the blog also:</p>
+<div class="highlight"><pre><span></span><code><span class="err">./bin/blacksmith test/fixtures/blog</span>
+<span class="err">ls test/fixtures/blog/public</span>
+</code></pre></div>
+
+
+<p>ISSUE: The links in index.html are all broken when opening locally. I've created an issue for this.</p>
+<p>It works running in a web server though:</p>
+<div class="highlight"><pre><span></span><code><span class="err">npm install http-server -g</span>
+<span class="err">cd test/fixture/blog</span>
+<span class="err">http-server -e html</span>
+</code></pre></div>
+
+
+<p>Frameworks used by blacksmith:</p>
+<ul>
+<li>http://flatironjs.org/</li>
+<li>https://github.com/flatiron/plates</li>
+<li>https://github.com/chjj/marked</li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

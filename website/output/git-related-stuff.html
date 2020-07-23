@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>Git related stuff  - Gizur
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/gizur-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+						<a class="navbar-item" href="/pages/about.html">
+							About
+						</a>
+						<a class="navbar-item" href="/pages/about2.html">
+							About2
+						</a>
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc/">
+								misc
+							</a>
+							<a class="navbar-item" href="/category/review/">
+								Review
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+								<a class="button is-link" href="/pages/about.html">About</a>
+								<a class="button is-info" href="/pages/about2.html">About2</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		Git related stuff
+	</div>
+	<div class="message-body has-text-dark">
+		<p>Git basics</p>
+<p>Some links:
+* http://learn.github.com/p/intro.html
+* https://git.wiki.kernel.org/index.php/Aliases
+* http://gitref.org/index.html</p>
+<h1>Basics</h1>
+<h2>Create local copy of repository - clone</h2>
+<div class="highlight"><pre><span></span><code><span class="err">sudo git clone https://github.com/colmsjo/wip.git</span>
+</code></pre></div>
+
+
+<h2>Update remote repository - push</h2>
+<div class="highlight"><pre><span></span><code><span class="err">sudo git commit -a</span>
+<span class="err">sudo git push</span>
+</code></pre></div>
+
+
+<h2>Update local repository - pull</h2>
+<div class="highlight"><pre><span></span><code><span class="err">sudo git pull</span>
+</code></pre></div>
+
+
+<h2>Note on new repositories</h2>
+<p>Might need to create a branch (master):</p>
+<div class="highlight"><pre><span></span><code><span class="err">git push origin master</span>
+</code></pre></div>
+
+
+<p>Also setup default origin and branch for merge:</p>
+<div class="highlight"><pre><span></span><code><span class="err">git config branch.master.remote origin &amp;&amp; git config branch.master.merge refs/heads/master</span>
+</code></pre></div>
+
+
+<h1>Level two</h1>
+<h2>Create a new repository on the command line</h2>
+<div class="highlight"><pre><span></span><code><span class="err">touch README.md</span>
+<span class="err">git init</span>
+<span class="err">git add README.md</span>
+<span class="err">git commit -m &quot;first commit&quot;</span>
+<span class="err">git remote add origin https://github.com/colmsjo/test.git</span>
+<span class="err">git push -u origin master</span>
+</code></pre></div>
+
+
+<p>Push an existing repository from the command line</p>
+<div class="highlight"><pre><span></span><code><span class="err">git remote add origin https://github.com/colmsjo/test.git</span>
+<span class="err">git push -u origin master</span>
+</code></pre></div>
+
+
+<p>Convert a svn repositiry to git</p>
+<ul>
+<li>https://github.com/nirvdrum/svn2git</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err"> svn2git http://svn.example.com/path/to/repo --rootistrunk</span>
+</code></pre></div>
+
+
+<h2>Avoid entering username and password (on OSX)</h2>
+<ul>
+<li>See https://help.github.com/articles/set-up-git</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="err">curl -s -O http://github-media-downloads.s3.amazonaws.com/osx/git-credential-osxkeychain</span>
+<span class="err">chmod u+x git-credential-osxkeychain</span>
+<span class="err">sudo mv git-credential-osxkeychain /usr/local/git/bin</span>
+<span class="err">git credential-osxkeychain</span>
+<span class="err">git config --global credential.helper osxkeychain</span>
+</code></pre></div>
+
+
+<h1>Wiki</h1>
+<p>The open source Gollum wiki manager is used. Markdown (and other markups) are supported.</p>
+<h2>Images</h2>
+<ul>
+<li>https://github.com/mojombo/gollum-demo/blob/master/Mordor/Eye-Of-Sauron.md</li>
+</ul>
+<h1>Advanced stuff</h1>
+<h2>Merge two repositories into one</h2>
+<ul>
+<li>http://jasonkarns.com/blog/merge-two-git-repositories-into-one/</li>
+</ul>
+<p>Crate new repository to merge into</p>
+<div class="highlight"><pre><span></span><code><span class="err">mkdir gom &amp;&amp; cd gom</span>
+<span class="err">git init</span>
+<span class="err">touch .gitignore</span>
+<span class="err">nano test</span>
+<span class="err">git add test </span>
+<span class="err">git commit -a</span>
+</code></pre></div>
+
+
+<p>Merge first repository into new repository</p>
+<div class="highlight"><pre><span></span><code><span class="err">git remote add -f gom-qa ../gom-qa</span>
+<span class="err">git merge -s ours --no-commit gom-qa/master</span>
+<span class="err">git read-tree --prefix=gom-qa -u gom-qa/master</span>
+<span class="err">git commit -a</span>
+</code></pre></div>
+
+
+<p>Merge second repository into new repository</p>
+<div class="highlight"><pre><span></span><code><span class="err">git remote add -f gom-test ../gom-test</span>
+<span class="err">git merge -s ours --no-commit gom-test/master</span>
+<span class="err">git read-tree --prefix=gom-test -u gom-test/master</span>
+<span class="err">git commit -a</span>
+</code></pre></div>
+
+
+<h2>Create repository from sub-directory</h2>
+<ul>
+<li>https://help.github.com/articles/splitting-a-subpath-out-into-a-new-repo</li>
+</ul>
+<h2>Submodules</h2>
+<ul>
+<li>http://git-scm.com/book/en/Git-Tools-Submodules</li>
+</ul>
+<h1>Setup a server</h1>
+<p>It is relatively simple to setup a server (with advanced user management):</p>
+<ul>
+<li>http://tumblr.intranation.com/post/766290565/how-set-up-your-own-private-git-server-linux</li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							This is the custom foooter
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

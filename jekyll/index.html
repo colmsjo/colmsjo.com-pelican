@@ -1,0 +1,100 @@
+---
+layout: page
+title:
+description: "My notes on things that I work on at the moment. Typically realted
+to open source, web and mobile apps"
+tags: [open source, web apps, mobile apps]
+---
+
+<p>
+These are my notes on things that I work on at the moment. Typically related to
+Open Source, web and mobile apps. From time to time I
+develop tools that I find useful. These can be found at my
+<a href="http://github.com/colmsjo">Github account</a>.
+</p>
+
+<br/>
+
+<p>
+My latest, and at the current time most interesting, articles:
+</p>
+
+<ul class="post-list">
+{% for post in site.posts limit:10 %}
+  <li><article><a href="{{ site.url }}{{ post.url }}">{{ post.title }}
+    <span class="entry-date"><time datetime="{{ post.date | date_to_xmlschema }}">
+      {{ post.date | date: "%B %d, %Y" }}</time></span></a></article></li>
+{% endfor %}
+</ul>
+
+<br/>
+
+<p>My most popular articles according to Google Analytics (in order of popularity):</p>
+
+
+<!--
+http://colmsjo.com/Responsive-email/
+http://colmsjo.com/Testing-SAP-HANA/
+http://colmsjo.com/Storage-for-browsers/
+http://colmsjo.com/130721_Streams_in_NodeJS/
+http://colmsjo.com/Batch-scheduling-in-nodejs/
+http://colmsjo.com/Mainframe/
+http://colmsjo.com/Vtiger-installation/ - SKPIPPING THIS, NOT WELL FORMATTED
+http://colmsjo.com/OData-notes/
+
+<li><article>
+    <a href="{% post_url 2012-01-01-Mainframe %}">Mainframe (interesting that
+      this is read a lot 2014)
+      <span class="entry-date"><time>pre 2012</time></span>
+    </a>
+</article></li>
+
+-->
+
+<ul class="post-list">
+
+  <li><article>
+  		<a href="http://colmsjo.com/Responsive-email/">Responsesive Email
+  			<span class="entry-date"><time>2014-08-22</time></span>
+  		</a>
+  </article></li>
+
+  <li><article>
+  		<a href="{% post_url 2014-07-13-Testing-SAP-HANA %}">Testing SAP HANA
+  			<span class="entry-date"><time>2014-07-13</time></span>
+  		</a>
+  </article></li>
+
+  <li><article>
+  		<a href="http://colmsjo.com/Storage-for-browsers/">Storage for browsers
+  			<span class="entry-date"><time>2015-10-22</time></span>
+  		</a>
+  </article></li>
+
+  <li><article>
+  		<a href="{% post_url 2013-07-21-130721_Streams_in_NodeJS %}">Streams in NodeJS
+  			<span class="entry-date"><time>2013-07-21</time></span>
+  		</a>
+  </article></li>
+
+  <li><article>
+  		<a href="http://colmsjo.com/Batch-scheduling-in-nodejs/">Batch Scheduling in NodeJS
+  			<span class="entry-date"><time>2012-10-18</time></span>
+  		</a>
+  </article></li>
+
+  <li><article>
+  		<a href="{% post_url 2012-01-01-Mainframe %}">Mainframe (interesting that
+        this is read a lot today)
+  			<span class="entry-date"><time>pre 2012</time></span>
+  		</a>
+  </article></li>
+
+  <li><article>
+  		<a href="{% post_url 2014-08-04-OData-notes %}">OData - "ODBC for the web",
+        extremely useful, developed by Microsoft and used by SAP among others
+  			<span class="entry-date"><time>2013-08-04</time></span>
+  		</a>
+  </article></li>
+
+</ul>
