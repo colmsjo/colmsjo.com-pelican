@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<meta name="author" content="Jonas Colmsjo" />
+		<title>SQLAlchemy and Pandas  - Work In Progress
+</title>
+		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
+		<script src="/theme/js/menu.js"></script>
+	</head>
+	<body>
+		<nav class="navbar is-info" role="navigation" aria-label="main navigation">
+				<div class="navbar-brand">
+						<a class="navbar-item" href="">
+							<img src="/images/colmsjo-logo.png" width="112" height="28">
+						</a>
+					<a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMain">
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+						<span aria-hidden="true"></span>
+					</a>
+				</div>
+				<div id="navbarMain" class="navbar-menu">
+					<div class="navbar-start">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link" href="/categories">
+Categories						</a>
+						<div class="navbar-dropdown">
+							<a class="navbar-item" href="/category/misc.html">
+								misc
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+						</div>
+					</div>
+				</div>
+			</div>
+			</nav>
+		<section class="section">
+			<div class="container">
+<article class="message is-info">
+	<div class="message-header">
+		SQLAlchemy and Pandas
+	</div>
+	<div class="message-body has-text-dark">
+		<p>config.py:</p>
+<div class="highlight"><pre><span></span><code><span class="err">DATABASE_URI = &#39;mysql://invest:secret@localhost/invest&#39;</span>
+</code></pre></div>
+
+
+<p>invest_codegen:</p>
+<p>This was generated from the database using sqlacodegen.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding: utf-8</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">CHAR</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Index</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">text</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.mysql</span> <span class="kn">import</span> <span class="n">INTEGER</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">metadata</span>
+
+
+<span class="k">class</span> <span class="nc">Portfolio</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;Portfolios&#39;</span>
+
+    <span class="n">Portfolio</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">GUID</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">36</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+
+<span class="n">t_PricesForStocksToWatch</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="s1">&#39;PricesForStocksToWatch&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;TimeStamp&#39;</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Volume&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="n">t_StockOwnership</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="s1">&#39;StockOwnership&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Portfolio&#39;</span><span class="p">,</span> <span class="n">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Period&#39;</span><span class="p">,</span> <span class="n">INTEGER</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;YYYYQQ, set QQ=00 for full year when if quarterly data isn&#39;t saved&quot;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;NoShares&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;EPS&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;DPS&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Earnings&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;EPS x NoShares&#39;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;RetainedEarnings&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(EPS-DPS) x NoShares&#39;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Dividends&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;DPS x NoShares&#39;</span><span class="p">),</span>
+    <span class="n">Index</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;Portfolio&#39;</span><span class="p">,</span> <span class="s1">&#39;Period&#39;</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="n">t_StocksToWatch</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="s1">&#39;StocksToWatch&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Instrument&#39;</span><span class="p">,</span> <span class="n">INTEGER</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Action&#39;</span><span class="p">,</span> <span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(B)uy, (S)ell&#39;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Currency&#39;</span><span class="p">,</span> <span class="n">CHAR</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;LastUpdate&#39;</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Index</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;Action&#39;</span><span class="p">,</span> <span class="s1">&#39;Price&#39;</span><span class="p">,</span> <span class="s1">&#39;Currency&#39;</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">TickerDatum</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;TickerData&#39;</span>
+
+    <span class="n">Ticker</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">))</span>
+    <span class="n">TS_Name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">))</span>
+    <span class="n">TS_Type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">TS_Index</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">))</span>
+    <span class="n">Value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">Note</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">Transaction</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;Transactions&#39;</span>
+
+    <span class="n">TransID</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">INTEGER</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">TransDate</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">Portfolio</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">Ticker</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+    <span class="n">ShareType</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(S)Share, (B)ond&#39;</span><span class="p">)</span>
+    <span class="n">TransType</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(B)uy, (S)ell, (D)ividend, (W)ithdraw, d(E)posit, s(P)lit, (I)inlösen&#39;</span><span class="p">)</span>
+    <span class="n">NoShares</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">PerShare</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">Amount</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;should equal NoShares x PerShare x sign&#39;</span><span class="p">)</span>
+    <span class="n">Courtage</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">TransAmount</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;should equal Amount + Courtage&#39;</span><span class="p">)</span>
+    <span class="n">Currency</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">Depo</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+    <span class="n">Note</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+</code></pre></div>
+
+
+<p>invest.py</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># coding: utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># 2020-07-25, Jonas Colmsjö</span>
+<span class="c1">#</span>
+<span class="c1"># http://google.github.io/styleguide/pyguide.html</span>
+<span class="c1">#</span>
+<span class="c1"># conda install -c auto colanderalchemy</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">CHAR</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Index</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">text</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.mysql</span> <span class="kn">import</span> <span class="n">INTEGER</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">sessionmaker</span><span class="p">,</span> <span class="n">mapper</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="n">DATABASE_URI</span>
+
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">metadata</span>
+
+
+<span class="k">class</span> <span class="nc">Portfolio</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;Portfolios&#39;</span>
+
+    <span class="n">Portfolio</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">GUID</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">36</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Portfolio</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">statement</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">TickerDatum</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;TickerData&#39;</span>
+
+    <span class="n">Ticker</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">))</span>
+    <span class="n">TS_Name</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">))</span>
+    <span class="n">TS_Type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">TS_Index</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">server_default</span><span class="o">=</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">))</span>
+    <span class="n">Value</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">Note</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">TickerDatum</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">statement</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Transaction</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;Transactions&#39;</span>
+
+    <span class="n">TransID</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">INTEGER</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">TransDate</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">Portfolio</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">Ticker</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+    <span class="n">ShareType</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(S)Share, (B)ond&#39;</span><span class="p">)</span>
+    <span class="n">TransType</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(B)uy, (S)ell, (D)ividend, (W)ithdraw, d(E)posit, s(P)lit, (I)inlösen&#39;</span><span class="p">)</span>
+    <span class="n">NoShares</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">PerShare</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">Amount</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;should equal NoShares x PerShare x sign&#39;</span><span class="p">)</span>
+    <span class="n">Courtage</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">TransAmount</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;should equal Amount + Courtage&#39;</span><span class="p">)</span>
+    <span class="n">Currency</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">Depo</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+    <span class="n">Note</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Transaction</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">statement</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">)</span>
+
+
+<span class="c1"># codegen don&#39;t generate a class for this table since it doesn&#39;t have a primary key</span>
+<span class="n">t_StockOwnership</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+    <span class="s1">&#39;StockOwnership&#39;</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Portfolio&#39;</span><span class="p">,</span> <span class="n">CHAR</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Period&#39;</span><span class="p">,</span> <span class="n">INTEGER</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;YYYYQQ, set QQ=00 for full year when if quarterly data isn&#39;t saved&quot;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;NoShares&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;EPS&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;DPS&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Earnings&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;EPS x NoShares&#39;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;RetainedEarnings&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;(EPS-DPS) x NoShares&#39;</span><span class="p">),</span>
+    <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;Dividends&#39;</span><span class="p">,</span> <span class="n">DECIMAL</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;DPS x NoShares&#39;</span><span class="p">),</span>
+    <span class="n">Index</span><span class="p">(</span><span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;Ticker&#39;</span><span class="p">,</span> <span class="s1">&#39;Portfolio&#39;</span><span class="p">,</span> <span class="s1">&#39;Period&#39;</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_stock_ownership_df</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">t_StockOwnership</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">statement</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">bind</span><span class="p">)</span>
+
+
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">DATABASE_URI</span><span class="p">)</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">()</span>
+<span class="n">session</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">session</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">Portfolio</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">get_stock_ownership_df</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">Transaction</span><span class="o">.</span><span class="n">get_df</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+</code></pre></div>
+
+
+<p>Run the app:</p>
+<div class="highlight"><pre><span></span><code><span class="err">python invest.py</span>
+</code></pre></div>
+
+
+<h1>Resources</h1>
+<ul>
+<li><a href="https://pypi.org/project/sqlacodegen/">Generate SQLA Models</a></li>
+</ul>
+	</div>
+</article>
+			</div>
+		</section>
+		<footer class="footer">
+			<div class="container has-text-centered">
+				<div class="columns">
+					<div class="column">
+							Jonas Colmsjö
+						<p><a href="https://bulma.io">
+							<img src="/theme/images/made_with_bulma.png" alt="Made with Bulma" width="128" height="24">
+						</a></p>
+					</div>
+					<div class="column">
+							<p>All rights reserved © Jonas Colmsjö</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

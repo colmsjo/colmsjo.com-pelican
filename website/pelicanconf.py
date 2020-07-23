@@ -44,7 +44,6 @@ JINJA_ENVIRONMENT = {
     'extensions': ['jinja2.ext.i18n'],
 }
 
-SITELOGO = 'images/gizur-logo.jpg'
 HIDE_SITENAME = True
 
 STATIC_PATHS = [
@@ -80,4 +79,4 @@ LICENSE = False
 #ABOUT_EXTRACT = "This is the about extract"
 
 # Not documented, see templates/base.html
-#THEME_LOGO = '/images/gizur-logo.png'
+THEME_LOGO = '/images/colmsjo-logo.png'

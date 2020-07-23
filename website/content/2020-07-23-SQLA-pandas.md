@@ -1,11 +1,10 @@
----
 layout: post
 title: SQLAlchemy and Pandas
 description: Use SQLAlchemy together with and Pandas
 date: 2020-07-23
 author: Jonas Colmsjo
 tags: ['Python', 'Flask', 'webapp', 'SQLAlchemy', 'pandas']
----
+
 
 
 config.py:
