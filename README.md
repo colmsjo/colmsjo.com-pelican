@@ -32,7 +32,7 @@ Fix problem with gettext: https://github.com/getpelican/pelican-themes/issues/46
 # Site is generated into the output folder
 make html
 
-# Test the site locally
+# Test the site locally on port 8000
 make serve
 ```
 

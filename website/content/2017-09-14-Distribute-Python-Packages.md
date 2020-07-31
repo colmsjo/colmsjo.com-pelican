@@ -3,7 +3,7 @@ title: Distribute Python Packages
 description:
 date: 2017-09-14
 author: Jonas Colmsjo
-tags: ['post', python']
+tags: 'post', python'
 
 First attempt on distributing a Python package.
 

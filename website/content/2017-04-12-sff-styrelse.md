@@ -3,7 +3,7 @@ title: Vad jag vill åstadkomma i SFF:s styrelse
 description: Kort om min syn på frisbeesportförbundet och hur frisbeen bör organiseras i Sverige
 date: 2017-04-17
 author: Jonas Colmsjo
-tags: ['post', 'frisbee']
+tags: 'post', 'frisbee'
 
 Jag heter Jonas Colmsjö och bor i Stenungsund där jag är aktiv i Stenungsunds Frisbee Club (SFC). SFC är främst aktiva inom Ultimate och det är också den gren som jag är aktiv inom, även om det händer att jag tar en runda på någon discgolfbana då och då.
 

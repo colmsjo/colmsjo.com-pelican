@@ -3,7 +3,7 @@ title: Export/Import docker container and other docker cleanup activities
 description: How to move containers between docker hosts/servers
 date: 2018-11-03
 author: Jonas Colmsjo
-tags: ['docker', 'export', 'import']
+tags: 'docker', 'export', 'import'
 
 # Import/export containers
 

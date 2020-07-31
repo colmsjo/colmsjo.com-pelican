@@ -4,8 +4,8 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE-edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<meta name="author" content="Jonas Colmsjo" />
-		<title>Performance and Integration testing JavaScript  - Work In Progress
+			<meta name="author" content="Jonas Colmsjö" />
+		<title>First run with Flask AppBuilder  - Work In Progress
 </title>
 		<link rel="stylesheet" type="text/css" href="/theme/css/style.min.css">
 		<script src="/theme/js/menu.js"></script>
@@ -49,49 +49,22 @@ Categories						</a>
 			<div class="container">
 <article class="message is-info">
 	<div class="message-header">
-		Performance and Integration testing JavaScript
+		First run with Flask AppBuilder
 	</div>
 	<div class="message-body has-text-dark">
-		<p>Performance_and_Integration_testing_JavaScript</p>
-<h2>Unsorted</h2>
-<ul>
-<li>https://gist.github.com/gmarik/1305062</li>
-<li>http://nodetoolbox.com/categories/Continuous%20Integration%20Tools</li>
-<li>http://dtrace.org/blogs/brendan/2011/12/16/flame-graphs/</li>
-<li>https://plus.google.com/app/basic/stream/z12qdpha1lrmyreal04cepzz1lamdxbqjjg</li>
-<li>https://github.com/felixge/faster-than-c</li>
-</ul>
-<h2>General JavaScript</h2>
-<p>Links:</p>
-<ul>
-<li>http://ejohn.org/blog/deep-profiling-jquery-apps/</li>
-<li>https://gist.github.com/hmert/1546548</li>
-<li>http://benchmarkjs.com/ </li>
-<li>Intercept jQuery AJAX calls using mocks - https://github.com/appendto/jquery-mockjax</li>
-<li>Spy - sinonjs.org</li>
-<li>Automated testing with Phantomjs.org &amp; Casperjs.org</li>
-</ul>
-<h2>Node</h2>
-<p>Links:</p>
-<ul>
-<li>Continous integration in node - https://github.com/ryankee/concrete</li>
-<li>https://github.com/davepacheco/node-stackvis</li>
-<li>developer.yahoo.com/performance</li>
-</ul>
-<h2>Browser testing</h2>
-<ul>
-<li>qunitjs.org</li>
-</ul>
-<h3>Remote debugging and performance profiling</h3>
-<p>Links:</p>
-<ul>
-<li>http://www.mobilexweb.com/blog/debugging-web-safari-phonegap-iphone-ipad</li>
-<li>http://www.iwebinspector.com/help.html#ml</li>
-<li>http://moduscreate.com/enable-remote-web-inspector-in-ios-6/</li>
-<li>https://developers.google.com/chrome-developer-tools/docs/remote-debugging </li>
-</ul>
-<p>Remote debugging is now supported in both iOS and Android. The devices needs to be connected
-via USB and the SDK needs to be installed though.</p>
+		<p>Flask AppBuilder (FAB) is a rapid development env based on Flask which should make
+it easy to develop CRUD apps. I had a database model that I wanted to get a better
+UI for so I tested FAB for this. Here are some learnings while working with this.</p>
+<p>I used <a href="https://flask-appbuilder.readthedocs.io/en/latest/quickhowto.html">this</a>
+introduction while building the model. I also use <a href="https://pypi.org/project/sqlacodegen/">sqlacodegen</a>
+to generate the models (some manual changes are necessary, but it still saves time).</p>
+<h2>FAB seams to need an id column as the primary key</h2>
+<p>The primary key column is not shown in the UI. FAB seams to assume that a id column
+is used that isn't shown. I had to add a id column to the table and use this as
+the primary key instead (not optimal...). Sidenote: I tried misc macOS tools
+to add a auto_increment id column (MySQL Workbench, TOAD, Sequal Pro etc.) but ended up installing
+phpMyAdmin locally instead. It seams to be the best tools around for MySQL/MariaDB
+only phpMyAdmin managed this in one go (without export/import to new tables).</p>
 	</div>
 </article>
 			</div>

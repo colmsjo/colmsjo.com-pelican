@@ -3,7 +3,7 @@ title: Compile Python to JavaScript
 description: List of tools for compiling Python to JavaScript
 date: 2017-07-21
 author: Jonas Colmsjo
-tags: ['post', 'JavaScript', 'development', 'python']
+tags: 'post', 'JavaScript', 'development', 'python'
 
 Compile Python into JS
 =====================

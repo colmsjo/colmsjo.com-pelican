@@ -16,6 +16,9 @@ to generate the models (some manual changes are necessary, but it still saves ti
 
 ## FAB seams to need an id column as the primary key
 
-The primary key column is not shown in the UI. FAB seams to assume that a id column
-is used that isn't shown. I had to add a id column to the table and use this as
-the primary key instead (not optimal...).
+The primary key column is not shown in the UI. FAB seams to assume that aN id column
+is used that isn't shown. I had to add an id column to the table and use this as
+the primary key instead (not optimal...). Sidenote: I tried misc macOS tools
+to add a auto_increment id column (MySQL Workbench, TOAD, Sequal Pro etc.) but ended up installing
+phpMyAdmin locally instead. It seams to be the best tools around for MySQL/MariaDB
+only phpMyAdmin managed this in one go (without export/import to new tables).

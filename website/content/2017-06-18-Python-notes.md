@@ -3,7 +3,7 @@ title: Python notes
 description: Some notes about the setup of python virtual environments, conda etc.
 date: 2017-06-18
 author: Jonas Colmsjo
-tags: ['post', 'ai', 'development', 'python']
+tags: 'post', 'ai', 'development', 'python'
 
 Setup
 =====
